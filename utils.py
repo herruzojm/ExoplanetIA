@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 
 # Extraemos una proporcion aleatoria de los datos de entrenamiento, primero de los casos positivos, 
 # luego de los negativos, y los juntamos para obtener df de entrenamiento y validacion 
@@ -45,3 +46,15 @@ def show_flux_plot(df, indexes):
         plt.xlabel('Time, hours')
         plt.plot(time, flux)
         plt.show()
+
+ # Calcula el score en base a la sensibilidad y la especificidad
+def generate_score(y, pred, alpha, beta):
+    tn, fp, fn, tp = confusion_matrix(y, pred).ravel()
+    
+    acierto = (tp + tn)/len(y)
+    sensibilidad = tp/(tp + fn)
+    especificidad = tn/(tn + fp)
+    
+    score = acierto * (alpha * sensibilidad + beta * especificidad)
+    return score
+ 
