@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix
+import torch
 
 # Extraemos una proporcion aleatoria de los datos de entrenamiento, primero de los casos positivos, 
 # luego de los negativos, y los juntamos para obtener df de entrenamiento y validacion 
@@ -48,31 +48,6 @@ def show_flux_plot(df, indexes):
         plt.plot(time, flux)
         plt.show()
 
- # Calcula el score en base a la sensibilidad y la especificidad
-def show_score(y, pred, alpha, beta, imprimir = False):
-    matrix = confusion_matrix(y, pred)
-    
-    if imprimir:
-        print('Matriz de confusión:')
-        print(matrix)
-        
-    tn, fp, fn, tp = matrix.ravel()
-    
-    acierto = (tp + tn)/len(y)
-    sensibilidad = tp/(tp + fn)
-    especificidad = tn/(tn + fp)
-        
-    score = acierto * (alpha * sensibilidad + beta * especificidad)
-    
-    if imprimir:
-        print('Acierto: {}'.format(acierto),
-              'Sensibilidad: {}'.format(sensibilidad),
-              'Especificidad: {}'.format(especificidad),
-              'Score: {}'.format(score))
-
-    return score
- 
-    
 def reduce_upper_outliers(df, reduce = 0.01, half_width = 4):
     '''
     Función adaptada de 
@@ -112,3 +87,77 @@ def reduce_upper_outliers(df, reduce = 0.01, half_width = 4):
                 df.at[i, idx] = new_val
                     
     return df
+
+ # Calcula el score en base a la sensibilidad y la especificidad
+def calculate_score(y, pred, alpha, beta, imprimir = False):
+    tp = torch.sum(pred * y)
+    fp = torch.sum(pred * (1 - y))
+    fn = torch.sum((1 - pred) * y)
+    tn = torch.sum((1 - pred) * (1 - y))
+    
+    if imprimir:
+        print('Matriz de confusión:')
+        print('\t\t\tPredicciones')
+        print('Valor real\tNegativos\tPositivos')
+        print('Negativos\t{}\t\t{}'.format(tn, fp))
+        print('Positivos\t{}\t\t{}'.format(fn, tp))
+        print()
+        
+    acierto = (tp + tn).float() / len(y)
+    sensibilidad = (tp).float() / (tp + fn)
+    especificidad = (tn).float() / (tn + fp)
+        
+    score = acierto * (alpha * sensibilidad + beta * especificidad)
+
+    if imprimir:
+        print('Acierto: {}'.format(acierto),
+              'Sensibilidad: {}'.format(sensibilidad),
+              'Especificidad: {}'.format(especificidad),
+              'Score: {}'.format(score))
+
+    return score
+
+def train(modelo, criterion, optimizer, epochs, alpha, beta, train_x, train_y, validation_x = None, validation_y = None):
+    train_losses = [] 
+    validation_losses = []
+    scores = []
+    
+    validation = False
+    if validation_x != None and validation_y != None:
+        validation = True
+        
+    for epoch in range(epochs):
+        optimizer.zero_grad()        
+        predictions = modelo(train_x)
+        loss = criterion(predictions.squeeze(), train_y)
+        loss.backward()
+        optimizer.step()
+        train_losses.append(loss)
+        scores.append(calculate_score(train_y, torch.argmax(predictions, 1), alpha, beta))
+            
+        if validation:
+            modelo.eval()
+            predictions = modelo(validation_x)
+            validation_loss = criterion(predictions.squeeze(), validation_y)
+            modelo.train()
+            validation_losses.append(validation_loss)
+            
+        if epoch % 10 == 0:
+            if validation:
+                print('Epoch: {}'.format(epoch),
+                     'Train loss {}'.format(loss.item()),
+                     'Validation loss {}'.format(validation_loss.item()))
+            else:
+                print('Epoch: {}'.format(epoch),
+                     'Train loss {}'.format(loss.item()))
+
+
+    if validation:
+        print('Epoch: {}'.format(epoch),
+             'Train loss {}'.format(loss.item()),
+             'Validation loss {}'.format(validation_loss.item()))
+    else:
+        print('Epoch: {}'.format(epoch),
+             'Train loss {}'.format(loss.item()))
+    
+    return train_losses, validation_losses, scores
