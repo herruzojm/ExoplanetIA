@@ -132,8 +132,7 @@ def train(modelo, criterion, optimizer, epochs, alpha, beta, train_x, train_y, v
         loss = criterion(predictions.squeeze(), train_y)
         loss.backward()
         optimizer.step()
-        train_losses.append(loss)
-        scores.append(calculate_score(train_y, torch.argmax(predictions, 1), alpha, beta))
+        train_losses.append(loss)        
             
         if validation:
             modelo.eval()
@@ -141,6 +140,7 @@ def train(modelo, criterion, optimizer, epochs, alpha, beta, train_x, train_y, v
             validation_loss = criterion(predictions.squeeze(), validation_y)
             modelo.train()
             validation_losses.append(validation_loss)
+            scores.append(calculate_score(validation_y, torch.argmax(predictions, 1), alpha, beta))
             
         if epoch % 10 == 0:
             if validation:
