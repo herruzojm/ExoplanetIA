@@ -1,83 +1,392 @@
 \capitulo{3}{Conceptos teóricos}
 
-En aquellos proyectos que necesiten para su comprensión y desarrollo de unos conceptos teóricos de una determinada materia o de un determinado dominio de conocimiento, debe existir un apartado que sintetice dichos conceptos.
-
-Algunos conceptos teóricos de \LaTeX \footnote{Créditos a los proyectos de Álvaro López Cantero: Configurador de Presupuestos y Roberto Izquierdo Amo: PLQuiz}.
-
-\section{Secciones}
-
-Las secciones se incluyen con el comando section.
-
-\subsection{Subsecciones}
-
-Además de secciones tenemos subsecciones.
-
-\subsubsection{Subsubsecciones}
-
-Y subsecciones. 
-
-
-\section{Referencias}
-
-Las referencias se incluyen en el texto usando cite \cite{Goodfellow-et-al-2016}
-
-
-\section{Imágenes}
-
-Se pueden incluir imágenes con los comandos standard de \LaTeX, pero esta plantilla dispone de comandos propios como por ejemplo el siguiente:
-
-\imagen{escudoInfor}{Autómata para una expresión vacía}
+En esta sección se presentan los conceptos teóricos relacionados con este Trabajo Fin de Grado que  sirven para facilitar la comprensión. TODO
 
 
 
-\section{Listas de items}
 
-Existen tres posibilidades:
+%\section{Tablas}
 
-\begin{itemize}
-	\item primer item.
-	\item segundo item.
-\end{itemize}
+%Igualmente se pueden usar los comandos específicos de \LaTeX o bien usar alguno de los comandos de la plantilla.
 
-\begin{enumerate}
-	\item primer item.
-	\item segundo item.
-\end{enumerate}
-
-\begin{description}
-	\item[Primer item] más información sobre el primer item.
-	\item[Segundo item] más información sobre el segundo item.
-\end{description}
-	
-\begin{itemize}
-\item 
-\end{itemize}
-
-\section{Tablas}
-
-Igualmente se pueden usar los comandos específicos de \LaTeX o bien usar alguno de los comandos de la plantilla.
-
-\tablaSmall{Herramientas y tecnologías utilizadas en cada parte del proyecto}{l c c c c}{herramientasportipodeuso}
-{ \multicolumn{1}{l}{Herramientas} & App AngularJS & API REST & BD & Memoria \\}{ 
-HTML5 & X & & &\\
-CSS3 & X & & &\\
-BOOTSTRAP & X & & &\\
-JavaScript & X & & &\\
-AngularJS & X & & &\\
-Bower & X & & &\\
-PHP & & X & &\\
-Karma + Jasmine & X & & &\\
-Slim framework & & X & &\\
-Idiorm & & X & &\\
-Composer & & X & &\\
-JSON & X & X & &\\
-PhpStorm & X & X & &\\
-MySQL & & & X &\\
-PhpMyAdmin & & & X &\\
-Git + BitBucket & X & X & X & X\\
-Mik\TeX{} & & & & X\\
-\TeX{}Maker & & & & X\\
-Astah & & & & X\\
-Balsamiq Mockups & X & & &\\
-VersionOne & X & X & X & X\\
+%\tablaSmall{Herramientas y tecnologías utilizadas en cada parte del proyecto}{l c c c c}{herramientasportipodeuso}
+%{ \multicolumn{1}{l}{Herramientas} & App AngularJS & API REST & BD & Memoria \\}{ 
+%HTML5 & X & & &\\
+%CSS3 & X & & &\\
+%BOOTSTRAP & X & & &\\
+%JavaScript & X & & &\\
+%AngularJS & X & & &\\
+%Bower & X & & &\\
+%PHP & & X & &\\
+%Karma + Jasmine & X & & &\\
+%Slim framework & & X & &\\
 } 
+
+\section{Proceso experimental para la generación de modelos}
+TODO interesante  comentar el marco global del proceso de creación de modelos para facilitar la lectura. Puedes ser interesantes algo similar al proceso CRISP-DM.
+
+
+\section{Repositorios de datos Kaggle-Kepler}
+
+TODO Kaggle \footnote{ \url{https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data}}.
+
+Descripción del conjunto de datos y de los conjuntos de datos disponibles
+
+
+\section{Perceptrón Multicapa}\label{perceptron-multicapa}
+
+El perceptrón multicapa, o red multicapa con propagación hacia delante,
+es el modelo de aprendizaje profundo por excelencia. Es una
+generalización del perceptrón simple que surgió debido a la incapacidad
+de estos para dar solución a problemas no lineales \cite{Minsky-1969}.
+
+El objetivo de estas redes es aproximar alguna función \emph{f}. Por
+ejemplo, para un clasificador como es nuestro caso,
+\$\texttt{y = f(x)}\$ mapea un input, \emph{x} a una categoría \emph{y}.
+La red define un mapeado \$\texttt{y = f(x, \textbackslash{}theta)}\$ y
+aprende los valores de los parametros \$\texttt{\textbackslash{}theta}\$
+que resultan en la mejor aproximación a la función \cite{Goodfellow-et-al-2016}.
+
+Su arquitectura es simple, consistiendo en una capa de entrada,
+encargada de recibir las señales del exterior y propagarlas a las
+neuronas de la siguiente capa, una o más capas ocultas, que procesan la
+información, aplicando una función de activación a los datos recibidos
+de la capa previa, y una capa de salida, que comunica al exterior la
+respuesta de la red.
+
+\imagen{perceptron-multicapa.png}{Perceptrón multicapa}
+
+
+\subsection{Consideraciones de diseño}\label{consideraciones-de-diseno}
+
+A la hora de diseñar la arquitectura de un perceptrón multicapa hay
+varios elementos que podemos alterar para tratar de lograr una mejor
+solución.
+
+\subsection{Número de neuronas}\label{numero-de-neuronas}
+
+En algunos casos, especialmente en la capa de entrada y de salida, el
+número de neuronas viene definido por el problema a resolver. En las
+capas ocultas, este número puede variar ampliamente. Hay que considerar
+que un número elevado de neuronas puede provocar que estas memorizen los
+datos de entrada, proceso conocido como \emph{overfitting}. En este
+caso, nuestra red proporcionaría buenos resulados durante con los datos
+entrenamiento, pero sería incapaz de generalizar y los resultados serian
+pobres cuando se enfrentase a datos nuevos.
+
+Por otro lado, un número escasos de neuronas puede provocar el efecto
+contrario, que nuestra red no disponga de la capacidad necesaria para
+generalizar correctamente. En este caso, conocido como
+\emph{underfitting}, la red presenta pobres resultados, tanto en el
+entrenamiento como en los tests.
+
+En nuestro caso, el número de neuronas en la capa de entrada viene
+determinado, a priori, por el número de características de nuestro
+dataset, esto es, 3197. Respecto a la capa de salida, dependerá de la
+función de activación que se vaya usar; en el problema que tratamos de
+resolver, clasificando los datos en dos categorías, hay o no hay
+exoplaneta, usaremos dos neuronas.
+
+\subsection{Número de capas y
+	conexiones}\label{numero-de-capas-y-conexiones}
+
+De forma similar al número de neuronas, el número de capas ocultas puede
+variar ampliamente, contribuyendo especialmente al problema de
+\emph{overfitting} comentado anteriormente. Además, de acuerdo al
+teorema de aproximación universal, cuando se usan funciones de
+activación no lineales, una sola capa oculta es suficiente para
+representar cualquier función continua en un rango dado, aunque esta
+capa puede ser demasiado grande y fallar en aprender y generalizar
+correctamente \cite{Goodfellow-et-al-2016}, por lo que es conveniente probar varias
+aproximaciones. Dado que nuestro problema es, además, no continuo, no
+debemos ceñirnos a usar una sola capa oculta.
+
+Es también importante como se encuentran conectadas las capas. El modelo
+es más frecuente es el de capa totalmente conectada, donde cada neurona
+esta conectada a cada una de las neuronas de la siguiente capa. Hay, sin
+embargo, otras opciones donde, la más frecuente de ellas, consiste en
+que la salida de algunas o todas las neuronas de una capa se conectan
+con la entrada de neuronas de una capa no inmediatamente posterior,
+haciendo que su valor tenga más peso en el resultado final de la red.
+
+Otro opción respecto a las conexiones entre las capas es usar la técnica
+conocida como \emph{dropout}. Esta consiste en asignar, durante el
+proceso de entrenamiento, el peso de determinadas neuronas,
+seleccionadas de forma aleatoria, a cero, excluyendo de facto su
+aportación al resultado final de la red. El objetivo de la técnica es
+reducir el \emph{overfitting}, ya que hace que la red sea menos
+dependiente del peso especifico de determinadas neuronas \cite{JMLR:v15:srivastava14a}.
+
+\subsection{Funciones de activación}\label{funciones-de-activacion}
+
+Vamos a examinar brevemente las funciones de activación más frecuentes
+que podríamos usar en nuestro modelo.
+
+La función sigmoide fué de las primeras en usarse de forma masiva. La
+función está acotada entre {[}0, 1{]} y suele usarse en la última capa
+para representar probabilidades en clasificadores binarios. También es
+habitual usarla en las capas ocultas de los perceptrones multicapa. Sin
+embargo, adolece de algunos problemas, quizá el mayor de ellos sea que
+satura y mata el gradiente, provocando una lenta convergencia.
+
+La tangente hiperbólica es muy similar a la sigmoide, estando igualmente
+acotada, aunque en un rango mayor, {[}-1, 1{]}, lo que la hace adecuada
+para problemas en los que hay que decidir entre dos opciones. A
+diferencia de la sigmoide, esta centrada en el 0.
+
+Es importante resaltar que la función sigmoide y la tangente hiperbólica
+se encuentran relacionadas, tal que \$tanh(x) = 2 * sigmoid(2x) -1\$ por
+loq que existe poca diferencia a la hora de usar una u otra.
+
+Tenemos también la función relu, función lineal rectificada por sus
+siglas en inglés. Esta función no está acotada y deja los valores
+positivos sin alterar pero transforma los negativos en cero. Tiene un
+buen desempeño en redes convolucionales a la hora de tratar con
+imagenes, pero también es la opción por defecto en los perceptrones
+multicapa. Esto se debe principalmente a dos factores: es poco probable
+que mate el gradiente y genera redes escasas, esto es, redes con
+neuronas muertas que no se activan, lo que hace la red más eficiente.
+Además, su facilidad de cálculo respecto a otras funciones, acorta el
+tiempo de entrenamiento de la re. Presenta, sin embargo, un importante
+problema, y es que puede matar a demasiadas neuronas. Para solucionarlo,
+existe una variante, denominada leaky relu, que, en lugar de anular los
+valores negativos, los multiplica por un coeficiente para devolver un
+valor negativo.
+
+Finalmente, hablamos de la funcion softmax, que transforma un vector de
+entrada en un vector de probabilidades cuyo sumatorio es uno. Es usada
+frecuentemente en la capa de salida de la red cuando se trata de
+resolver un problema de clasificación.
+
+De cara al diseño de nuestro modelo, la elección evidente para la capa
+de salida es usar una función softmax, aunque también se realizarán
+pruebas usando la función sigmoide para ver si presenta un mejor
+resultado.
+
+Respecto a las capas ocultas, usaremos principalmente la función relu y,
+de forma similar a con la capa de salida, haremos pruebas con la
+sigmoide.
+
+\subsection{Algoritmo de optimización}\label{algoritmo-de-optimizacion}
+
+El algoritmo de optimización es el encargado de actualizar los pesos de
+nuestra red para minimizar la perdida. Pytorch ya tiene implementados
+varios de estos algoritmos, por lo que solo queda decidir cual usar.
+
+El más conocido y uno de los primeros en desarrollarse es el descenso
+del gradiente. Pytorch implementa el descenso del gradiente estocástico
+(SGD), que actualiza los pesos tras procesar cada ejemplo, en lugar de
+hacerlo tras procesar todo el dataset. Este algoritmo presenta algunas
+dificultades, como elegir la tasa de aprendizaje adecuada y que ese
+valor se aplique a todos los pesos por igual, así como oscilaciones que
+dificultan la convergencia en el punto mínimo. Para intentar corregir
+este último problema, el algoritmo puede configurarse para usar momento,
+que ayuda a suavizar las oscilaciones añadiendo una fracción de los
+pasos previos al paso actual.
+
+Usaremos este optimizador como linea base de trabajo con diferentes
+valores para la tasa de aprendizaje tanto con como sin momento.
+
+Otro de los algoritmos más usados es Adam, acrónimo en inglés de
+estimación adaptativa del momento, que será el otro algoritmo que
+usaremos.
+
+A diferencia de SGD, Adam calcula tasas de aprendizaje distintas para
+los parámetros e incorpora momento. Adam es computacionalmente
+eficiente, tiene pocos requisitos de memoria y facilita la convergencia.
+Además, al actualizar los parámetros con diferentes tasas de
+aprendizaje, es menos sensible a una elección no óptima de la tasa de
+aprendizaje inicial.
+
+\section{Medidas de desempeño del modelo}\label{metricas}
+
+El objetivo de nuestro modelo es obtener un clasificador binario que nos
+indique la probabilidad de que una entrada de datos pertenezca a una de
+nuestras dos clases: exoplaneta y no exoplaneta.
+
+Con este objetivo en mente, la literatura existente nos indica que la
+solución óptima suele ser aplicar una función de activación softmax para
+la capa de salida de la red. Esta función, también llamada función
+exponencial normalizada, es una forma de regresión logística que
+normaliza un valor de entrada en un vector de salida que sigue una
+distribución de probabilidad cuya suma total es 1. Así pues, el valor de
+salida de la neurona k-ésima vendrá dado por la función:
+
+\begin{math}
+s(x_{i})=\frac{e^{x_{i}}}{∑_{j=1}^{n}e^{x_j}}
+\end{math}
+
+En cualquier caso, estudiaremos otras opciones, como puede ser el caso
+de la función sigmoide, que nos devuelve un valor en el rango {[}0,
+1{]}, el cual puede ser interpretrado como probabilidad, en nuestro
+caso, de que sea una estrella con exoplaneta.
+
+\subsection{Desbalanceo del dataset}\label{desbalanceo-del-dataset}
+
+Analizando nuestro conjunto de datos, observamos que este se encuentra
+muy desbalanceado: los casos negativos (no es un exoplaneta) superan
+ampliamente en número a los casos positivos (si es un exoplaneta).
+
+Esto supone un problema para el aprendizaje de la red ya que, ante
+cualquier entrada, esta puede \emph{``aprender''} a responder siempre
+que no es un exoplaneta, acertando en la amplia mayoría de los casos.
+
+Para solventar este problema, siguiendo a \cite{Viloria-2006}, vamos a
+definir nuestra función de evaluación, con la que juzgaremos el
+aprendizaje real de nuestra red y su capacidad de predecir el resultado
+correcto frente a nuevas entradas de datos.
+
+\begin{math}
+f = Acierto * (\alpha * Sen + \beta * Esp)
+\end{math}
+
+donde \$\texttt{Acierto}\$ representa el ratio de respuestas correctas,
+\$\texttt{Sen}\$ es la sensibilidad (casos catalagocados como positivos
+que son realmente positivos), \$\texttt{Esp}\$ es la especificidad
+(casos negativos correctamente calificados como no exoplanetas) y
+\$\texttt{\textbackslash{}alpha}\$ y \$\texttt{\textbackslash{}beta}\$
+son dos pesos usados para alterar la importancia de la sensibilidad y la
+especificidad. Comenzaremos con un valor neutro de 0.5 para cada uno,
+pero estudiaremos si su ajuste permite obtener un mejor modelo.
+
+Definimos a continuación los ratios de \$\texttt{Acierto}\$,
+\$\texttt{Sen}\$ y \$\texttt{Esp}\$, donde \$\texttt{VP}\$ es el número
+de verdaderos positivos, \$\texttt{VN}\$ los verdaderos negativos,
+\$\texttt{FP}\$ los falsos positivos y \$\texttt{FN}\$ los falsos
+negativos.
+
+\begin{math}
+Acierto = \frac{VP + VN}{VP + VN + FP + FN}
+\end{math}
+
+\begin{math}
+Sen = \frac{VP}{VP + FN}
+\end{math}
+
+\begin{math}
+Esp = \frac{VN}{VN + FP}
+\end{math}
+
+
+
+\section{Bibliotecas de machine learning}\label{bibliotecas-de-machine-learning}
+
+De cara a implementar nuestro modelo de red neuronal debemos decidir que
+lenguajes y bibliotecas vamos a usar. A día de hoy, la mayor parte de los
+frameworks y bibliotecas que facilitan el desarrollo de redes neuronales
+funcionan en entornos Python, que puede ser considerado el lenguaje de
+facto de la industria, aunque existen otras alternativas en lenguajes
+como R, Mathlab, y en frameworks como Neuroph para Java o Mathematica.
+
+En nuestro caso, vamos a considerar una comparativa de tres bibliotecas de Python:
+
+\begin{itemize}
+	\itemsep1pt\parskip0pt\parsep0pt
+	\item
+	Tensorflow es una biblioteca de código abierta desarrollada por Google
+	para uso interno, tanto en investigación como en producción, que
+	posteriormente fue lanzada al público.\\
+	\item
+	Keras es una API de alto nivel capaz de ejecutarse sobre otros
+	lenguajes o bibliotecas, como Tensorflow, R o Theano, diseñada con el
+	foco en la facilidad de uso.\\
+	\item
+	PyTorch es una biblioteca de código abierta desarrollada principalmente
+	por Facebook que también presenta una interfaz para C++.
+\end{itemize}
+
+Vamos a examinar diferentes parámetros para ver que nos aporta cada una
+de ellas.
+
+\subsection{Velocidad}\label{velocidad}
+
+Los estudios muestran que no hay una diferencia significativa de
+velocidad entre Tensorflow y PyTorch. Este no es el caso con Keras, que
+presenta un rendimiento claramente inferior.
+
+\subsection{Nivel del API}\label{nivel-del-api}
+
+Como se ha comentado, Keras es una API de alto nivel, capaz de correr
+sobre otras bibliotecas, como Tensorflow o Theano, proporcionando una
+interfaz común que facilita el desarrollo rápido de proyectos.
+
+Tensorflow proporciona APIs tanto de alto como de bajo nivel, lo que le
+dota una gran flexibilidad.
+
+Finalmente, PyTorch proporciona sólamente una API de nivel, enfocada en
+el trabajo directo con matrices.
+
+\subsection{Arquitectura}\label{arquitectura}
+
+Keras presenta una arquitectura simple y fácil de comprender, mientras
+que tanto Tensorflow como PyTorch presentan arquitecturas más complejas
+y un código con mayor verbosidad.
+
+La API de PyTorch se encuentra mejor diseñada mientras que la de
+Tensorflow es un tanto confusa y ha recibido numerosos cambios
+importantes en cada versión, lo que dificulta mantener un código estable
+y estar actualizado.
+
+\subsection{Debuggin}\label{debuggin}
+
+Depurar código en Tensorflow es relativamente complejo y no muy
+intuitivo. En Keras no es un proceso habitual, dado el alto nivel de sus
+componentes, lo que tampoco facilita la depuración en caso de algún
+problema, ya que la mayor parte del código se encuentra en la biblioteca.
+Sin embargo, PyTorch si ofrece buenas opciones para la depuración, muy
+similares a las encontradas en IDEs para lenguajes conocidos, como
+Eclipse o Visual Studio.
+
+\subsection{Dataset}\label{dataset}
+
+Los problemas de velocidad de Keras no lo hacen adecuado para trabajar
+con grandes datasets. No es el caso de Tensorflow o PyTorch, que no
+tienen este problema de rendimiento.
+
+\subsection{Documentación y comunidad}\label{documentacion-y-comunidad}
+
+Tanto en PyTorch como en Tensorflow se nota el efecto de tener detras a
+dos grandes empresas tecnológicas. En ambos casos, existen númerosos
+recursos gratuitos con los que aprender así como una importante
+comunidad de usuarios que las respaldan y ofrecen su ayuda. Tensorflow
+tiene más tiempo de desarrollo y su base de usuarios es mayor pero desde
+el 2018 la popularidad de PyTorch está en constante aumento,
+especialmente en el ambito académico.
+
+Keras contrasta respecto a las otros dos con una más reducida comunidad
+y menor documentación.
+
+\subsection{Puesta en producción}\label{puesta-en-produccion}
+
+A la hora de poner en producción un modelo previamente entrenado, Keras
+no dispone de ninguna utilidad en si misma, haciendo uso de las
+caracteristicas de Tensorflow. Este permite servir los modelos en un
+servidor web mediante una API REST o en dispositivos móviles.
+
+PyTorch se apoya en otras bibliotecas para poder exponer sus modelos via
+web, permitiendo también otras opciones interesantes, como la interfaz
+con C++, lo que permite convertir los modelos en ejecutables fácilmente.
+
+\subsection{Resumen de la comparación }\label{decision-final}
+
+Tras analizar las características de las tres bibliotecas, vemos como se
+adaptan a nuestras necesidades.
+
+Keras es una buena opción para probar y generar modelos de forma rápida,
+pero no nos permite profundizar en el aprendizaje y compresión de las
+redes neuronales, ya que la mayor parte del trabajo de nivel es
+gestionado de forma interna por la biblioteca. Unido a la dificultad de
+depurar el código y a su peor rendimiento, hace que optemos por no
+utilizarla.
+
+La decisión entre Tensorflow y PyTorch es más dificil de realizar, ya
+que ambos aportan características similares: la posibilidad de trabajar
+con las redes a bajo nivel para poder estudiarlas en detalle, buen
+rendimiento y variados recursos para aprender, ya sea en forma de
+tutoriales o de comunidad de usuarios para resolver dudas. Sin embargo,
+hay dos detalles marcan la diferencia y nos hacen decantarnos por
+PyTorch: por un lado, la facilidad de depuración del código y, por otro,
+la posibilidad de generar ejecutables.
+
+Así pues, la biblioteca que usaremos para la realización del proyecto será
+\textbf{PyTorch}.
