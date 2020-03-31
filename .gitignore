@@ -1,1 +1,7 @@
 /src/datos/
+/.ipynb_checkpoints/
+/.vs/
+/__pycache__/
+/src/.ipynb_checkpoints/
+/src/__pycache__/
+/src/prototipos/.ipynb_checkpoints/
