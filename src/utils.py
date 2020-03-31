@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+from fluxdataset import *
 
 # Extraemos una proporcion aleatoria de los datos de entrenamiento, primero de los casos positivos, 
 # luego de los negativos, y los juntamos para obtener df de entrenamiento y validacion 
@@ -16,7 +17,7 @@ def split_train_df(df, proportion):
     df_validation = df_validation.append(df_no_exoplanet.loc[no_exoplanet_indexes])
     df_train = df_train.append(df_no_exoplanet.drop(no_exoplanet_indexes))
     
-    return df_train, df_validation
+    return df_train.sample(frac = 1), df_validation.sample(frac = 1) 
 
 # Separamos la columna con la variable dependiente
 def generate_x_y_df(df):
@@ -117,35 +118,54 @@ def calculate_score(y, pred, alpha, beta, imprimir = False):
 
     return score
 
-def train(modelo, criterion, optimizer, epochs, alpha, beta, train_x, train_y, validation_x = None, validation_y = None):
+#Entrena el modelo
+def train(modelo, modelo_name, criterion, optimizer, epochs, alpha, beta, df_train, df_validation = None):
     train_losses = [] 
     validation_losses = []
     scores = []
+    best_score = 0
+    
+    train_dataset = FluxDataset(df_train)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, shuffle = True)
     
     validation = False
-    if validation_x != None and validation_y != None:
+    if df_validation is not None:
         validation = True
-        
+        validation_x, validation_y = generate_x_y_df(df_validation)
+        validation_x_tensor = torch.tensor(validation_x.values).float()
+        validation_y_tensor = torch.tensor(validation_y.values)
+    
     for epoch in range(epochs):
-        optimizer.zero_grad()        
-        predictions = modelo(train_x)
-        loss = criterion(predictions.squeeze(), train_y)
-        loss.backward()
-        optimizer.step()
-        train_losses.append(loss)        
-            
+        train_loss = 0
+        modelo.train()
+        
+        for target, sample in train_dataloader:
+            optimizer.zero_grad()
+            predictions = modelo(sample)
+            loss = criterion(predictions, target)
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item()
+        train_losses.append(train_loss/len(train_dataloader))        
+
         if validation:
             modelo.eval()
-            predictions = modelo(validation_x)
-            validation_loss = criterion(predictions.squeeze(), validation_y)
-            modelo.train()
-            validation_losses.append(validation_loss)
-            scores.append(calculate_score(validation_y, torch.argmax(predictions, 1), alpha, beta))
-            
-        if epoch % 10 == 0:
+            predictions = modelo(validation_x_tensor)
+            validation_loss = criterion(predictions.squeeze(), validation_y_tensor)
+            validation_losses.append(validation_loss.item()) 
+            score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta)
+            scores.append(score)
+            print('Score {} at epoch {}'.format(score, epoch))
+            if score > best_score:
+                print('New model saved')
+                best_score = score
+                torch.save(modelo.state_dict(), '{}.pth'.format(modelo_name))
+                score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
+
+        if epoch % 1 == 0:
             if validation:
                 print('Epoch: {}'.format(epoch),
-                     'Train loss {}'.format(loss.item()),
+                     'Train loss {}'.format(train_losses[-1]),
                      'Validation loss {}'.format(validation_loss.item()))
             else:
                 print('Epoch: {}'.format(epoch),
@@ -154,7 +174,7 @@ def train(modelo, criterion, optimizer, epochs, alpha, beta, train_x, train_y, v
 
     if validation:
         print('Epoch: {}'.format(epoch),
-             'Train loss {}'.format(loss.item()),
+             'Train loss {}'.format(train_losses[-1]),
              'Validation loss {}'.format(validation_loss.item()))
     else:
         print('Epoch: {}'.format(epoch),
