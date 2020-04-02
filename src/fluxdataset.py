@@ -1,12 +1,14 @@
 import torch
 
 class FluxDataset(torch.utils.data.Dataset):
-    def __init__(self, dataframe):
+    def __init__(self, dataframe, use_cuda = False):
+        self.device = torch.device("cuda" if use_cuda else "cpu")
         self.dataset = torch.tensor(dataframe.values).float()
+        print('using device {}'.format(self.device))
         
     def __len__(self):
         return len(self.dataset)
     
     def __getitem__(self, idx):
         row = torch.index_select(self.dataset, 0, torch.tensor([idx]))
-        return row[:, :1][0][0].long(), row[:, 1:][0]
+        return row[:, :1][0][0].long().to(self.device), row[:, 1:][0].to(self.device)
