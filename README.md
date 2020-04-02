@@ -19,3 +19,4 @@ La información del repositorio se encuentra estructurada en las siguientes carp
   - *app*: solución final generada con el módelo que presenta mejores resultados
   - *datos*: ficheros csv con los datos originales
   - *prototipos*: notebooks con los prototipos realizados durante la experimentación 
+    - *saved_models*: modelos guardados durante la experimentación
