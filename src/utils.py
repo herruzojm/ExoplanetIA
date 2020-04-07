@@ -2,8 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import time
+from scipy import ndimage
 from fluxdataset import *
 
+    
 # Extraemos una proporcion aleatoria de los datos de entrenamiento, primero de los casos positivos, 
 # luego de los negativos, y los juntamos para obtener df de entrenamiento y validacion 
 def split_train_df(df, proportion):
@@ -26,17 +28,18 @@ def generate_x_y_df(df):
 
 # Normaliza los valores al rango [0, 1], pero es muy sensible a valores extremos
 def min_max_scaling(df):
-    df_normalized = (df - df.min()) / (df.max() - df.min())
-    df_normalized['LABEL'] = df['LABEL']
-    return df_normalized
+    return (df - df.min()) / (df.max() - df.min())
 
 # Menos sensible a valores extremos, pero no garantiza un rango fijo
 def z_score_normalizing(df):
-    df_normalized = (df - df.mean())/df.std()  
-    df_normalized['LABEL'] = df['LABEL']
-    return df_normalized
+    return (df - df.mean())/df.std()  
 
-
+# Suavizado de la señal con filtro gaussiano
+def gaussian_filter(df, substract):
+    if substract:
+        return df - ndimage.gaussian_filter(df, sigma = 10)
+    return ndimage.gaussian_filter(df, sigma = 10)
+    
 # Mostramos la grafica de luz
 def show_flux_plot(df, indexes):
     for i in indexes:
@@ -119,8 +122,8 @@ def calculate_score(y, pred, alpha, beta, print_scores = False):
 
     return score
 
-#Entrena el modelo
-def train(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_train, df_validation = None, device = "cpu"):
+#Entrena modelos con salida de dos neuronas
+def train_cross(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_train, df_validation = None, device = "cpu"):
     t = time.perf_counter()
     train_losses = [] 
     validation_losses = []
@@ -163,6 +166,7 @@ def train(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_trai
                 best_score = score
                 torch.save(modelo.state_dict(), '{}.pth'.format(model_name))
                 score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
+                print()
 
         if epoch % 1 == 0:
             if validation:
@@ -182,11 +186,13 @@ def train(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_trai
         print('Epoch: {}'.format(epoch),
              'Train loss {}'.format(loss.item()))
     
+    print('Best score {}'.format(max(scores)))
     execution_time = time.perf_counter() - t
     print('execution time {}'.format(execution_time))
     
     return train_losses, validation_losses, scores
 
+#Entrena modelos con salida de una neurona
 def train_bce(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_train, df_validation = None, device = "cpu"):
     t = time.perf_counter()    
     train_losses = [] 
@@ -231,6 +237,7 @@ def train_bce(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_
                 best_score = score
                 torch.save(modelo.state_dict(), '{}.pth'.format(model_name))
                 score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
+                print()
 
         if epoch % 1 == 0:
             if validation:
@@ -250,7 +257,9 @@ def train_bce(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_
         print('Epoch: {}'.format(epoch),
              'Train loss {}'.format(loss.item()))
     
+    print('Best score {}'.format(max(scores)))
     execution_time = time.perf_counter() - t
     print('execution time {}'.format(execution_time))
     
     return train_losses, validation_losses, scores
+    
