@@ -262,4 +262,16 @@ def train_bce(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_
     print('execution time {}'.format(execution_time))
     
     return train_losses, validation_losses, scores
+
+# Comprueba el resultado de un modelo
+def test_model(modelo, model_name, df, alpha = 0.5, beta = 0.5):
+    modelo.load_state_dict(torch.load('{}.pth'.format(model_name)))
+    modelo.eval()
     
+    test_x, test_y = generate_x_y_df(df)
+    test_x_tensor = torch.tensor(test_x.values).float()
+    test_y_tensor = torch.tensor(test_y)
+    
+    predictions = modelo(test_x_tensor)
+    calculate_score(test_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
+	
