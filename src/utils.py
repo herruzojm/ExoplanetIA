@@ -156,17 +156,22 @@ def train_cross(modelo, model_name, criterion, optimizer, epochs, alpha, beta, d
         if validation:
             modelo.eval()
             predictions = modelo(validation_x_tensor)
-            validation_loss = criterion(predictions.squeeze(), validation_y_tensor)
-            validation_losses.append(validation_loss.item()) 
+            validation_loss = criterion(predictions.squeeze(), validation_y_tensor)             
             score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta)
-            scores.append(score)
             print('Score {} at epoch {}'.format(score, epoch))
+            if score == best_score and validation_loss.item() < validation_losses[-1]:
+                print('New model saved')
+                print()
+                torch.save(modelo.state_dict(), '{}.pth'.format(model_name))            
             if score > best_score:
                 print('New model saved')
                 best_score = score
                 torch.save(modelo.state_dict(), '{}.pth'.format(model_name))
                 score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
                 print()
+            
+            scores.append(score)
+            validation_losses.append(validation_loss.item())  
 
         if epoch % 1 == 0:
             if validation:
@@ -228,17 +233,22 @@ def train_bce(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_
             modelo.eval()
             predictions = modelo(validation_x_tensor)
             validation_loss = criterion(predictions.squeeze(), validation_y_tensor.float())
-            validation_losses.append(validation_loss.item()) 
             score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta)
-            scores.append(score)
             print('Score {} at epoch {}'.format(score, epoch))
+            if score == best_score and validation_loss.item() < validation_losses[-1]:
+                print('New model saved')
+                print()
+                torch.save(modelo.state_dict(), '{}.pth'.format(model_name))            
             if score > best_score:
                 print('New model saved')
                 best_score = score
                 torch.save(modelo.state_dict(), '{}.pth'.format(model_name))
                 score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
                 print()
-
+            
+            scores.append(score)
+            validation_losses.append(validation_loss.item()) 
+                
         if epoch % 1 == 0:
             if validation:
                 print('Epoch: {}'.format(epoch),
