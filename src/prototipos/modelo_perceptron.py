@@ -5,12 +5,12 @@ class Perceptron(torch.nn.Module):
     #definimos la estructura de la red
     #capa de entrada x con activacion relu
     #capa oculta con activacion relu
-    def __init__(self, output = 2):
+    def __init__(self, sizes = [3197, 1000, 250, 20], output = 2):
         super(Perceptron, self).__init__()
-        self.fc1 = torch.nn.Linear(3197, 1000)
-        self.fc2 = torch.nn.Linear(1000, 250)
-        self.fc3 = torch.nn.Linear(250, 20)
-        self.fc4 = torch.nn.Linear(20, output)
+        self.fc1 = torch.nn.Linear(sizes[0], sizes[1])
+        self.fc2 = torch.nn.Linear(sizes[1], sizes[2])
+        self.fc3 = torch.nn.Linear(sizes[2], sizes[3])
+        self.fc4 = torch.nn.Linear(sizes[3], output)
         self.relu = torch.nn.ReLU()
         
     #definimos el flujo 
