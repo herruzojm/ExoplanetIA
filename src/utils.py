@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import time
-from scipy import ndimage
+from scipy import ndimage, fft
 from fluxdataset import *
 
     
@@ -32,22 +32,26 @@ def min_max_scaling(df):
 
 # Menos sensible a valores extremos, pero no garantiza un rango fijo
 def z_score_normalizing(df):
-    return (df - df.mean())/df.std()  
+    return (df - df.mean()) / df.std()  
 
 # Suavizado de la señal con filtro gaussiano
 def gaussian_filter(df, substract):
     if substract:
         return df - ndimage.gaussian_filter(df, sigma = 10)
     return ndimage.gaussian_filter(df, sigma = 10)
+  
+# Transformamos la intensidad en frecuencia mediante Fourier
+def fourier_transformation(df):
+    return np.abs(fft(df))    
     
 # Mostramos la grafica de luz
-def show_flux_plot(df, indexes):
+def show_flux_plot(df, indexes, text = 'Flux'):
     for i in indexes:
         flux = df.iloc[i,:]
         # 80 days / 3197 columns = 36 minutes
         time = np.arange(len(flux)) * (36.0/60.0) # plotting each hour
         plt.figure(figsize=(15,5))
-        plt.title('Flux of star {}'.format(i+1))
+        plt.title('{} of star {}'.format(text, i+1))
         plt.ylabel('Flux, e-/s')
         plt.xlabel('Time, hours')
         plt.plot(time, flux)
@@ -156,22 +160,17 @@ def train_cross(modelo, model_name, criterion, optimizer, epochs, alpha, beta, d
         if validation:
             modelo.eval()
             predictions = modelo(validation_x_tensor)
-            validation_loss = criterion(predictions.squeeze(), validation_y_tensor)             
+            validation_loss = criterion(predictions.squeeze(), validation_y_tensor)
+            validation_losses.append(validation_loss.item()) 
             score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta)
+            scores.append(score)
             print('Score {} at epoch {}'.format(score, epoch))
-            if score == best_score and validation_loss.item() < validation_losses[-1]:
-                print('New model saved')
-                print()
-                torch.save(modelo.state_dict(), '{}.pth'.format(model_name))            
             if score > best_score:
                 print('New model saved')
                 best_score = score
                 torch.save(modelo.state_dict(), '{}.pth'.format(model_name))
                 score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
                 print()
-            
-            scores.append(score)
-            validation_losses.append(validation_loss.item())  
 
         if epoch % 1 == 0:
             if validation:
@@ -233,22 +232,17 @@ def train_bce(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_
             modelo.eval()
             predictions = modelo(validation_x_tensor)
             validation_loss = criterion(predictions.squeeze(), validation_y_tensor.float())
+            validation_losses.append(validation_loss.item()) 
             score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta)
+            scores.append(score)
             print('Score {} at epoch {}'.format(score, epoch))
-            if score == best_score and validation_loss.item() < validation_losses[-1]:
-                print('New model saved')
-                print()
-                torch.save(modelo.state_dict(), '{}.pth'.format(model_name))            
             if score > best_score:
                 print('New model saved')
                 best_score = score
                 torch.save(modelo.state_dict(), '{}.pth'.format(model_name))
                 score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
                 print()
-            
-            scores.append(score)
-            validation_losses.append(validation_loss.item()) 
-                
+
         if epoch % 1 == 0:
             if validation:
                 print('Epoch: {}'.format(epoch),
@@ -272,6 +266,7 @@ def train_bce(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_
     print('execution time {}'.format(execution_time))
     
     return train_losses, validation_losses, scores
+
 
 # Comprueba el resultado de un modelo
 def test_model(modelo, model_name, df, alpha = 0.5, beta = 0.5):
