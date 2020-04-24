@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import torch
 import time
 from scipy import ndimage, fft
-from fluxdataset import *
+
 
     
 # Extraemos una proporcion aleatoria de los datos de entrenamiento, primero de los casos positivos, 

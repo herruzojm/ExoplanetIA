@@ -1,8 +1,8 @@
 import torch
 
 class FluxDataset(torch.utils.data.Dataset):
-    def __init__(self, dataframe, use_cuda = False):
-        self.device = torch.device("cuda" if use_cuda else "cpu")
+    def __init__(self, dataframe, device = "cpu"):
+        self.device = torch.device(device)
         self.dataset = torch.tensor(dataframe.values).float()
         print('using device {}'.format(self.device))
         

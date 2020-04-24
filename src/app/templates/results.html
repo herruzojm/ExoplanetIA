@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+
+<div class="row">
+	<div class="col-sm-6">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<h3 class="panel-title">Resultados</h3>
+			</div>
+			<div class="panel-body">
+				<p>Se ha analizado el flujo de luz de {{ results.total_stars }} estrellas.</p>
+				{% if results.exoplanets == 0 %}
+					<p>No se ha encontrado ningúna estrella con exoplaneta en los datos.</p>
+				{% else %}
+					<p>Se han encontrado {{ results.exoplanets }} estrellas con exoplanetas.</p>
+					<p>Las estrellas con exoplanetas son:</p>
+					{{ results.indexes }}
+				{% endif %}				
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<h3 class="panel-title">Proporción</h3>
+			</div>
+			<div class="panel-body">
+				<canvas id="chart"></canvas>
+			</div>
+		</div>
+	</div>	
+</div>	
+	
+{% for star in results.indexes %}
+	<div class="col-sm-6">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<h3 class="panel-title">Flujo de luz de la estrella {{ star[0] }}</h3>
+			</div>
+			<div class="panel-body">
+				<img src="{{ images[loop.index-1] }}" height="400" />				
+			</div>
+		</div>
+	</div>	
+{% endfor %}	
+<script>
+	var options = {		
+		legend: {position:'bottom', padding:5, labels: {pointStyle:'circle', usePointStyle:true}},
+		animation: {animateScale: true}
+	}
+	var data = {
+		datasets: [{
+			borderWidth: 4,
+			weight: 40,
+			backgroundColor: [
+				{% for item in colors %}
+				"{{ item }}",
+				{% endfor %}],
+			hoverBackgroundColor: [
+				{% for item in hovercolors %}
+				"{{ item }}",
+				{% endfor %}],
+			data: [
+				{% for item in values %}
+				"{{ item }}",
+				{% endfor %}]
+			}],
+			
+			
+
+		labels: [
+			{% for item in labels %}
+            "{{item}}",
+            {% endfor %}]
+	};
+
+	var chart = document.getElementById("chart")
+	if (chart) {
+		new Chart(chart, {
+		  type: 'pie',
+		  data: data,
+		  options: options
+		});
+	}
+</script>
+
+{% endblock %}
+
