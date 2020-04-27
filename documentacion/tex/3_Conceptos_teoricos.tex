@@ -3,25 +3,6 @@
 En esta sección se presentan los conceptos teóricos relacionados con este Trabajo Fin de Grado que  sirven para facilitar la comprensión. TODO
 
 
-
-
-%\section{Tablas}
-
-%Igualmente se pueden usar los comandos específicos de \LaTeX o bien usar alguno de los comandos de la plantilla.
-
-%\tablaSmall{Herramientas y tecnologías utilizadas en cada parte del proyecto}{l c c c c}{herramientasportipodeuso}
-%{ \multicolumn{1}{l}{Herramientas} & App AngularJS & API REST & BD & Memoria \\}{ 
-%HTML5 & X & & &\\
-%CSS3 & X & & &\\
-%BOOTSTRAP & X & & &\\
-%JavaScript & X & & &\\
-%AngularJS & X & & &\\
-%Bower & X & & &\\
-%PHP & & X & &\\
-%Karma + Jasmine & X & & &\\
-%Slim framework & & X & &\\
-} 
-
 \section{Proceso experimental para la generación de modelos}
 TODO interesante  comentar el marco global del proceso de creación de modelos para facilitar la lectura. Puedes ser interesantes algo similar al proceso CRISP-DM.
 
@@ -213,7 +194,7 @@ distribución de probabilidad cuya suma total es 1. Así pues, el valor de
 salida de la neurona k-ésima vendrá dado por la función:
 
 \begin{math}
-s(x_{i})=\frac{e^{x_{i}}}{∑_{j=1}^{n}e^{x_j}}
+s(x_{i})=\frac{e^{x_{i}}}{\sum_{j=1}^{n}e^{x_j}}
 \end{math}
 
 En cualquier caso, estudiaremos otras opciones, como puede ser el caso
@@ -269,7 +250,7 @@ Esp = \frac{VN}{VN + FP}
 
 
 
-\section{Bibliotecas de machine learning}\label{bibliotecas-de-machine-learning}
+\section{Bibliotecas de machine learning}\label{sec:bibliotecas-de-machine-learning}
 
 De cara a implementar nuestro modelo de red neuronal debemos decidir que
 lenguajes y bibliotecas vamos a usar. A día de hoy, la mayor parte de los
@@ -388,5 +369,4 @@ hay dos detalles marcan la diferencia y nos hacen decantarnos por
 PyTorch: por un lado, la facilidad de depuración del código y, por otro,
 la posibilidad de generar ejecutables.
 
-Así pues, la biblioteca que usaremos para la realización del proyecto será
-\textbf{PyTorch}.
+Así pues, la biblioteca que finalmente usaremos será \textbf{PyTorch}.
