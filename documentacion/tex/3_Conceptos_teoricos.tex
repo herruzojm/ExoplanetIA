@@ -3,25 +3,6 @@
 En esta sección se presentan los conceptos teóricos relacionados con este Trabajo Fin de Grado que  sirven para facilitar la comprensión. TODO
 
 
-
-
-%\section{Tablas}
-
-%Igualmente se pueden usar los comandos específicos de \LaTeX o bien usar alguno de los comandos de la plantilla.
-
-%\tablaSmall{Herramientas y tecnologías utilizadas en cada parte del proyecto}{l c c c c}{herramientasportipodeuso}
-%{ \multicolumn{1}{l}{Herramientas} & App AngularJS & API REST & BD & Memoria \\}{ 
-%HTML5 & X & & &\\
-%CSS3 & X & & &\\
-%BOOTSTRAP & X & & &\\
-%JavaScript & X & & &\\
-%AngularJS & X & & &\\
-%Bower & X & & &\\
-%PHP & & X & &\\
-%Karma + Jasmine & X & & &\\
-%Slim framework & & X & &\\
-} 
-
 \section{Proceso experimental para la generación de modelos}
 TODO interesante  comentar el marco global del proceso de creación de modelos para facilitar la lectura. Puedes ser interesantes algo similar al proceso CRISP-DM.
 
@@ -42,9 +23,9 @@ de estos para dar solución a problemas no lineales \cite{Minsky-1969}.
 
 El objetivo de estas redes es aproximar alguna función \emph{f}. Por
 ejemplo, para un clasificador como es nuestro caso,
-\$\texttt{y = f(x)}\$ mapea un input, \emph{x} a una categoría \emph{y}.
-La red define un mapeado \$\texttt{y = f(x, \textbackslash{}theta)}\$ y
-aprende los valores de los parametros \$\texttt{\textbackslash{}theta}\$
+\texttt{y = f(x)} mapea un input, \emph{x} a una categoría \emph{y}.
+La red define un mapeado \texttt{y = f(x, \textbackslash{}theta)} y
+aprende los valores de los parametros \texttt{\textbackslash{}theta}
 que resultan en la mejor aproximación a la función \cite{Goodfellow-et-al-2016}.
 
 Su arquitectura es simple, consistiendo en una capa de entrada,
@@ -55,7 +36,6 @@ de la capa previa, y una capa de salida, que comunica al exterior la
 respuesta de la red.
 
 \imagen{perceptron-multicapa.png}{Perceptrón multicapa}
-
 
 \subsection{Consideraciones de diseño}\label{consideraciones-de-diseno}
 
@@ -135,7 +115,7 @@ para problemas en los que hay que decidir entre dos opciones. A
 diferencia de la sigmoide, esta centrada en el 0.
 
 Es importante resaltar que la función sigmoide y la tangente hiperbólica
-se encuentran relacionadas, tal que \$tanh(x) = 2 * sigmoid(2x) -1\$ por
+se encuentran relacionadas, tal que \(tanh(x) = 2 * sigmoid(2x) -1\) por
 loq que existe poca diferencia a la hora de usar una u otra.
 
 Tenemos también la función relu, función lineal rectificada por sus
@@ -187,7 +167,7 @@ pasos previos al paso actual.
 Usaremos este optimizador como linea base de trabajo con diferentes
 valores para la tasa de aprendizaje tanto con como sin momento.
 
-Otro de los algoritmos más usados es Adam, acrónimo en inglés de
+Otro de los algoritmos más usados es Adam\cite{2014arXiv1412.6980K}, acrónimo en inglés de
 estimación adaptativa del momento, que será el otro algoritmo que
 usaremos.
 
@@ -213,7 +193,7 @@ distribución de probabilidad cuya suma total es 1. Así pues, el valor de
 salida de la neurona k-ésima vendrá dado por la función:
 
 \begin{math}
-s(x_{i})=\frac{e^{x_{i}}}{∑_{j=1}^{n}e^{x_j}}
+s(x_{i})=\frac{e^{x_{i}}}{\sum_{j=1}^{n}e^{x_j}}
 \end{math}
 
 En cualquier caso, estudiaremos otras opciones, como puede ser el caso
@@ -231,7 +211,7 @@ Esto supone un problema para el aprendizaje de la red ya que, ante
 cualquier entrada, esta puede \emph{``aprender''} a responder siempre
 que no es un exoplaneta, acertando en la amplia mayoría de los casos.
 
-Para solventar este problema, siguiendo a \cite{Viloria-2006}, vamos a
+Para solventar este problema, siguiendo a Viloria\cite{Viloria-2006}, vamos a
 definir nuestra función de evaluación, con la que juzgaremos el
 aprendizaje real de nuestra red y su capacidad de predecir el resultado
 correcto frente a nuevas entradas de datos.
@@ -240,19 +220,18 @@ correcto frente a nuevas entradas de datos.
 f = Acierto * (\alpha * Sen + \beta * Esp)
 \end{math}
 
-donde \$\texttt{Acierto}\$ representa el ratio de respuestas correctas,
-\$\texttt{Sen}\$ es la sensibilidad (casos catalagocados como positivos
-que son realmente positivos), \$\texttt{Esp}\$ es la especificidad
+donde \texttt{Acierto} representa el ratio de respuestas correctas,
+\texttt{Sen} es la sensibilidad (casos catalagocados como positivos
+que son realmente positivos), \texttt{Esp} es la especificidad
 (casos negativos correctamente calificados como no exoplanetas) y
-\$\texttt{\textbackslash{}alpha}\$ y \$\texttt{\textbackslash{}beta}\$
-son dos pesos usados para alterar la importancia de la sensibilidad y la
+\(\alpha\) y \(\beta\) son dos pesos usados para alterar la importancia de la sensibilidad y la
 especificidad. Comenzaremos con un valor neutro de 0.5 para cada uno,
 pero estudiaremos si su ajuste permite obtener un mejor modelo.
 
-Definimos a continuación los ratios de \$\texttt{Acierto}\$,
-\$\texttt{Sen}\$ y \$\texttt{Esp}\$, donde \$\texttt{VP}\$ es el número
-de verdaderos positivos, \$\texttt{VN}\$ los verdaderos negativos,
-\$\texttt{FP}\$ los falsos positivos y \$\texttt{FN}\$ los falsos
+Definimos a continuación los ratios de \texttt{Acierto},
+\texttt{Sen} y \texttt{Esp}, donde \texttt{VP} es el número
+de verdaderos positivos, \texttt{VN} los verdaderos negativos,
+\texttt{FP} los falsos positivos y \texttt{FN} los falsos
 negativos.
 
 \begin{math}
@@ -269,7 +248,7 @@ Esp = \frac{VN}{VN + FP}
 
 
 
-\section{Bibliotecas de machine learning}\label{bibliotecas-de-machine-learning}
+\section{Bibliotecas de machine learning}\label{sec:bibliotecas-de-machine-learning}
 
 De cara a implementar nuestro modelo de red neuronal debemos decidir que
 lenguajes y bibliotecas vamos a usar. A día de hoy, la mayor parte de los
@@ -388,5 +367,4 @@ hay dos detalles marcan la diferencia y nos hacen decantarnos por
 PyTorch: por un lado, la facilidad de depuración del código y, por otro,
 la posibilidad de generar ejecutables.
 
-Así pues, la biblioteca que usaremos para la realización del proyecto será
-\textbf{PyTorch}.
+Así pues, la biblioteca que finalmente usaremos será \textbf{PyTorch}.
