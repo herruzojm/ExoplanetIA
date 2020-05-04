@@ -3,12 +3,13 @@ import matplotlib.pyplot as plt
 import torch
 import time
 from scipy import ndimage, fft
-
-
+from sklearn.metrics import roc_curve, auc
+from fluxdataset import *
+from resultados import *
     
 # Extraemos una proporcion aleatoria de los datos de entrenamiento, primero de los casos positivos, 
 # luego de los negativos, y los juntamos para obtener df de entrenamiento y validacion 
-def split_train_df(df, proportion):
+def split_train_df(df, proportion, seed = 19881):
     df_exoplanet = df[df.LABEL.eq(1)]
     df_no_exoplanet = df[df.LABEL.eq(0)]
     
@@ -98,19 +99,11 @@ def reduce_upper_outliers(df, reduce = 0.01, half_width = 4):
     return df
 
  # Calcula el score en base a la sensibilidad y la especificidad
-def calculate_score(y, pred, alpha, beta, print_scores = False):
+def calculate_score(y, pred, alpha, beta, best_previous_score):
     tp = torch.sum(pred * y)
     fp = torch.sum(pred * (1 - y))
     fn = torch.sum((1 - pred) * y)
-    tn = torch.sum((1 - pred) * (1 - y))
-    
-    if print_scores:
-        print('Matriz de confusión:')
-        print('\t\t\tPredicciones')
-        print('Valor real\tNegativos\tPositivos')
-        print('Negativos\t{}\t\t{}'.format(tn, fp))
-        print('Positivos\t{}\t\t{}'.format(fn, tp))
-        print()
+    tn = torch.sum((1 - pred) * (1 - y))    
         
     accuracy = (tp + tn).float() / len(y)
     recall = (tp).float() / (tp + fn)
@@ -118,21 +111,33 @@ def calculate_score(y, pred, alpha, beta, print_scores = False):
         
     score = accuracy * (alpha * recall + beta * specificity)
 
-    if print_scores:
+    if score > best_previous_score:
+        print('Matriz de confusión:')
+        print('\t\t\tPredicciones')
+        print('Valor real\tNegativos\tPositivos')
+        print('Negativos\t{}\t\t{}'.format(tn, fp))
+        print('Positivos\t{}\t\t{}'.format(fn, tp))
+        print()
+        
         print('Acierto: {}'.format(accuracy),
               'Sensibilidad: {}'.format(recall),
               'Especificidad: {}'.format(specificity),
               'Score: {}'.format(score))
-
+       
     return score
+
+# Calcula las tasas de verdaderos positivos y negativos asi como el area bajo la curva
+def calculate_roc(y, pred):
+    y_cpu, pred_cpu = y.cpu(), pred.cpu()
+    fpr, tpr, _ = roc_curve(y_cpu, pred_cpu)
+    roc_auc = auc(fpr, tpr)
+    
+    return fpr, tpr, roc_auc
 
 #Entrena modelos con salida de dos neuronas
 def train_cross(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_train, df_validation = None, device = "cpu"):
     t = time.perf_counter()
-    train_losses = [] 
-    validation_losses = []
-    scores = []
-    best_score = 0
+    resultados = Resultados(model_name.split('\\')[-1])
     
     train_dataset = FluxDataset(df_train, device)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, shuffle = True)
@@ -155,54 +160,34 @@ def train_cross(modelo, model_name, criterion, optimizer, epochs, alpha, beta, d
             loss.backward()
             optimizer.step()
             train_loss += loss.item()
-        train_losses.append(train_loss/len(train_dataloader))        
+        resultados.add_train_loss(train_loss/len(train_dataloader))       
 
         if validation:
             modelo.eval()
             predictions = modelo(validation_x_tensor)
             validation_loss = criterion(predictions.squeeze(), validation_y_tensor)
-            validation_losses.append(validation_loss.item()) 
-            score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta)
-            scores.append(score)
-            print('Score {} at epoch {}'.format(score, epoch))
-            if score > best_score:
+            resultados.add_validation_loss(validation_loss.item())
+            score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, resultados.best_score)
+            if resultados.is_best_score(score):
                 print('New model saved')
-                best_score = score
                 torch.save(modelo.state_dict(), '{}.pth'.format(model_name))
-                score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
-                print()
+                fpr, tpr, roc_auc = calculate_roc(validation_y_tensor, torch.argmax(predictions, 1))
+                resultados.set_roc(fpr, tpr, roc_auc)
+            resultados.add_score(score)            
+            print('Score {} at epoch {}'.format(score, epoch))
 
-        if epoch % 1 == 0:
-            if validation:
-                print('Epoch: {}'.format(epoch),
-                     'Train loss {}'.format(train_losses[-1]),
-                     'Validation loss {}'.format(validation_loss.item()))
-            else:
-                print('Epoch: {}'.format(epoch),
-                     'Train loss {}'.format(loss.item()))
-
-
-    if validation:
-        print('Epoch: {}'.format(epoch),
-             'Train loss {}'.format(train_losses[-1]),
-             'Validation loss {}'.format(validation_loss.item()))
-    else:
-        print('Epoch: {}'.format(epoch),
-             'Train loss {}'.format(loss.item()))
+        resultados.print_resultados(epoch)    
     
-    print('Best score {}'.format(max(scores)))
+    resultados.print_best_score()
     execution_time = time.perf_counter() - t
     print('execution time {}'.format(execution_time))
     
-    return train_losses, validation_losses, scores
+    return resultados
 
 #Entrena modelos con salida de una neurona
 def train_bce(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_train, df_validation = None, device = "cpu"):
-    t = time.perf_counter()    
-    train_losses = [] 
-    validation_losses = []
-    scores = []
-    best_score = 0
+    t = time.perf_counter()
+    resultados = Resultados(model_name.split('\\')[-1])
     
     train_dataset = FluxDataset(df_train, device)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, shuffle = True)
@@ -226,49 +211,82 @@ def train_bce(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_
             loss.backward()
             optimizer.step()
             train_loss += loss.item()
-        train_losses.append(train_loss/len(train_dataloader))        
+        resultados.add_train_loss(train_loss/len(train_dataloader))
 
         if validation:
             modelo.eval()
             predictions = modelo(validation_x_tensor)
             validation_loss = criterion(predictions.squeeze(), validation_y_tensor.float())
-            validation_losses.append(validation_loss.item()) 
-            score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta)
-            scores.append(score)
-            print('Score {} at epoch {}'.format(score, epoch))
-            if score > best_score:
+            resultados.add_validation_loss(validation_loss.item())
+            score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, resultados.best_score)
+            if resultados.is_best_score(score):
                 print('New model saved')
                 best_score = score
                 torch.save(modelo.state_dict(), '{}.pth'.format(model_name))
-                score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
-                print()
+                fpr, tpr, roc_auc = calculate_roc(validation_y_tensor, torch.argmax(predictions, 1))
+                resultados.set_roc(fpr, tpr, roc_auc)                
+            resultados.add_score(score)            
+            print('Score {} at epoch {}'.format(score, epoch))
 
-        if epoch % 1 == 0:
-            if validation:
-                print('Epoch: {}'.format(epoch),
-                     'Train loss {}'.format(train_losses[-1]),
-                     'Validation loss {}'.format(validation_loss.item()))
-            else:
-                print('Epoch: {}'.format(epoch),
-                     'Train loss {}'.format(loss.item()))
-
-
-    if validation:
-        print('Epoch: {}'.format(epoch),
-             'Train loss {}'.format(train_losses[-1]),
-             'Validation loss {}'.format(validation_loss.item()))
-    else:
-        print('Epoch: {}'.format(epoch),
-             'Train loss {}'.format(loss.item()))
+        resultados.print_resultados(epoch)
     
-    print('Best score {}'.format(max(scores)))
+    resultados.print_best_score()
     execution_time = time.perf_counter() - t
     print('execution time {}'.format(execution_time))
     
-    return train_losses, validation_losses, scores
+    return resultados
 
+#Entrena modelos lstm
+def train_lstm(modelo, model_name, criterion, optimizer, epochs, alpha, beta, df_train, df_validation = None, device = "cpu"):
+    t = time.perf_counter()
+    resultados = Resultados(model_name.split('\\')[-1])
+    
+    train_dataset = FluxDataset(df_train, device)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, shuffle = True)
+    
+    validation = False
+    if df_validation is not None:
+        validation = True
+        validation_x, validation_y = generate_x_y_df(df_validation)
+        validation_x_tensor = torch.tensor(validation_x.values, device = device).float()
+        validation_y_tensor = torch.tensor(validation_y.values, device = device)
+    
+    for epoch in range(epochs):
+        train_loss = 0
+        modelo.train()
+        
+        for target, sample in train_dataloader:
+            optimizer.zero_grad()
+            predictions = modelo(sample.view(len(sample), 1, -1))
+            loss = criterion(predictions, target)
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item()
+        resultados.add_train_loss(train_loss/len(train_dataloader))
 
-# Comprueba el resultado de un modelo
+        if validation:
+            modelo.eval()
+            predictions = modelo(validation_x_tensor.view(len(validation_x_tensor), 1, -1))
+            validation_loss = criterion(predictions.squeeze(), validation_y_tensor)
+            resultados.add_validation_loss(validation_loss.item())
+            score = calculate_score(validation_y_tensor, torch.argmax(predictions, 1), alpha, beta, resultados.best_score)            
+            if resultados.is_best_score(score):
+                print('New model saved')
+                torch.save(modelo.state_dict(), '{}.pth'.format(model_name))
+                fpr, tpr, roc_auc = calculate_roc(validation_y_tensor, torch.argmax(predictions, 1))
+                resultados.set_roc(fpr, tpr, roc_auc)                
+            resultados.add_score(score)            
+            print('Score {} at epoch {}'.format(score, epoch))
+
+        resultados.print_resultados(epoch)       
+    
+    resultados.print_best_score()
+    execution_time = time.perf_counter() - t
+    print('execution time {}'.format(execution_time))
+    
+    return resultados
+
+# Comprueba el resultado de un modelo de percetron
 def test_model(modelo, model_name, df, alpha = 0.5, beta = 0.5):
     modelo.load_state_dict(torch.load('{}.pth'.format(model_name)))
     modelo.eval()
@@ -278,5 +296,16 @@ def test_model(modelo, model_name, df, alpha = 0.5, beta = 0.5):
     test_y_tensor = torch.tensor(test_y)
     
     predictions = modelo(test_x_tensor)
-    calculate_score(test_y_tensor, torch.argmax(predictions, 1), alpha, beta, True)
-	
+    calculate_score(test_y_tensor, torch.argmax(predictions, 1), alpha, beta, 0)
+
+# Comprueba el resultado de un modelo lstm
+def test_model_lstm(modelo, model_name, df, alpha = 0.5, beta = 0.5):
+    modelo.load_state_dict(torch.load('{}.pth'.format(model_name)))
+    modelo.eval()
+    
+    test_x, test_y = generate_x_y_df(df)
+    test_x_tensor = torch.tensor(test_x.values).float()
+    test_y_tensor = torch.tensor(test_y)
+    
+    predictions = modelo(test_x_tensor.view(len(test_x_tensor), 1, -1))
+    calculate_score(test_y_tensor, torch.argmax(predictions, 1), alpha, beta, 0)
