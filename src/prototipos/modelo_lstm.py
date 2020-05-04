@@ -4,7 +4,7 @@ import torch
 class ModeloLSTM(torch.nn.Module):
     # Por defecto, tendremos cuatro capas de redes LSTM
     # y una capa densa final
-    def __init__(self, input_size = 3197, hidden_size = 100, output_size = 2, layers = 4, dropout = 0.2):
+    def __init__(self, input_size = 3197, hidden_size = 150, output_size = 2, layers = 5, dropout = 0.2):
         super(ModeloLSTM, self).__init__()
         self.hidden_size = hidden_size
         self.lstm = torch.nn.LSTM(input_size, hidden_size, layers, dropout = dropout)
