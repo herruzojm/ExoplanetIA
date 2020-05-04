@@ -13,16 +13,17 @@ from werkzeug.utils import secure_filename
 from flask_bootstrap import Bootstrap
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
+import repackage
+repackage.up()
 
 from src.prototipos.modelo_perceptron import *
-from src.fluxdataset import *
-from src.utils import *
+from src.prototipos.utils import *
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
 app.secret_key = 'key'
-MODEL_NAME = './models/perceptron_adam_cross_02.pth'
+MODEL_NAME = './models/perceptron_adam_cross_mini.pth'
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = set(['csv'])
 
