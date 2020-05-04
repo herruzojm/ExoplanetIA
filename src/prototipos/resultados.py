@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
+import os
 
 class Resultados():
-    def __init__(self):
+    def __init__(self, model_name):
+        self.model_name = os.getcwd() + "\\img\\" + model_name
         self.train_losses = [] 
         self.validation_losses = []
         self.scores = []
@@ -41,21 +43,36 @@ class Resultados():
     def print_best_score(self):
         print('Best score {}'.format(max(self.scores)))
         
-    def plot_losses(self):
+    def plot_graphics(self, save = True):
+        self.plot_losses(save)
+        self.plot_scores(save)
+        self.plot_roc(save)
+        
+    def plot_losses(self, save = True):
         plt.plot(self.train_losses, label = 'Training loss')
         plt.plot(self.validation_losses, label = 'Validation loss')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')        
         plt.legend(frameon = False)
+        if save:
+            plt.savefig(self.model_name + '_losses.png')
         plt.show()
         
-    def plot_scores(self):
+    def plot_scores(self, save = True):
         plt.plot(self.scores, label = 'Score')
+        plt.xlabel('Epoch')
+        plt.ylabel('Score')        
         plt.legend(frameon = False)
+        if save:
+            plt.savefig(self.model_name + '_scores.png')
         plt.show()
         
-    def plot_roc(self):
+    def plot_roc(self, save = True):
         plt.plot([0, 1], [0, 1], color = 'red', lw = 1, linestyle = '--', alpha = 0.5)
         plt.plot(self.fpr, self.tpr, color = 'blue', label = 'ROC curve (auc = %0.2f)' % self.auc)        
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
         plt.legend(frameon = False)
+        if save:
+            plt.savefig(self.model_name + '_roc.png')
         plt.show()

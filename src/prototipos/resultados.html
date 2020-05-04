@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Resultados</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+	th {
+		cursor: pointer;
+	}
+  </style>
+</head>
+<body>
+
+<div class="container" style="width:95%">
+  <h2>Resultados</h2> 
+  <input class="form-control" id="myInput" type="text" placeholder="Search..">
+  <br>
+  <table id="myTable" class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)" style="width:20%">Archivo</th>
+        <th onclick="sortTable(1)">Sens.</th>
+        <th onclick="sortTable(2)">Espe.</th>
+        <th onclick="sortTable(3)">Score</th>
+        <th onclick="sortTable(4)">Epoch</th>
+        <th onclick="sortTable(5)">Opciones</th>
+        <th onclick="sortTable(6)" style="width:40%">Imagen</th>
+      </tr>
+    </thead>
+    <tbody id="myTableBody">
+      <tr>
+        <td>perceptron_sgd_cross</td>
+        <td>0</td>
+        <td>1</td>
+        <td>0.4965</td>
+        <td>0</td>
+        <td>Elim. picos, normal.</td>
+        <td><img src="./img/perceptron_sgd_cross_roc.png" /><img src="./img/perceptron_sgd_cross_losses.png" /></td>
+      </tr>
+      <tr>
+        <td>perceptron_adam_cross</td>
+        <td>0</td>
+        <td>1</td>
+        <td>0.4965</td>
+        <td>0</td>
+        <td>Elim. picos, normal.</td>
+        <td><img src="./img/perceptron_adam_cross_roc.png" /><img src="./img/perceptron_adam_cross_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_adam_bce</td>
+        <td>0</td>
+        <td>1</td>
+        <td>0.4965</td>
+        <td>0</td>
+        <td>Elim. picos, normal.</td>
+        <td><img src="./img/perceptron_adam_bce_roc.png" /><img src="./img/perceptron_adam_bce_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_adam_cross_mini</td>
+        <td>0.8571</td>
+        <td>0.8571</td>
+        <td>0.7346</td>
+        <td>2</td>
+        <td>Elim. picos, normal., mini dataset</td>
+        <td><img src="./img/perceptron_adam_cross_mini_roc.png" /><img src="./img/perceptron_adam_cross_mini_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_sgd_cross_diferencia</td>
+        <td>0.7143</td>
+        <td>0.998</td>
+        <td>0.8528</td>
+        <td>86</td>
+        <td>Elim. picos, normal., filtro gauss.</td>
+        <td><img src="./img/perceptron_sgd_cross_diferencia_roc.png" /><img src="./img/perceptron_sgd_cross_diferencia_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_sgd_cross_solo_filtro</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td>32</td>
+        <td>Elim. picos, normal., filtro gauss.</td>
+        <td><img src="./img/perceptron_sgd_cross_solo_filtro_roc.png" /><img src="./img/perceptron_sgd_cross_solo_filtro_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_adam_cross_diferencia</td>
+        <td>0.8571</td>
+        <td>0.993</td>
+        <td>0.9178</td>
+        <td>36</td>
+        <td>Elim. picos, normal., filtro gauss.</td>
+        <td><img src="./img/perceptron_adam_cross_diferencia_roc.png" /><img src="./img/perceptron_adam_cross_diferencia_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_adam_cross_solo_filtro</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td>23</td>
+        <td>Elim. picos, normal., filtro gauss.</td>
+        <td><img src="./img/perceptron_adam_cross_solo_filtro_roc.png" /><img src="./img/perceptron_adam_cross_solo_filtro_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_adam_bce_diferencia</td>
+        <td>0</td>
+        <td>1</td>
+        <td>0.4965</td>
+        <td>0</td>
+        <td>Elim. picos, normal., filtro gauss.</td>
+        <td><img src="./img/perceptron_adam_bce_diferencia_roc.png" /><img src="./img/perceptron_adam_bce_diferencia_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_adam_bce_solo_filtro</td>
+        <td>0</td>
+        <td>1</td>
+        <td>0.4965</td>
+        <td>0</td>
+        <td>Elim. picos, normal., filtro gauss.</td>
+        <td><img src="./img/perceptron_adam_bce_solo_filtro_roc.png" /><img src="./img/perceptron_adam_bce_solo_filtro_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_smote_sgd_cross_diferencia</td>
+        <td>1</td>
+        <td>0.995</td>
+        <td>0.995</td>
+        <td>20</td>
+        <td>Elim. picos, normal., filtro gauss., smote</td>
+        <td><img src="./img/perceptron_smote_sgd_cross_diferencia_roc.png" /><img src="./img/perceptron_smote_sgd_cross_diferencia_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_smote_sgd_cross_solo_filtro</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td>8</td>
+        <td>Elim. picos, normal., filtro gauss., smote</td>
+        <td><img src="./img/perceptron_smote_sgd_cross_solo_filtro_roc.png" /><img src="./img/perceptron_smote_sgd_cross_solo_filtro_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_smote_adam_cross_diferencia</td>
+        <td>1</td>
+        <td>0.996</td>
+        <td>0.996</td>
+        <td>3</td>
+        <td>Elim. picos, normal., filtro gauss., smote</td>
+        <td><img src="./img/perceptron_smote_adam_cross_diferencia_roc.png" /><img src="./img/perceptron_smote_adam_cross_diferencia_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_smote_adam_cross_solo_filtro</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td>3</td>
+        <td>Elim. picos, normal., filtro gauss., smote</td>
+        <td><img src="./img/perceptron_smote_adam_cross_solo_filtro_roc.png" /><img src="./img/perceptron_smote_adam_cross_solo_filtro_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_sgd_cross_fourier</td>
+        <td>0.5714</td>
+        <td>1</td>
+        <td>0.7834</td>
+        <td>75</td>
+        <td>Elim. picos, normal., fourier</td>
+        <td><img src="./img/perceptron_sgd_cross_fourier_roc.png" /><img src="./img/perceptron_sgd_cross_fourier_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>perceptron_sgd_cross_smote_fourier</td>
+        <td>1</td>
+        <td>1</td>
+        <td>0.999</td>
+        <td>5</td>
+        <td>Elim. picos, normal., fourier, smote</td>
+        <td><img src="./img/perceptron_sgd_cross_smote_fourier_roc.png" /><img src="./img/perceptron_sgd_cross_smote_fourier_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>lstm_sgd_cross</td>
+        <td>0</td>
+        <td>1</td>
+        <td>0.4965</td>
+        <td>0</td>
+        <td>Elim. picos, normal.</td>
+        <td><img src="./img/lstm_sgd_cross_roc.png" /><img src="./img/lstm_sgd_cross_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>lstm_sgd_cross_diferencia</td>
+        <td>0.6079</td>
+        <td>0.496</td>
+        <td>0.3047</td>
+        <td>95</td>
+        <td>Elim. picos, normal., filtro gauss</td>
+        <td><img src="./img/lstm_sgd_cross_diferencia_roc.png" /><img src="./img/lstm_sgd_cross_diferencia_losses.png" /></td>
+      </tr>
+	  <tr>
+        <td>lstm_sgd_cross_smote_diferencia</td>
+        <td>0.478</td>
+        <td>0.598</td>
+        <td>0.2895</td>
+        <td>82</td>
+        <td>Elim. picos, normal., filtro gauss, smote</td>
+        <td><img src="./img/lstm_sgd_cross_smote_diferencia_roc.png" /><img src="./img/lstm_sgd_cross_smote_diferencia_losses.png" /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTableBody tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+function sortTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("myTable");
+  switching = true;
+  //Set the sorting direction to ascending:
+  dir = "asc"; 
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /*check if the two rows should switch place,
+      based on the direction, asc or desc:*/
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      //Each time a switch is done, increase this count by 1:
+      switchcount ++;      
+    } else {
+      /*If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again.*/
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+
+</body>
+</html>
