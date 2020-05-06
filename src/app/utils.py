@@ -4,8 +4,7 @@ import torch
 import time
 from scipy import ndimage, fft
 from sklearn.metrics import roc_curve, auc
-from fluxdataset import *
-from resultados import *
+
     
 # Extraemos una proporcion aleatoria de los datos de entrenamiento, primero de los casos positivos, 
 # luego de los negativos, y los juntamos para obtener df de entrenamiento y validacion 

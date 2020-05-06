@@ -13,11 +13,10 @@ from werkzeug.utils import secure_filename
 from flask_bootstrap import Bootstrap
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
-import repackage
-repackage.up()
 
-from src.prototipos.modelo_perceptron import *
-from src.prototipos.utils import *
+from modelo_perceptron import *
+from modelo_lstm import * 
+from utils import *
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -29,7 +28,8 @@ ALLOWED_EXTENSIONS = set(['csv'])
 
 # Cargamos el modelo
 model = Perceptron()
-model.load_state_dict(torch.load(MODEL_NAME))
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')   
+model.load_state_dict(torch.load(MODEL_NAME, map_location = device))
 model.eval()
 
 
