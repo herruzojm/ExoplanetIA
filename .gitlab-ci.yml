@@ -4,4 +4,5 @@ heroku:
  - master 
  script:
  - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/exoplanetai.git
+ - git checkout master
  - git push heroku master
