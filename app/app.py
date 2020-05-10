@@ -11,34 +11,33 @@ from wtforms.validators import DataRequired
 from flask import Flask, flash, jsonify, request, redirect, render_template
 from werkzeug.utils import secure_filename
 from flask_bootstrap import Bootstrap
+from flask_babel import Babel
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
-from modelo_perceptron import *
-from modelo_lstm import * 
-from utils import *
+from .modelo_perceptron import *
+from .modelo_lstm import *
+from .utils import *
+from .config import *
 
 app = Flask(__name__)
+babel = Babel(app)
 bootstrap = Bootstrap(app)
-
-app.secret_key = 'key'
-MODEL_NAME = './models/perceptron_adam_cross_mini.pth'
-UPLOAD_FOLDER = './uploads'
-ALLOWED_EXTENSIONS = set(['csv'])
+app.config.from_object(Config)
+app.secret_key = app.config['MODEL_NAME']
 
 # Cargamos el modelo
 model = Perceptron()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')   
-model.load_state_dict(torch.load(MODEL_NAME, map_location = device))
+model.load_state_dict(torch.load(app.config['MODEL_NAME'], map_location = device))
 model.eval()
-
 
 class UploadFileForm(FlaskForm):
     file = FileField('Selecciona un fichero csv con los datos')
     submit = SubmitField('Cargar')
     
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 def plot_flux(df, indexes):
     images = []
@@ -73,6 +72,10 @@ def inference(filepath):
     exoplanets = predictions.nonzero()
     return df, predictions
 
+#@Babel.localeselector
+#def get_locale():
+#    return request.accept_languages.best_match(app.config['LANGUAGES'])
+
 @app.route('/')
 def index():
     form = UploadFileForm()
@@ -92,7 +95,7 @@ def predict():
         
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             df, predictions = inference(filepath)
             labels = ["Estrellas", "Exoplanetas Detectados"]            
@@ -113,4 +116,14 @@ def predict():
             flash('Solo se permiten archivos con extensión csv', 'danger')
             return redirect(request.url)        
 
-        
+@app.route('/kepler/')
+def kepler():
+    return render_template('kepler.html')
+	
+@app.route('/help/')
+def help():
+    return render_template('help.html')
+	
+@app.route('/about/')
+def about():
+    return render_template('about.html')
