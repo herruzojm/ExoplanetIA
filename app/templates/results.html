@@ -36,14 +36,15 @@
 	</div>	
 </div>	
 	
-{% for star in results.indexes %}
+{% for star in images %}
 	<div class="col-sm-6">
 		<div class="panel panel-success">
 			<div class="panel-heading">
-				<h3 class="panel-title">{{ _('Flujo de luz de la estrella ') }} {{ star[0] }}</h3>
+				<h3 class="panel-title">{{ _('Flujo de luz de la estrella ') }} {{ star }}</h3>
 			</div>
 			<div class="panel-body">
-				<img src="{{ images[loop.index-1] }}" height="400" />				
+				<img src="{{ images[star][0] }}" class="img-responsive" />
+				<img src="{{ images[star][1] }}" class="img-responsive" />
 			</div>
 		</div>
 	</div>	

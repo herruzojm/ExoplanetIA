@@ -12,6 +12,7 @@ from flask_bootstrap import Bootstrap
 from flask_babel import Babel, _
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
+from scipy import fft
 
 from .modelo_perceptron import *
 from .modelo_lstm import *
@@ -38,6 +39,23 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 def index():
     form = UploadFileForm()
     return render_template('index.html', form = form)
+
+@app.route('/kepler/')
+def kepler():
+    return render_template('kepler.html')
+	
+@app.route('/help/')
+def help():
+    return render_template('help.html')
+	
+@app.route('/about/')
+def about():
+    return render_template('about.html')
+
+@app.route('/language/<language>')
+def set_language(language=None):
+    session['language'] = language
+    return redirect(url_for('index'))
 
 @app.route('/', methods=['POST'])
 def predict():  
@@ -74,51 +92,44 @@ def predict():
             flash(_('Solo se permiten archivos con extensión csv'), 'danger')
             return redirect(request.url)        
 
-@app.route('/kepler/')
-def kepler():
-    return render_template('kepler.html')
-	
-@app.route('/help/')
-def help():
-    return render_template('help.html')
-	
-@app.route('/about/')
-def about():
-    return render_template('about.html')
-
-@app.route('/language/<language>')
-def set_language(language=None):
-    session['language'] = language
-    return redirect(url_for('index'))
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 def plot_flux(df, indexes):
-    images = []
-    for i in indexes:
-        i = i[0]
-        flux = df.iloc[i,:]
+    images = {}
+    indexes = [i for element in indexes for i in element]
+    flux_points = np.arange(len(df.iloc[0])) * (36.0/60.0)
+    frequency_points = np.arange(len(df.iloc[0])//2) * (1/(36.0/60.0))
+
+    for i in indexes:        
+        flux = df.iloc[i]
         
-        # 80 days / 3197 columns = 36 minutes
-        time = np.arange(len(flux)) * (36.0/60.0) # plotting each hour
-        fig = Figure()
-        axis = fig.add_subplot(1, 1, 1)
-        axis.set_title('Flux of star {}'.format(i))
-        axis.set_ylabel('Flux, e-/s')
-        axis.set_xlabel('Time, hours')        
-        axis.grid()
-        axis.plot(time, flux)
-           
-        # Convertimos el grafico a png
-        pngImage = io.BytesIO()
-        FigureCanvas(fig).print_png(pngImage)
-    
-        pngImageB64String = "data:image/png;base64,"
-        pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
-    
-        images.append(pngImageB64String)
+        image_flux = create_image(flux, i, flux_points, 'Time, hours')
+        
+        fourier = np.abs(fft(flux))
+        fourier = fourier[:len(fourier)//2]
+        image_frequency = create_image(fourier, i, frequency_points, 'Frequency')
+
+        images[i] = [image_flux, image_frequency]
     return images
+
+def create_image(points, i, time_points, x_text):        
+    fig = Figure()
+    axis = fig.add_subplot(1, 1, 1)
+    axis.set_title('Star {}'.format(i))
+    axis.set_ylabel('Flux')
+    axis.set_xlabel(x_text)
+    axis.grid()
+    axis.plot(time_points, points)
+        
+    # Convertimos el grafico a png
+    pngImage = io.BytesIO()
+    FigureCanvas(fig).print_png(pngImage)
+
+    pngImageB64String = "data:image/png;base64,"
+    pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
+
+    return pngImageB64String
 
 def inference(filepath):
     df = pd.read_csv(filepath, low_memory=False)
