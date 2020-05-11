@@ -3,22 +3,20 @@ import json
 import os
 import base64
 import pandas as pd
+import numpy as np
 
 from torchvision import models
-from flask_wtf import FlaskForm
-from wtforms import FileField, SubmitField
-from wtforms.validators import DataRequired
-from flask import Flask, flash, jsonify, request, redirect, render_template
+from flask import Flask, flash, jsonify, request, redirect, render_template, session, url_for
 from werkzeug.utils import secure_filename
 from flask_bootstrap import Bootstrap
-from flask_babel import Babel
+from flask_babel import Babel, _
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 from .modelo_perceptron import *
 from .modelo_lstm import *
-from .utils import *
 from .config import *
+from .forms import *
 
 app = Flask(__name__)
 babel = Babel(app)
@@ -32,10 +30,67 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.load_state_dict(torch.load(app.config['MODEL_NAME'], map_location = device))
 model.eval()
 
-class UploadFileForm(FlaskForm):
-    file = FileField('Selecciona un fichero csv con los datos')
-    submit = SubmitField('Cargar')
-    
+# Creamos el directorio para subir los ficheros
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.mkdir(app.config['UPLOAD_FOLDER'])
+
+@app.route('/')
+def index():
+    form = UploadFileForm()
+    return render_template('index.html', form = form)
+
+@app.route('/', methods=['POST'])
+def predict():  
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('_(Archivo no encontrado en la petición)', 'danger')                        
+            return redirect(request.url)
+        file = request.files['file']
+        
+        if file.filename == '':
+            flash(_('Archivo no seleccionado'), 'danger')
+            return redirect(request.url)
+        
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            df, predictions = inference(filepath)
+            labels = [_('Estrellas'), _('Exoplanetas Detectados')]
+            hovercolors = [ "rgb(199, 5, 5)", "rgb(0, 200, 234)" ]
+            colors = [ "rgb(150, 4, 4)", "rgb(0, 154, 174)" ]
+            exoplanets_indexes = predictions.nonzero().tolist()
+            values = [len(predictions) - len(exoplanets_indexes), len(exoplanets_indexes)]
+            results = {
+                'no_exoplanets': values[0],  
+                'exoplanets': values[1],
+                'total_stars': len(predictions),
+                'indexes': exoplanets_indexes
+            }
+            images = plot_flux(df, exoplanets_indexes)
+            return render_template('results.html', results = results, images = images,
+                                   values = values, labels = labels, colors = colors, hovercolors = hovercolors)
+        else:
+            flash(_('Solo se permiten archivos con extensión csv'), 'danger')
+            return redirect(request.url)        
+
+@app.route('/kepler/')
+def kepler():
+    return render_template('kepler.html')
+	
+@app.route('/help/')
+def help():
+    return render_template('help.html')
+	
+@app.route('/about/')
+def about():
+    return render_template('about.html')
+
+@app.route('/language/<language>')
+def set_language(language=None):
+    session['language'] = language
+    return redirect(url_for('index'))
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
@@ -69,61 +124,20 @@ def inference(filepath):
     df = pd.read_csv(filepath, low_memory=False)
     df_tensor = torch.tensor(df.values).float()
     predictions = torch.argmax(model(df_tensor), 1)
-    exoplanets = predictions.nonzero()
     return df, predictions
 
-#@Babel.localeselector
-#def get_locale():
-#    return request.accept_languages.best_match(app.config['LANGUAGES'])
+@babel.localeselector
+def get_locale():
+    try:
+        language = session['language']
+    except KeyError:
+        language = None
+    if language is not None:
+        return language
+    return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
 
-@app.route('/')
-def index():
-    form = UploadFileForm()
-    return render_template('index.html', form = form)
-
-@app.route('/', methods=['POST'])
-def predict():  
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('Archivo no encontrado en la petición', 'danger')                        
-            return redirect(request.url)
-        file = request.files['file']
-        
-        if file.filename == '':
-            flash('Archivo no seleccionado', 'danger')
-            return redirect(request.url)
-        
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-            df, predictions = inference(filepath)
-            labels = ["Estrellas", "Exoplanetas Detectados"]            
-            hovercolors = [ "rgb(199, 5, 5)", "rgb(0, 200, 234)" ]
-            colors = [ "rgb(150, 4, 4)", "rgb(0, 154, 174)" ]
-            exoplanets_indexes = predictions.nonzero().tolist()
-            values = [len(predictions) - len(exoplanets_indexes), len(exoplanets_indexes)]
-            results = {
-                'no_exoplanets': values[0],  
-                'exoplanets': values[1],
-                'total_stars': len(predictions),
-                'indexes': exoplanets_indexes
-            }
-            images = plot_flux(df, exoplanets_indexes)
-            return render_template('results.html', results = results, images = images,
-                                   values = values, labels = labels, colors = colors, hovercolors = hovercolors)
-        else:
-            flash('Solo se permiten archivos con extensión csv', 'danger')
-            return redirect(request.url)        
-
-@app.route('/kepler/')
-def kepler():
-    return render_template('kepler.html')
-	
-@app.route('/help/')
-def help():
-    return render_template('help.html')
-	
-@app.route('/about/')
-def about():
-    return render_template('about.html')
+@app.context_processor
+def inject_languages_var():
+    return dict(
+                AVAILABLE_LANGUAGES = app.config['LANGUAGES'],
+                CURRENT_LANGUAGE = session.get('language',request.accept_languages.best_match(app.config['LANGUAGES'].keys())))    

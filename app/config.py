@@ -2,9 +2,10 @@ import os
 
 class Config():
 	LANGUAGES = {
-		'en': 'English',
-		'es': 'Espa�ol'
+		'es': 'Español',
+		'en': 'English'
 	}
+	UPLOAD_FOLDER = 'uploads'
 	MODEL_NAME = './models/perceptron_adam_cross_mini.pth'
 	UPLOAD_FOLDER = './uploads'
 	ALLOWED_EXTENSIONS = set(['csv'])

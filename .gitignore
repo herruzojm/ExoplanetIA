@@ -7,3 +7,5 @@
 /src/prototipos/.ipynb_checkpoints/
 /src/prototipos/__pycache__/
 /app/__pycache__/
+/app/uploads/
+/app/messages.pot

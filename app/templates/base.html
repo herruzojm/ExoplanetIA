@@ -8,8 +8,8 @@
 {% set navigation_bar = [
     ('/', 'index', 'ExoplanetIA'),
     ('/kepler/', 'kepler', 'Kepler'),
-	('/help/', 'help', 'Ayuda'),
-    ('/about/', 'about', 'Acerca de')
+	('/help/', 'help', _('Ayuda')),
+    ('/about/', 'about', _('Acerca de'))
 ] -%}
 
 {% block navbar %}
@@ -20,6 +20,14 @@
             <ul class="nav navbar-nav">
                 {% for href, id, caption in navigation_bar %}
                 <li class="nav-padding{% if id == active_page %} active{% endif %}"><a class="navbar-brand" href="{{ href|e }}">{{ caption|e }}</a></li>
+                {% endfor %}
+                
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% for language in AVAILABLE_LANGUAGES.items() %}
+                    {% if CURRENT_LANGUAGE != language[0] %}
+                        <li class="nav-padding"><a href="{{ url_for('set_language', language=language[0]) }}" >{{ language[1] }}</a></li>
+                    {%  endif %}
                 {% endfor %}
             </ul>
         </div>
@@ -45,7 +53,7 @@
     <p></p>
     <div class="row">
         <div class="col-sm-2">
-            <h1>ExoplanetIA: Machine Learning para la detección de exoplanetas</h1>
+            <h1>{{ _('ExoplanetIA: Machine Learning para la detección de exoplanetas') }}</h1>
         </div>
         <div class="col-sm-10">
             {% block app_content %}{% endblock %}

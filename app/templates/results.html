@@ -9,15 +9,16 @@
 	<div class="col-sm-6">
 		<div class="panel panel-success">
 			<div class="panel-heading">
-				<h3 class="panel-title">Resultados</h3>
+				<h3 class="panel-title">{{ _('Resultados') }}</h3>
 			</div>
 			<div class="panel-body">
-				<p>Se ha analizado el flujo de luz de {{ results.total_stars }} estrellas.</p>
+				<p>{{ _('Se ha analizado el flujo de luz de %(total_stars)d estrellas.', total_stars = results.total_stars) }}</p>
 				{% if results.exoplanets == 0 %}
-					<p>No se ha encontrado ningúna estrella con exoplaneta en los datos.</p>
+					<p>{{ _('No se ha encontrado ningúna estrella con exoplaneta en los datos.') }}</p>
 				{% else %}
-					<p>Se han encontrado {{ results.exoplanets }} estrellas con exoplanetas.</p>
-					<p>Las estrellas con exoplanetas son:</p>
+					<p>{{ _('Se han encontrado %(number_exoplanes)d estrellas con exoplanetas.', 
+						number_exoplanes = results.exoplanets) }}</p>
+					<p>{{ _('Las estrellas con exoplanetas son:') }}</p>
 					{{ results.indexes }}
 				{% endif %}				
 			</div>
@@ -26,7 +27,7 @@
 	<div class="col-sm-6">
 		<div class="panel panel-success">
 			<div class="panel-heading">
-				<h3 class="panel-title">Proporción</h3>
+				<h3 class="panel-title">{{ _('Proporción') }}</h3>
 			</div>
 			<div class="panel-body">
 				<canvas id="chart"></canvas>
@@ -39,7 +40,7 @@
 	<div class="col-sm-6">
 		<div class="panel panel-success">
 			<div class="panel-heading">
-				<h3 class="panel-title">Flujo de luz de la estrella {{ star[0] }}</h3>
+				<h3 class="panel-title">{{ _('Flujo de luz de la estrella ') }} {{ star[0] }}</h3>
 			</div>
 			<div class="panel-body">
 				<img src="{{ images[loop.index-1] }}" height="400" />				
