@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% set active_page = "about" %}
+
+
+{% block app_content %}
+<div class="row">
+	<div class="col-sm-2">
+	</div>
+	<div class="col-sm-8">
+		<h2>Acerca de</h2>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-2">
+	</div>
+	<div class="col-sm-8">
+		<p>{{ _('Esta página es parte del trabajo de fin de grado de Jesús María Herruzo Luque para la ') }} <a target="_blank" href="https://www.ubu.es/">{{ _('Universidad de Burgos') }}</a></p>
+		<p>{{ _('El trabajo está dirigido por Carlos L., profesor de dicha Universidad, así como por Alejandro V. y Manuel H., empleados de la empresa ') }} <a target="_blank" href="http://hpscds.com/">HP SCDS</a></p> 
+		<p>{{ _('El objetivo de este proyecto es desarrollar una aplicación que, utilizando técnicas de Machine Learning sobre los datos reales ofrecidos por el satélite espacial Kepler, con respecto a la intensidad de luz (flux) registrada durante más de 9 años, y proponer un modelo de red neuronal para detectar exoplanetas por el Método del Tránsito.') }}</p>
+	</div>
+</div>
+{% endblock %}
