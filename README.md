@@ -14,18 +14,24 @@ El objetivo de este proyecto es desarrollar una aplicación que, utilizando téc
 
 La información del repositorio se encuentra estructurada en las siguientes carpetas:
 
+*app*: web para testear el modelo final
+  - *models*: modelo final para usar en la web
+  - *templates*: plantillas html para la web
+  - *uploads*: carpeta para almacenar los ficheros de datos cargados en la web
 - *documentación*: contiene la documentación del proyecto en formato latex así como en pdf
 - *src*: ficheros fuente del proyecto
-  - *app*: web para testear el modelo final
-    - *models*: modelo final para usar en la web
-    - *templates*: plantillas html para la web
-    - *uploads*: carpeta para almacenar los ficheros de datos cargados en la web
   - *datos*: ficheros csv con los datos originales
   - *prototipos*: notebooks con los prototipos realizados durante la experimentación 
     - *img*: imagenes de la evolución del score y el loss de cada modelo durante su entrenamiento
     - *saved_models*: modelos guardados durante la experimentación
 
-## Ejecución 
+## Ejecución del modelo
+
+La aplicación puede encontrarse desplegada y lista para usarse en la siguiente dirección:
+
+`https://exoplanetia.herokuapp.com/`
+
+## Ejecución local
 
 Clonar el repositorio:
 
