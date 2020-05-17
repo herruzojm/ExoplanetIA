@@ -1,20 +1,104 @@
 \capitulo{3}{Conceptos teóricos}
 
-En esta sección se presentan los conceptos teóricos relacionados con este Trabajo Fin de Grado que  sirven para facilitar la comprensión. TODO
+\section{Minería de datos}
+La minería de datos es el proceso de extraer información de grandes conjuntos de datos usando para ello técnicas de diversos campos, como la estadística, el aprendizaje automático o los sistemas de bases de datos. Aunque no es nueva, su uso durante los últimos años ha crecido de forma drástica. Varios factores explican este incremento. Por un lado, tenemos factores que han permitido generar enorme cantidad de datos, como la fuerte penetración de Internet en casi todo el mundo o la reducción del precio de los chips, permitiendo su incorporación a practicamente cualquier objeto y convirtiendolos, de facto, en ubícuos. Por el otro lado, tenemos la reducción del precio de almacenamiento. En 1956, el precio de un GB de disco duro tradicional costaba más de nueve millones de dólares. A día de hoy, ese precio se ha reducidos a menos dos centavos \cite{Evolucion-precio-gb}. 
 
+Ahora bien, convertir toda esa cantidad de datos en información de la que se pueda extraer conocimiento no es tarea fácil, existiendo distintos métodos y metodologías para obtener resultados. Uno de estos métodos es CRISP-DM \cite{CRISP-DM}, \textit{Cross Industry Standard for Data Mining}, codificado en 1996 por un grupo de interés especial constituido tanto por empresas proveedoras de herramientas (SPSS y Teradata) cómo por empresas usuarias (Daimler, NCR y OHRA).
 
-\section{Proceso experimental para la generación de modelos}
-TODO interesante  comentar el marco global del proceso de creación de modelos para facilitar la lectura. Puedes ser interesantes algo similar al proceso CRISP-DM.
+Este método se divide en seis pasos:
+\begin{itemize}
+	\item Entender el negocio, esto es, entender los objetivos y los requisitos del proyecto.
+	\item Entender los datos, que incluye la recogida de los datos, así como su exploración inicial para detectar problemas de calidad o subconjuntos para formular hipótesis.
+	\item Preparar los datos para solventar cualquier problema detectado en la fase previa y facilitar su procesado por los modelos.
+	\item Modelar, donde se definen las técnicas y arquitecturas que se van a usar y se construyen los modelos. Desde este punto es posible volver a la fase previa de preparación de los datos, ya que diferentes modelos pueden necesitar diferentes técnicas de preprocesado de los datos.
+	\item Evaluar los modelos generados y seleccionar finalmente uno o varios de ellos, en función de las necesidades.
+	\item Desplegar el modelo seleccionado de forma que pueda ser usado para realizar predicciones sobre nuevos datos.
+\end{itemize}
 
+Veamos a continuación como se aplican las diferentes etapas del proceso CRISP-DM en nuestro proyecto.
 
-\section{Repositorios de datos Kaggle-Kepler}
+\imagen{CRISPDM_Process_Diagram.png}{Fases del método CRISP-DM \cite{CRISP-DM}}
 
-TODO Kaggle \footnote{ \url{https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data}}.
+\subsection{Entendiendo el negocio: objetivos y requisitos}
 
-Descripción del conjunto de datos y de los conjuntos de datos disponibles
+Ya hemos comentado en el capítulo previo los \nameref{sec:objetivos-del-proyecto}, por lo que no los repitiremos aquí.
 
+\subsection{Entendiendo los datos}
 
-\section{Perceptrón Multicapa}\label{perceptron-multicapa}
+Los datos para este proyecto han sido descargados de \href{https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data}{Kaggle}, donde podemos encontrar su descripcion: "los datos describen el cambio en el flujo (intensidad de luz) de varios miles de estrellas. Cada estrella tiene una etiqueta binaria de 2 o 1. Un 2 indica que se confirmó que la estrella tiene al menos un exoplaneta en órbita; algunas observaciones son, de hecho, sistemas de varios planetas." \cite{Kaggle-exoplanet}
+
+La fuente original de los datos pertenecen a la misión Kepler de la NASA, concretamente a la campaña 3 de la fase K2. Se pueden encontrar en la web del Mikulski Archive \href{https://archive.stsci.edu/k2/}{Mikulski Archive}. Los datos originales han sido transformados por \href{http://www.danlessmann.com/index.htm}{Dan Lessmann}; el proceso se encuentra detallado en su \href{https://github.com/winterdelta/KeplerAI}{repositorio en GitHub}. Finalmente, los datos han sido incorporados a Kaggle, desde donde han sido descargados.
+
+Nuestro dataset se compone de dos archivos, uno con los datos de entrenamiento y otro con los datos para testear. Su composición es la siguiente:
+
+- Fichero de entrenamiento:
+\begin{itemize}
+	\item 5087 filas u observaciones
+	\item 3198 columnas o características
+	\item La primera columna es la etiqueta para clasificación. Las columnas 2-3198 son los valores de flujo a lo largo del tiempo
+	\item Hay 37 estrellas con exoplanetas confirmados y 5050 estrellas sin exoplanetas
+\end{itemize}
+
+- Fichero de test:
+\begin{itemize}
+	\item 570 filas u observaciones
+	\item 3198 columnas o características
+	\item La primera columna es la etiqueta para clasificación. Las columnas 2-3198 son los valores de flujo a lo largo del tiempo
+	\item Hay 5 estrellas con exoplanetas confirmados y 565 estrellas sin exoplanetas
+\end{itemize}
+
+Lo primero que se puede observar es que un dataset enormemente desbalanceado. Las estrellas con exoplanetas confirmados solo representan el 0.73\% en el dataset de entrenamiento y el 0.88\% en el de test, lo que representa un grave handicap para el entrenamiento exitoso de los modelos. Veremos posteriormente técnicas para lidiar con este problema.
+
+Vamos a proceder a mostrar gráficamente algunos ejemplos de estrellas con y sin exoplanetas para intentar captar características comunes o posibles anomalías.
+
+\imagen{estrellas_con_exoplanetas.png}{Estrellas con exoplanetas confirmados}
+
+\imagen{estrellas_sin_exoplanetas.png}{Estrellas sin exoplanetas confirmados}
+
+Observando las imágenes destacan dos cosas. Por un lado, la amplitud en el rango de la intensidad de luz y, por otro, la presencia puntual de picos de luz. Esta es una circunstancia extraña, ya que el brillo de una estrella suele permanecer relativamente estable. Y, desde luego, no es debido al transito de una planeta, ya que esto reduciria el valor, como se aprecia en los picos descendentes de las primeras graficas. Asi pues, lo mas probable es que estos valores sean errores y lo mejor será descartarlos durante el procesado de los datos.
+
+\subsection{Preparación de los datos}
+
+Rara vez los datos se recogen de forma que puedan ser evaluados de forma directa por un modelo, por lo que necesitan de un tratamiento previo que haga más factible extraer información de ellos. Por supuesto, no todos los datos van a ser tratados de idéntica forma y, dependiendo del estado y del objetivo del proyecto, habrá que utilizar unas técnicas u otras, aunque hay algunas cuyo uso está tan extendido que su uso se ha convertido en un paso obligatorio de casí cualquier proyecto.
+
+Una de estás técnicas es la normalización, cuyo objetivo es cambiar los valores de las columnas numéricas de forma que usen una escala común. Esto nos permitirá abordar uno de los problemas detectados anteriormente, la amplitud en el rango de valores de nuestros datos.
+
+Además de la normalización, veremos más adelante otra serie de técnicas que nos ayudaran a entrenar el modelo, tales como \textit{undersampling} y \textit{oversampling}, uso de filtros para suavizar la señal o el estudio de la frecuencia.
+
+\subsection{Modelado}
+
+En esta fase del proceso es cuando se definen los modelos y arquitecturas que se usaran. Nosotros nos centraremos especialmente en el uso del \nameref{sec:perceptron-multicapa} y, en menor medida, las redes \nameref{sec:lstm}, un tipo de redes neuronales recursivas. 
+
+\subsection{Evaluación}
+
+Una vez tenemos los modelos entrenados, es el momento de evaluarlos y seleccionar el mejor. La diferencia de objetivos y de características de los datos, puede llevar a emplear métricas muy diversas para evaluarlos. En el caso que nos atañe, donde pretendemos construir un clasificador binario, nos centraremos especialmente en evaluar la sensibilidad y especificidad de nuestro modelo. Entraremos en más detalle en \nameref{sec:metricas}.
+
+\subsection{Despliegue}
+
+El paso final del proceso incluy la puesta en producción del modelo elegido de forma que pueda usarse para obtener predicciones reales sobre nuevos datos. Dependiendo del proyecto, algunas opciones habituales incluyen despliegues en aplicaciones webs, aplicaciones móviles o su contenerización.
+
+\section{Normalización}
+Como hemos comentado anteriormente, normalizar consiste en transformar los valores numéricos de una o más columnas para que sus valores se ajusten a una escala común y es más importante cuanto más amplio sea el rango de valores que adopta el dataset.  
+
+Normalizar no es un proceso único, sino que existen diversas técnicas para normalizar, cada una con ventajas y desventajas asociadas por lo que, en función de los datos, puede ser conveniente usar una u otra. Las dos más usadas son la normalización mínimo-máximo y la puntuación z. La primera de ellas tiene la ventaja de transformar todos los valores al rango [0, 1] siendo sensible a valores extremos mientras que la puntuación z, menos sensibles a valores extremos, no garantiza un rango fijo.
+
+\begin{math}
+	minmax = \frac{X - min(x)}{max(x) - min(x)}
+\end{math}
+\begin{math}	
+	zscore = \frac{X - mean(x)}{stdev(x)}
+\end{math}
+
+\section{Filtro gaussiano}
+TODO
+
+\section{Undersampling y Oversampling}
+TODO
+
+\section{Transformada de Fourier}
+TODO
+
+\section{Perceptrón Multicapa}\label{sec:perceptron-multicapa}
 
 El perceptrón multicapa, o red multicapa con propagación hacia delante,
 es el modelo de aprendizaje profundo por excelencia. Es una
@@ -67,8 +151,7 @@ función de activación que se vaya usar; en el problema que tratamos de
 resolver, clasificando los datos en dos categorías, hay o no hay
 exoplaneta, usaremos dos neuronas.
 
-\subsection{Número de capas y
-	conexiones}\label{numero-de-capas-y-conexiones}
+\subsection{Número de capas y conexiones}\label{numero-de-capas-y-conexiones}
 
 De forma similar al número de neuronas, el número de capas ocultas puede
 variar ampliamente, contribuyendo especialmente al problema de
@@ -167,7 +250,7 @@ pasos previos al paso actual.
 Usaremos este optimizador como linea base de trabajo con diferentes
 valores para la tasa de aprendizaje tanto con como sin momento.
 
-Otro de los algoritmos más usados es Adam\cite{2014arXiv1412.6980K}, acrónimo en inglés de
+Otro de los algoritmos más usados es Adam \cite{2014arXiv1412.6980K}, acrónimo en inglés de
 estimación adaptativa del momento, que será el otro algoritmo que
 usaremos.
 
@@ -178,7 +261,10 @@ Además, al actualizar los parámetros con diferentes tasas de
 aprendizaje, es menos sensible a una elección no óptima de la tasa de
 aprendizaje inicial.
 
-\section{Medidas de desempeño del modelo}\label{metricas}
+\section{LSTM}\label{sec:lstm}
+TODO
+
+\section{Medidas de desempeño del modelo}\label{sec:metricas}
 
 El objetivo de nuestro modelo es obtener un clasificador binario que nos
 indique la probabilidad de que una entrada de datos pertenezca a una de
@@ -211,7 +297,7 @@ Esto supone un problema para el aprendizaje de la red ya que, ante
 cualquier entrada, esta puede \emph{``aprender''} a responder siempre
 que no es un exoplaneta, acertando en la amplia mayoría de los casos.
 
-Para solventar este problema, siguiendo a Viloria\cite{Viloria-2006}, vamos a
+Para solventar este problema, siguiendo a Viloria \cite{Viloria-2006}, vamos a
 definir nuestra función de evaluación, con la que juzgaremos el
 aprendizaje real de nuestra red y su capacidad de predecir el resultado
 correcto frente a nuevas entradas de datos.
@@ -245,8 +331,6 @@ Sen = \frac{VP}{VP + FN}
 \begin{math}
 Esp = \frac{VN}{VN + FP}
 \end{math}
-
-
 
 \section{Bibliotecas de machine learning}\label{sec:bibliotecas-de-machine-learning}
 
