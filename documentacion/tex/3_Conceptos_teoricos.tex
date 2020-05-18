@@ -80,20 +80,31 @@ El paso final del proceso incluy la puesta en producción del modelo elegido de 
 \section{Normalización}
 Como hemos comentado anteriormente, normalizar consiste en transformar los valores numéricos de una o más columnas para que sus valores se ajusten a una escala común y es más importante cuanto más amplio sea el rango de valores que adopta el dataset.  
 
-Normalizar no es un proceso único, sino que existen diversas técnicas para normalizar, cada una con ventajas y desventajas asociadas por lo que, en función de los datos, puede ser conveniente usar una u otra. Las dos más usadas son la normalización mínimo-máximo y la puntuación z. La primera de ellas tiene la ventaja de transformar todos los valores al rango [0, 1] siendo sensible a valores extremos mientras que la puntuación z, menos sensibles a valores extremos, no garantiza un rango fijo.
+Normalizar no es un proceso único, sino que existen diversas técnicas para normalizar, cada una con ventajas y desventajas asociadas por lo que, en función de los datos, puede ser conveniente usar una u otra. Las dos más usadas son la normalización mínimo-máximo y la puntuación z. La primera de ellas tiene la ventaja de transformar todos los valores al rango [0, 1] siendo sensible a valores atípicos extremos mientras que la puntuación z, menos sensibles a estos valores extremos, no garantiza un rango fijo.
 
 \begin{math}
 	minmax = \frac{X - min(x)}{max(x) - min(x)}
 \end{math}
+
 \begin{math}	
 	zscore = \frac{X - mean(x)}{stdev(x)}
 \end{math}
 
 \section{Filtro gaussiano}
-TODO
+Dada la elevada sensibilidad del satélite Kepler a la intensidad de luz y, como se observa en las imagenes previas, las señales presentan numerosos picos y valles que pueden dificultar el aprendizaje de los modelos. Para solucionar este problema, usaremos un filtro gaussiano, un efecto de suavizado que puede aplicarse a una señal o imagen para reducir el ruido.
+
+A la hora de aplicarlo tenemos dos opciones distintas. La primera es aplicar el filtro tal cúal, provocando el suavizado la señal, quitandole ruido, pero también nitidez y detalles; detalles que pueden ser importantes. La otra alternativa consiste reducir la señal original con el resultado de aplicar el filtro gaussiano, consiguiendo de esta forma reducir la importancia de la señal base y resaltando los detalles más especificos.
 
 \section{Undersampling y Oversampling}
-TODO
+Cuando, como es nuestro caso, tenemos un dataset fuertemente desbalanceado, es necesario aplicar técnicas que permitan el correcto entrenamiento de la red. Dos de ellas son \textit{undersampling} y \textit{oversampling}.
+
+La primera de ellas consiste en reducir el tamaño de nuestro dataset, normalmente hasta que tengamos el mismo número de ejemplos de cada clase, aunque pueden usarse otras proporciones. La técnica habitual consiste en seleccionar de forma aleatoria elementos de clase mayoritaria y eliminarlos. Una ventaja derivada de este método es que, al tener que procesar un menor número de elemtnos, el entrenamiento es más rapido. Entre las desventajas tenemos, en primer lugar, que al privar a la red de determinados ejemplos le estamos ocultando información que puede ser importante y provocar que la red no generalize bien. De forma similar, cuando el número de ejemplos de una clase es muy pequeño, como es nuestro caso, el dataset puede ser demasiado pequeño, causando que la red memorice los datos y sea incapaz de generalizar.
+
+La otra técnica, \textit{oversampling}, consiste en el proceso opuesto, esto es, generar nuevos elementos de clase minoritaria. Igualmente, se suelen generar ejemplos hasta conseguir la igualdad, aunque no siempre es el caso. A la hora de generar los nuevos ejemplos, el enfoque más sencillo y rápido consiste en realizar copias de los datos de la clase minoritaria. La desventaja evidente de este proceso es que la red no incorpora nueva información y, al procesar los mismos datos una y otra vez, es más probable que acabe memorizandolos y, por tanto, sin capacidad de generalizar ante datos nuevos.
+
+Para tratar de solucionar este problema existen diversos métodos, siendo uno de los más utilizados SMOTE \cite{SMOTE} (\textit{synthetic minority oversampling technique}). Aunque existen multiples variantes, la forma básica para generar nuevos elementos consiste en, para cada elemento de la clase minoritaria, se seleccionan sus K (generalmente, 5) vecinos más próximos. De entre ellos, se selecciona uno al azar y se generan una más instancias (dependiendo del número total de instancias a generar) en la recta que une las instancias originales.
+
+Existen numerosas variantes de SMOTE que pueden dar mejor resultado en función de los datos y del modelo de red. Sin embargo, como demuestra Kovács \cite{SMOTE-comparison}, los beneficios de usar alguna de estas variantes son menos significativas que las mejoras logradas por usar SMOTE frente a no usarlo. En base a ello, usaremos la técnica original.
 
 \section{Transformada de Fourier}
 TODO
