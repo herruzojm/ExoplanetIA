@@ -1,3 +1,9 @@
+[![Pipeline](https://gitlab.com/HP-SCDS/Observatorio/2019-2020/ubu-exoplanetia/badges/master/pipeline.svg)](https://gitlab.com/HP-SCDS/Observatorio/2019-2020/ubu-exoplanetia/-/jobs)
+
+[![Heroku](https://heroku-badge.herokuapp.com/?app=exoplanetia)](https://exoplanetia.herokuapp.com/)
+
+[![codebeat badge](https://codebeat.co/badges/bc087f01-ae42-45de-a8a8-69ca5056a092)](https://codebeat.co/a/jesus-maria-herruzo-luque/projects/gitlab-com-hp-scds-observatorio-2019-2020-ubu-exoplanetia-master)
+
 # ExoplanetIA: Machine Learning para la detección de exoplanetas
 
 ## Descripción
