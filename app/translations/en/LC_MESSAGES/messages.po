@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-22 17:30+0200\n"
+"POT-Creation-Date: 2020-05-22 19:35+0200\n"
 "PO-Revision-Date: 2020-05-11 00:25+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: app.py:73
+#: app.py:74
 msgid "Archivo no seleccionado"
 msgstr "No selected file"
 
-#: app.py:81
+#: app.py:82
 msgid "Estrellas"
 msgstr "Stars"
 
-#: app.py:81
+#: app.py:82
 msgid "Exoplanetas Detectados"
 msgstr "Exoplanets Detected"
 
-#: app.py:96
+#: app.py:97
 msgid "Solo se permiten archivos con extensión csv"
 msgstr "Only files with csv extension are allowed"
 
@@ -93,12 +93,8 @@ msgid ""
 "Para poder probar de forma rápida la aplicación, es posible usar los <a "
 "href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-"
 "series-data\" target=\"_blank\">dataset de Kaggle</a> o <a "
-"href=\"../downloads/minitest.csv\">nuestro dataset</a>."
-msgstr ""
-"In order to quickly test the application, it is possible to use the <a "
-"href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-"
-"series-data\" target=\"_blank\">Kaggle dataset</a> or <a "
-"href=\"../downloads/minitest.csv\">our dataset</a>."
+"href=\"../static/downloads/minitest.csv\">nuestro dataset</a>."
+msgstr "In order to quickly test the application, it is possible to use the <a href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data\" target=\"_blank\">Kaggle dataset</a> or <a href=\"../static/downloads/minitest.csv\">our dataset</a>."
 
 #: templates/data.html:18
 msgid "En caso de usar otro archivo, este debe de cumplir:"
@@ -138,7 +134,13 @@ msgstr ""
 "The file must contain at least one line of data, but there is no upper "
 "limit"
 
-#: templates/data.html:28
+#: templates/data.html:26 templates/index.html:28
+msgid ""
+"Dadas las limitaciones técnicas de Heroku y la velocidad de tu conexión, "
+"ten en cuenta que la carga de archivos grandes puede ser interrumpida."
+msgstr "Given Heroku's technical limitations and the speed of your connection, be aware that uploading large files may be interrupted."
+
+#: templates/data.html:29
 msgid ""
 "A continuación, a modo de ejemplo, se puede ver una de las lineas del "
 "fichero de pruebas. En este caso, sin etiqueta."
@@ -238,10 +240,8 @@ msgstr ""
 #: templates/index.html:26
 msgid ""
 "Puedes probar el modelo con los dataset de Kaggle o <a "
-"href=\"../downloads/minitest.csv\">nuestro dataset</a>."
-msgstr ""
-"You can try the model with the Kaggle dataset or <a "
-"href=\"../downloads/minitest.csv\">our dataset</a>."
+"href=\"../static/downloads/minitest.csv\">nuestro dataset</a>."
+msgstr "You can try the model with the Kaggle dataset or <a href=\"../static/downloads/minitest.csv\">our dataset</a>."
 
 #: templates/index.html:27
 msgid ""
@@ -251,7 +251,7 @@ msgstr ""
 "You can also use a file that conforms to <a href=\"./data\">the "
 "specifications</a>."
 
-#: templates/index.html:34
+#: templates/index.html:35
 msgid "Pruébalo!"
 msgstr "Try it!"
 
@@ -355,4 +355,3 @@ msgstr "Proportion"
 #: templates/results.html:43
 msgid "Flujo de luz de la estrella "
 msgstr "Star ligth flux "
-
