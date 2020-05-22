@@ -26,7 +26,7 @@ app.config.from_object(Config)
 app.secret_key = app.config['MODEL_NAME']
 
 # Cargamos el modelo
-model = Perceptron()
+model = ModeloLSTM()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')   
 model.load_state_dict(torch.load(app.config['MODEL_NAME'], map_location = device))
 model.eval()
@@ -39,6 +39,10 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 def index():
     form = UploadFileForm()
     return render_template('index.html', form = form)
+
+@app.route('/data/')
+def data():
+    return render_template('data.html')
 
 @app.route('/kepler/')
 def kepler():
@@ -133,8 +137,10 @@ def create_image(points, i, time_points, x_text):
 
 def inference(filepath):
     df = pd.read_csv(filepath, low_memory=False)
+    if df.shape[1] == 3198:
+        df.drop(df.columns[0], axis = 1, inplace = True)
     df_tensor = torch.tensor(df.values).float()
-    predictions = torch.argmax(model(df_tensor), 1)
+    predictions = torch.argmax(model(df_tensor.view(len(df_tensor), 1, -1)), 1)
     return df, predictions
 
 @babel.localeselector
