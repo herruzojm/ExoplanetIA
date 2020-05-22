@@ -5,8 +5,7 @@ class Config():
 		'es': 'Español',
 		'en': 'English'
 	}
-	UPLOAD_FOLDER = 'uploads'
-	MODEL_NAME = './models/perceptron_adam_cross_mini.pth'
+	MODEL_NAME = './models/lstm_sgd_cross_smote_diferencia.pth'
 	UPLOAD_FOLDER = './uploads'
 	ALLOWED_EXTENSIONS = set(['csv'])
 	SECRET_KEY = os.urandom(32)

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-11 00:24+0200\n"
+"POT-Creation-Date: 2020-05-22 19:35+0200\n"
 "PO-Revision-Date: 2020-05-11 00:25+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: app.py:51
+#: app.py:74
 msgid "Archivo no seleccionado"
 msgstr "No selected file"
 
-#: app.py:59
+#: app.py:82
 msgid "Estrellas"
 msgstr "Stars"
 
-#: app.py:59
+#: app.py:82
 msgid "Exoplanetas Detectados"
 msgstr "Exoplanets Detected"
 
-#: app.py:74
+#: app.py:97
 msgid "Solo se permiten archivos con extensión csv"
 msgstr "Only files with csv extension are allowed"
 
@@ -46,7 +46,9 @@ msgstr "Upload"
 msgid ""
 "Esta página es parte del trabajo de fin de grado de Jesús María Herruzo "
 "Luque para la "
-msgstr "This page is part of the final degree thesis of Jesús María Herruzo Luque for the "
+msgstr ""
+"This page is part of the final degree thesis of Jesús María Herruzo Luque"
+" for the "
 
 #: templates/about.html:18
 msgid "Universidad de Burgos"
@@ -56,7 +58,9 @@ msgstr "University of Burgos"
 msgid ""
 "El trabajo está dirigido por Carlos L., profesor de dicha Universidad, "
 "así como por Alejandro V. y Manuel H., empleados de la empresa "
-msgstr "The work is directed by Carlos L., professor in the said University, as well as by Alejandro V. and Manuel H., employees of the company"
+msgstr ""
+"The work is directed by Carlos L., professor in the said University, as "
+"well as by Alejandro V. and Manuel H., employees of the company"
 
 #: templates/about.html:20
 msgid ""
@@ -65,37 +69,116 @@ msgid ""
 "por el satélite espacial Kepler, con respecto a la intensidad de luz "
 "(flux) registrada durante más de 9 años, y proponer un modelo de red "
 "neuronal para detectar exoplanetas por el Método del Tránsito."
-msgstr "The goal of this project is to develop an application that, using Machine Learning techniques on the real data offered by the Kepler space satellite regarding the light intensity (flux) recorded for more than 9 years, propose a neural network model to detect exoplanets by the transit method."
+msgstr ""
+"The goal of this project is to develop an application that, using Machine"
+" Learning techniques on the real data offered by the Kepler space "
+"satellite regarding the light intensity (flux) recorded for more than 9 "
+"years, propose a neural network model to detect exoplanets by the transit"
+" method."
 
-#: templates/base.html:11
+#: templates/base.html:10 templates/data.html:10
+msgid "Datos"
+msgstr "Data"
+
+#: templates/base.html:12
 msgid "Ayuda"
 msgstr "Help"
 
-#: templates/base.html:12
+#: templates/base.html:13
 msgid "Acerca de"
 msgstr "About"
 
-#: templates/base.html:55
-msgid "ExoplanetIA: Machine Learning para la detección de exoplanetas"
-msgstr "ExoplanetIA: Machine Learning for exoplanet detection"
+#: templates/data.html:17
+msgid ""
+"Para poder probar de forma rápida la aplicación, es posible usar los <a "
+"href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-"
+"series-data\" target=\"_blank\">dataset de Kaggle</a> o <a "
+"href=\"../static/downloads/minitest.csv\">nuestro dataset</a>."
+msgstr "In order to quickly test the application, it is possible to use the <a href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data\" target=\"_blank\">Kaggle dataset</a> or <a href=\"../static/downloads/minitest.csv\">our dataset</a>."
+
+#: templates/data.html:18
+msgid "En caso de usar otro archivo, este debe de cumplir:"
+msgstr "In case of using a different file, this must be:"
+
+#: templates/data.html:20
+msgid "Archivo de texto plano con extension csv."
+msgstr "Plain text file with csv extension."
+
+#: templates/data.html:21
+msgid "El archivo debe contener 3197 o 3198 columnas."
+msgstr "The file must contain 3197 or 3198 columns."
+
+#: templates/data.html:22
+msgid "En el primer caso, todos los valores corresponderán a los flujos de luz."
+msgstr "In the first case, all the values will correspond to the light fluxes."
+
+#: templates/data.html:23
+msgid ""
+"En el segundo caso, la primera columna correspondera a la etiqueta, donde"
+" 1 representaría una estrella sin exoplanetas mientras que 2 "
+"representaría estrella con exoplanetas."
+msgstr ""
+"In the second case, the first column would correspond to the label, where"
+" 1 would represent a star without exoplanets and 2 would represent a star"
+" with exoplanets."
+
+#: templates/data.html:24
+msgid "El archivo puede incluir una linea de cabecera o no."
+msgstr "The file may or may not include a header line."
+
+#: templates/data.html:25
+msgid ""
+"El archivo debe contener al menos una linea de datos, pero no hay límite "
+"superior."
+msgstr ""
+"The file must contain at least one line of data, but there is no upper "
+"limit"
+
+#: templates/data.html:26 templates/index.html:28
+msgid ""
+"Dadas las limitaciones técnicas de Heroku y la velocidad de tu conexión, "
+"ten en cuenta que la carga de archivos grandes puede ser interrumpida."
+msgstr "Given Heroku's technical limitations and the speed of your connection, be aware that uploading large files may be interrupted."
+
+#: templates/data.html:29
+msgid ""
+"A continuación, a modo de ejemplo, se puede ver una de las lineas del "
+"fichero de pruebas. En este caso, sin etiqueta."
+msgstr ""
+"Below, as an example, you can see one of the lines of the test file. In "
+"this case, without a label."
 
 #: templates/help.html:18
 msgid ""
 "La aplicación permite cargar archivo con extensión csv donde cada fila "
 "representa el flujo de luz de una estrella. La primera linea del archivo "
 "debe ser la cabecera y no será procesada."
-msgstr "The application allows you to load a file with csv extension where each row represents the flux of a star. The first line of the file must be the header and will not be processed."
+msgstr ""
+"The application allows you to load a file with csv extension where each "
+"row represents the flux of a star. The first line of the file must be the"
+" header and will not be processed."
 
 #: templates/help.html:19
-msgid "El archivo debe contener 3197 columnas con valores reales."
-msgstr "The file must contain 3197 columns with real values."
+msgid ""
+"El archivo debe contener 3197 columnas con valores reales. También se "
+"admiten archivos con el formato del dataset de Kaggle: 3198 columnas, la "
+"primera de ellas llamada LABEL y con valores 1 y 2, representando "
+"extrellas sin o con exoplanetas."
+msgstr ""
+"The file must contain 3197 columns with real values. Files with the "
+"Kaggle dataset format are also supported: 3198 columns, the first of "
+"which is called LABEL and with values 1 and 2, representing stars without"
+" or with exoplanets."
 
 #: templates/help.html:20
 msgid ""
 "El usuario debe hacer click en el botón \"Seleccionar archivo\" y elegir "
 "el archivo deseado. Luego, tras pulsar el botón \"Cargar\", el archivo "
 "será procesado y el usuario será redirigido a la página de resultados."
-msgstr "The user must click on the \"Select file\" button and choose the desired file. Then, after pressing the \"Upload\" button, the file will be processed and the user will be redirected to the results page."
+msgstr ""
+"The user must click on the \"Select file\" button and choose the desired "
+"file. Then, after pressing the \"Upload\" button, the file will be "
+"processed and the user will be redirected to the results page."
 
 #: templates/help.html:21
 msgid ""
@@ -103,13 +186,74 @@ msgid ""
 "estrellas con exoplanetas detectados, así como el índice de dichas "
 "estrellas en el archivo. Esta información también se muestra de forma "
 "gráfica."
-msgstr "On the results page, the user can check the number of stars with exoplanets detected, as well as the index of those stars in the file. This information is also displayed graphically."
+msgstr ""
+"On the results page, the user can check the number of stars with "
+"exoplanets detected, as well as the index of those stars in the file. "
+"This information is also displayed graphically."
 
 #: templates/help.html:22
 msgid ""
 "Finalmente, para cada estrella con exoplaneta, se muestra la gráfica del "
 "flujo de luz así como su representación en frecuencia."
-msgstr "Finally, for each star with an exoplanet, the graph of the flux as well as its representation in frequency are shown."
+msgstr ""
+"Finally, for each star with an exoplanet, the graph of the flux as well "
+"as its representation in frequency are shown."
+
+#: templates/index.html:14
+msgid "ExoplanetIA"
+msgstr "ExoplanetIA"
+
+#: templates/index.html:15
+msgid "Machine Learning para la detección de exoplanetas"
+msgstr "Machine Learning for exoplanet detection"
+
+#: templates/index.html:23
+msgid ""
+"Modelo de redes neuronales entrenado con el dataset <a "
+"href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-"
+"series-data\" target=\"_blank\">Exoplanet Hunting in Deep Space</a> de "
+"Kaggle."
+msgstr ""
+"Neural network model trained with the <a "
+"href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-"
+"series-data\" target=\"_blank\">Exoplanet Hunting in Deep Space</a> "
+"Kaggle dataset."
+
+#: templates/index.html:24
+msgid ""
+"El modelo está formado por una red LSTM; los datos han sido normalizados "
+"y se ha usado un filtro gaussiano para suavizar la señal. Finalmente, el "
+"dataset ha sido equilibrando usando SMOTE."
+msgstr ""
+"The model is an LSTM network; data has been normalized and a Gaussian "
+"filter has been used to smooth the signal. Finally, the dataset has been "
+"balanced using SMOTE."
+
+#: templates/index.html:25
+msgid ""
+"En el entrenamiento, el modelo ha alcanzado una sensibilidad de 0.6 y una"
+" especificidad de 0.99"
+msgstr ""
+"In training, the model has achieved a recall of 0.6 and a specificity of "
+"0.99"
+
+#: templates/index.html:26
+msgid ""
+"Puedes probar el modelo con los dataset de Kaggle o <a "
+"href=\"../static/downloads/minitest.csv\">nuestro dataset</a>."
+msgstr "You can try the model with the Kaggle dataset or <a href=\"../static/downloads/minitest.csv\">our dataset</a>."
+
+#: templates/index.html:27
+msgid ""
+"También puedes usar archivo que se ajuste a <a href=\"./data\">las "
+"especificaciones</a>."
+msgstr ""
+"You can also use a file that conforms to <a href=\"./data\">the "
+"specifications</a>."
+
+#: templates/index.html:35
+msgid "Pruébalo!"
+msgstr "Try it!"
 
 #: templates/kepler.html:17
 msgid ""
@@ -118,7 +262,12 @@ msgid ""
 "colocado en órbita heliocéntrica, el objetivo de la misión era buscar "
 "planetas extra solares, especialmente aquellos de un tamaño similar a la "
 "Tierra, situados en la zona de habitabilidad de su estrella."
-msgstr "Kepler is a space telescope launched by NASA on March 7, 2009. Named after the German astronomer Johannes Kepler and placed in heliocentric orbit, the mission's objective was to search for extra-solar planets located in the habitable zone of its star, especially those of a size similar of the Earth."
+msgstr ""
+"Kepler is a space telescope launched by NASA on March 7, 2009. Named "
+"after the German astronomer Johannes Kepler and placed in heliocentric "
+"orbit, the mission's objective was to search for extra-solar planets "
+"located in the habitable zone of its star, especially those of a size "
+"similar of the Earth."
 
 #: templates/kepler.html:18
 msgid ""
@@ -134,7 +283,18 @@ msgid ""
 "tuvo que ser abandona. En su lugar, tras escuchar diferentes alternativas"
 " por parte de la comunidad científica, la NASA aprobó la nueva misión de "
 "Kepler, denominada K2, Segunda Luz."
-msgstr "Equipped with a sensitive photometer and with a fixed field of view, Kepler was aimed at the constellations of the Swan, Lyre and Dragon to simultaneously capture the light emitted by about 150,000 stars. The initial duration of the mission was planned to be three and a half years, but the noise generated in the data was being greater than expected, which required more time to complete its objectives. The mission's term was extended to 2016, but misfortune caused two of the gyros to break down, one in mid-2012 and the other one in May 2013. With just two other gyros in operation, the original mission had to be abandoned. Instead, after hearing different alternatives from the scientific community, NASA approved Kepler's new mission, called K2, Second Light."
+msgstr ""
+"Equipped with a sensitive photometer and with a fixed field of view, "
+"Kepler was aimed at the constellations of the Swan, Lyre and Dragon to "
+"simultaneously capture the light emitted by about 150,000 stars. The "
+"initial duration of the mission was planned to be three and a half years,"
+" but the noise generated in the data was being greater than expected, "
+"which required more time to complete its objectives. The mission's term "
+"was extended to 2016, but misfortune caused two of the gyros to break "
+"down, one in mid-2012 and the other one in May 2013. With just two other "
+"gyros in operation, the original mission had to be abandoned. Instead, "
+"after hearing different alternatives from the scientific community, NASA "
+"approved Kepler's new mission, called K2, Second Light."
 
 #: templates/kepler.html:19
 #, python-format
@@ -152,7 +312,19 @@ msgid ""
 "está previsto el lanzamiento del telescopio James Webb con la tarea de "
 "examinar los hallazgos más prometedores de Kepler y TESS. ¿Cuantos nuevos"
 " planetas nos ayudaran a descubrir?"
-msgstr "On October 30, 2018, Kepler completely ran out of fuel and was shut down by NASA. During his nine years of service, Kepler observed 530,506 stars and discovered 2,662 exoplanets, about 70%% of all that we know. Their data allowed us to estimate that, in the Milky Way alone, there are at least another 17 billion exoplanets similar in size to ours. Much of this data is still under study; buried in those data are another 2900 planets still unconfirmed. But the search does not end here: on April 18 of the same year, NASA launched the TESS telescope to continue detecting new worlds, also using the transit method. And in 2021, the launch of the James Webb telescope is planned with the task of examining the most promising findings of Kepler and TESS. How many new planets will help us discover?"
+msgstr ""
+"On October 30, 2018, Kepler completely ran out of fuel and was shut down "
+"by NASA. During his nine years of service, Kepler observed 530,506 stars "
+"and discovered 2,662 exoplanets, about 70%% of all that we know. Their "
+"data allowed us to estimate that, in the Milky Way alone, there are at "
+"least another 17 billion exoplanets similar in size to ours. Much of this"
+" data is still under study; buried in those data are another 2900 planets"
+" still unconfirmed. But the search does not end here: on April 18 of the "
+"same year, NASA launched the TESS telescope to continue detecting new "
+"worlds, also using the transit method. And in 2021, the launch of the "
+"James Webb telescope is planned with the task of examining the most "
+"promising findings of Kepler and TESS. How many new planets will help us "
+"discover?"
 
 #: templates/results.html:12
 msgid "Resultados"

@@ -7,9 +7,32 @@
 <p></p>
 
 <div class="row">
-	<div class="col-sm-2">
+	<div class="row">
+		<div class="col-sm-2">
+		</div>
+		<div class="col-sm-8">
+			<h2>{{ _('ExoplanetIA') }}</h2>
+			<h3>{{ _('Machine Learning para la detección de exoplanetas') }}</h3>
+		</div>
+	</div>		
+</div>
+<div class="row">
+	<div class="col-sm-2">		
 	</div>
 	<div class="col-sm-8">
+		<p>{{ _('Modelo de redes neuronales entrenado con el dataset <a href="https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data" target="_blank">Exoplanet Hunting in Deep Space</a> de Kaggle.')}}</p>
+		<p>{{ _('El modelo está formado por una red LSTM; los datos han sido normalizados y se ha usado un filtro gaussiano para suavizar la señal. Finalmente, el dataset ha sido equilibrando usando SMOTE.') }}</p>
+		<p>{{ _('En el entrenamiento, el modelo ha alcanzado una sensibilidad de 0.6 y una especificidad de 0.99') }}</p>
+		<p>{{ _('Puedes probar el modelo con los dataset de Kaggle o <a href="../static/downloads/minitest.csv">nuestro dataset</a>.') }}</p>
+		<p>{{ _('También puedes usar archivo que se ajuste a <a href="./data">las especificaciones</a>.') }}</p>
+		<p><b>{{ _('Dadas las limitaciones técnicas de Heroku y la velocidad de tu conexión, ten en cuenta que la carga de archivos grandes puede ser interrumpida.') }}</b></p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-2">		
+	</div>
+	<div class="col-sm-8">
+		<h3>{{ _('Pruébalo!') }}</h3>
 		{{ wtf.quick_form(form) }}
 	</div>
 </div>
