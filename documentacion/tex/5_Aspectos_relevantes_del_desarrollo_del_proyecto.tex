@@ -1,7 +1,22 @@
 \capitulo{5}{Aspectos relevantes del desarrollo del proyecto}
 
-Este apartado pretende recoger los aspectos más interesantes del desarrollo del proyecto, comentados por los autores del mismo.
-Debe incluir desde la exposición del ciclo de vida utilizado, hasta los detalles de mayor relevancia de las fases de análisis, diseño e implementación.
-Se busca que no sea una mera operación de copiar y pegar diagramas y extractos del código fuente, sino que realmente se justifiquen los caminos de solución que se han tomado, especialmente aquellos que no sean triviales.
-Puede ser el lugar más adecuado para documentar los aspectos más interesantes del diseño y de la implementación, con un mayor hincapié en aspectos tales como el tipo de arquitectura elegido, los índices de las tablas de la base de datos, normalización y desnormalización, distribución en ficheros3, reglas de negocio dentro de las bases de datos (EDVHV GH GDWRV DFWLYDV), aspectos de desarrollo relacionados con el WWW...
-Este apartado, debe convertirse en el resumen de la experiencia práctica del proyecto, y por sí mismo justifica que la memoria se convierta en un documento útil, fuente de referencia para los autores, los tutores y futuros alumnos.
+\section{Arranque del proyecto}
+
+Este proyecto comienza con la idea investigar y comparar los resultados de diversos modelos de aprendizaje para el problema de la detección de exoplanetas mediante la técnica del tránsito. Así mismo, se pretende estudiar y comparar los efectos que diversas técnicas de procesado de datos tienen en el resultado final.
+
+Es de resañar que este problema, la detección de exoplanetas a traves del análisis del flujo de luz, es un problema ya resuelto, tanto con métodos algorítmicos tradicionales como con métodos de aprendizaje automático. Basta con un rápido vistazo a la página de Kaggle para encontrar numerosas y diversas \href{https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data/kernels}{soluciones}, cuyo código puede ser copiado e implementado sin demasiados problemas. Por tanto, la creación final una aplicación para procesar nuevos datos no deja de ser un subproducto del objetivo principal de este proyecto, el estudio de diversos modelos y como sus características facilitan o entorpecen el análisis y la obtención de resultados.
+
+Como hoja de ruta, estudiaremos un modelo simple de perceptrón multicapa y su rendimiento con los datos en bruto para, posteriormente, ir procesando los datos y observar los resultados. Posteriormente pasaremos a enfocar el problema desde otro punto de vista, analizando las frecuencías que componen la señal lumínica para, finalmente, trabajar con otra arquitectura de red neuronal, las LSTMs.
+
+\section{Perceptrón}
+
+Nuestra primera aproximación a la resolución del problema consiste en un perceptrón multicapa. El tamaño de nuestra capa de entrada viene determinado por la dimensionalidad de nuestro dataset, en nuestro caso, 3197 neuronas. Usaremos una capa oculta con 300 neuronas y finalmente una capa de salida con 2 neuronas que nos permitirá clasificar el resultado como estrella con o sin exoplanetas.
+
+Como algoritmo de optimización vamos a usar SGD (\textit{stochastic gradient descent}) y la función de perdida CrossEntropyLoss \textit{cross entropy loss}. En esta, intentaremos compensar el desbalanceo del dataset asignando valores distintos a los pesos de las clases, dando mayor importancia a la clase positiva, estrella con exoplanetas.
+
+Esta primera aproximación, entrenada durante 50 epochs, no presenta buenos resultados. La función de perdida se estanca durante el entrenamiento, lo que significa que nuestra red ha dejado de aprender. Examinando los resultados, vemos se observa que devuelve, prácticamente con certeza total, que ninguna de las estrellas tiene exoplanetas. Esto se ajusta al resultado que esperabamos obtener dado el enorme desbalanceo del dataset: como apenas hay ejemplos de estrellas con exoplanetas, nuestra red ha aprendido que una forma de minimizar la función de perdida es dar siempre una respuesta negativa.
+
+\imagen{señales_originales.png}{Flujo de una estrella con exoplanetas (8) y otra sin exoplanetas (1524)}
+
+El código correspondiente a este y a los siguientes experimentos puede encontrarse en el archivo \textit{Perceptron\_base.ipynb}.
+

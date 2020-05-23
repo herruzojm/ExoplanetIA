@@ -95,7 +95,7 @@ Dada la elevada sensibilidad del satélite Kepler a la intensidad de luz y, como
 
 A la hora de aplicarlo tenemos dos opciones distintas. La primera es aplicar el filtro tal cúal, provocando el suavizado la señal, quitandole ruido, pero también nitidez y detalles; detalles que pueden ser importantes. La otra alternativa consiste reducir la señal original con el resultado de aplicar el filtro gaussiano, consiguiendo de esta forma reducir la importancia de la señal base y resaltando los detalles más especificos.
 
-\section{Undersampling y Oversampling}
+\section{Undersampling y Oversampling}\label{undersampling-y-oversampling}
 Cuando, como es nuestro caso, tenemos un dataset fuertemente desbalanceado, es necesario aplicar técnicas que permitan el correcto entrenamiento de la red. Dos de ellas son \textit{undersampling} y \textit{oversampling}.
 
 La primera de ellas consiste en reducir el tamaño de nuestro dataset, normalmente hasta que tengamos el mismo número de ejemplos de cada clase, aunque pueden usarse otras proporciones. La técnica habitual consiste en seleccionar de forma aleatoria elementos de clase mayoritaria y eliminarlos. Una ventaja derivada de este método es que, al tener que procesar un menor número de elemtnos, el entrenamiento es más rapido. Entre las desventajas tenemos, en primer lugar, que al privar a la red de determinados ejemplos le estamos ocultando información que puede ser importante y provocar que la red no generalize bien. De forma similar, cuando el número de ejemplos de una clase es muy pequeño, como es nuestro caso, el dataset puede ser demasiado pequeño, causando que la red memorice los datos y sea incapaz de generalizar.
