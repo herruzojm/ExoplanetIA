@@ -67,7 +67,7 @@ Además de la normalización, veremos más adelante otra serie de técnicas que 
 
 \subsection{Modelado}
 
-En esta fase del proceso es cuando se definen los modelos y arquitecturas que se usaran. Nosotros nos centraremos especialmente en el uso del \nameref{sec:perceptron-multicapa} y, en menor medida, las redes \nameref{sec:lstm}, un tipo de redes neuronales recursivas. 
+En esta fase del proceso es cuando se definen los modelos y arquitecturas que se usaran. Nosotros nos centraremos especialmente en el uso del \nameref{sec:perceptron-multicapa} y, en menor medida, las redes \nameref{sec:lstm}, un tipo de redes neuronales recurrente. 
 
 \subsection{Evaluación}
 
@@ -107,7 +107,13 @@ Para tratar de solucionar este problema existen diversos métodos, siendo uno de
 Existen numerosas variantes de SMOTE que pueden dar mejor resultado en función de los datos y del modelo de red. Sin embargo, como demuestra Kovács \cite{SMOTE-comparison}, los beneficios de usar alguna de estas variantes son menos significativas que las mejoras logradas por usar SMOTE frente a no usarlo. En base a ello, usaremos la técnica original.
 
 \section{Transformada de Fourier}
-TODO
+La transformada de Fourier es una transformación matemática que permite descomponer una función, generalmente expresada en función del tiempo, en sus frecuencias constitutivas. En nuestro caso, el estudio de la frecuencia puede ser interesante dado que la existencia de uno o más planetas orbitando la estrella resultaría en la existencia de más de una frecuencias.
+
+\imagen{frecuencias.png}{Ejemplo de una señal (arriba, en amarillo) y su descomposición en las frecuencias que la componen \cite{3blue1brown}}
+
+El nombre de transformada de Fourier, en honor al matemático francés Joseph Fourier, hace referencia tanto a la representación como a la función que la produce. Es, además, una operación reversible, permitiendo pasar de un dominio a otro. 
+
+El análisis matemático de la transformada de Fourier está fuera del alcance de este trabajo, pero es posible encontrarlo, junto con información más detallada en diferentes fuentes como, por ejemplo, la \href{https://es.wikipedia.org/wiki/Transformada_de_Fourier}{wikipedia} \cite{Wikipedia-fourier}.
 
 \section{Perceptrón Multicapa}\label{sec:perceptron-multicapa}
 
@@ -119,9 +125,7 @@ de estos para dar solución a problemas no lineales \cite{Minsky-1969}.
 El objetivo de estas redes es aproximar alguna función \emph{f}. Por
 ejemplo, para un clasificador como es nuestro caso,
 \texttt{y = f(x)} mapea un input, \emph{x} a una categoría \emph{y}.
-La red define un mapeado \texttt{y = f(x, \textbackslash{}theta)} y
-aprende los valores de los parametros \texttt{\textbackslash{}theta}
-que resultan en la mejor aproximación a la función \cite{Goodfellow-et-al-2016}.
+La red define un mapeado \texttt{y = f(x, $\theta$)} y aprende los valores de los parametros $\theta$ que resultan en la mejor aproximación a la función \cite{Goodfellow-et-al-2016}.
 
 Su arquitectura es simple, consistiendo en una capa de entrada,
 encargada de recibir las señales del exterior y propagarlas a las
@@ -273,7 +277,24 @@ aprendizaje, es menos sensible a una elección no óptima de la tasa de
 aprendizaje inicial.
 
 \section{LSTM}\label{sec:lstm}
-TODO
+
+Un tipo particular de redes neuronales son las recurrentes, que permiten añadir la dimensión temporal al procesado de datos. Esto lo consiguen incluyendo bucles en su arquitectura, permitiendo de esta forma la persistencia de determinada información y dotandolas de una gran facilidad para tratar información contenida en forma de secuencias o listas, donde un acontecimiento esta estrechamente vinculado a acontecimientos previos. Esto las ha convertido en el estandar para tratar diversos tipos de problemas como, por ejemplo, el reconocimiento de voz, el modelado del lenguaje o la traducción entre idiomas.
+
+Para nuestro problema particular, este tipo de red puede resultar útil, ya que el transito planetario incluye una sencuencia concreta de pasos, donde el flujo de luz se muestra relativamente constante, posteriormente experimenta un decrecimiento hasta llegar un mínimo y finalmente vuelve a su nivel original. Además, si el periodo orbital del planeta es breve, podríamos encontrar repeticiones de esta secuencia. El procesado de este conjunto de datos temporales es la especialidad de las redes recurrentes.
+
+\imagen{transit.png}{Variación de la intensidad de luz por tránsito planetario \cite{Kaggle-exoplanet}}
+
+La forma más simple de conseguir esta recurrencia es conectando la salida de una neurona no solo hacia neuronas de las capas siguientes, como hemos visto en el caso del perceptrón multicapa, sino también hacia la entrada de la propia neurona o de neuronas de las capas previas. Esto es, la salida de las neuronas de la capa $h_t$ se encuentran conectadas a las neuronas de la capa $h_{t-i}$. 
+
+Esta configuración simple funciona muy bien para tratar secuencias donde la información se encuentra temporalmente próxima pero presenta problemas relacionando información distante en el tiempo o información que influye en muchos momentos pasados.
+
+Pero existen muchos tipos de redes recursivas. En nuestro caso nos centraremos en las redes LSTM (\textit{long short term memory}), uno de los estandares de la industria, y designadas con el objetivo de presentar memoria a largo plazo. La arquitectura básica de estas redes esta formada por capas LSTM, también llamadas células, cada una sirviendo de entrada a la célula siguiente. En su interior, cada una de estas células presenta los mismos elementos, siendo el principal $C_t$, el estado de la célula y la parte que proporciona la memoria a largo a plazo al sistema.
+
+Otros elementos influyen sobre esta memoria. Una primera capa sigmoidal permite determinar que memoria a largo plazo mantener o desechar. Otras capas interiores, implementadas mediante funciones sigmoidales y tangenciales, permite determinar que información actual incorporar a la memoria a largo plazo. Finalmente, las capas finales se encargan de devolver la información procesada por la célula y de conectar su estado a la siguiente célula de la red.
+
+Para una descripción más detallada del proceso, se puede consultar \href{https://colah.github.io/posts/2015-08-Understanding-LSTMs/}{Understanding LSTMs}.
+
+\imagen{LSTM.png}{Detalle de una célula LSTM \cite{LSTMs}}
 
 \section{Medidas de desempeño del modelo}\label{sec:metricas}
 
