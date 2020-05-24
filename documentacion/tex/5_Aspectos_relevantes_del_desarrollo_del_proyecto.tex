@@ -1,7 +1,154 @@
 \capitulo{5}{Aspectos relevantes del desarrollo del proyecto}
 
-Este apartado pretende recoger los aspectos más interesantes del desarrollo del proyecto, comentados por los autores del mismo.
-Debe incluir desde la exposición del ciclo de vida utilizado, hasta los detalles de mayor relevancia de las fases de análisis, diseño e implementación.
-Se busca que no sea una mera operación de copiar y pegar diagramas y extractos del código fuente, sino que realmente se justifiquen los caminos de solución que se han tomado, especialmente aquellos que no sean triviales.
-Puede ser el lugar más adecuado para documentar los aspectos más interesantes del diseño y de la implementación, con un mayor hincapié en aspectos tales como el tipo de arquitectura elegido, los índices de las tablas de la base de datos, normalización y desnormalización, distribución en ficheros3, reglas de negocio dentro de las bases de datos (EDVHV GH GDWRV DFWLYDV), aspectos de desarrollo relacionados con el WWW...
-Este apartado, debe convertirse en el resumen de la experiencia práctica del proyecto, y por sí mismo justifica que la memoria se convierta en un documento útil, fuente de referencia para los autores, los tutores y futuros alumnos.
+\section{Arranque del proyecto}
+
+Este proyecto comienza con la idea investigar y comparar los resultados de diversos modelos de aprendizaje para el problema de la detección de exoplanetas mediante la técnica del tránsito. Así mismo, se pretende estudiar y comparar los efectos que diversas técnicas de procesado de datos tienen en el resultado final.
+
+Es de resañar que este problema, la detección de exoplanetas a traves del análisis del flujo de luz, es un problema ya resuelto, tanto con métodos algorítmicos tradicionales como con métodos de aprendizaje automático. Basta con un rápido vistazo a la página de Kaggle para encontrar numerosas y diversas \href{https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data/kernels}{soluciones}, cuyo código puede ser copiado e implementado sin demasiados problemas. Por tanto, la creación final una aplicación para procesar nuevos datos no deja de ser un subproducto del objetivo principal de este proyecto, el estudio de diversos modelos y como sus características facilitan o entorpecen el análisis y la obtención de resultados.
+
+Como hoja de ruta, estudiaremos un modelo simple de perceptrón multicapa y su rendimiento con los datos en bruto para, posteriormente, ir procesando los datos y observar los resultados. Posteriormente pasaremos a enfocar el problema desde otro punto de vista, analizando las frecuencias que componen la señal lumínica para, finalmente, trabajar con otra arquitectura de red neuronal, las LSTMs.
+
+\section{Perceptrón}
+
+Nuestra primera aproximación a la resolución del problema consiste en un perceptrón multicapa. El tamaño de nuestra capa de entrada viene determinado por la dimensionalidad de nuestro dataset, en nuestro caso, 3197 neuronas. Usaremos una capa oculta con 300 neuronas y finalmente una capa de salida con 2 neuronas que nos permitirá clasificar el resultado como estrella con o sin exoplanetas.
+
+Como algoritmo de optimización vamos a usar SGD (\textit{stochastic gradient descent}) y la función de perdida \textit{CrossEntropyLoss}. En esta, intentaremos compensar el desbalanceo del dataset asignando valores distintos a los pesos de las clases, dando mayor importancia a la clase positiva, estrella con exoplanetas.
+
+Esta primera aproximación, entrenada durante 50 epochs, no presenta buenos resultados. La función de perdida se estanca durante el entrenamiento, lo que significa que nuestra red ha dejado de aprender. Examinando los resultados, vemos se observa que devuelve, prácticamente con certeza total, que ninguna de las estrellas tiene exoplanetas. Esto se ajusta al resultado que esperabamos obtener dado el enorme desbalanceo del dataset: como apenas hay ejemplos de estrellas con exoplanetas, nuestra red ha aprendido que una forma de minimizar la función de perdida es dar siempre una respuesta negativa.
+
+\imagen{señales_originales.png}{Flujo de una estrella con exoplanetas (8) y otra sin exoplanetas (1524)}
+
+El código correspondiente a este y a los siguientes experimentos puede encontrarse en el archivo \textit{Perceptron\_base.ipynb}.
+
+\subsection{Normalización y reducción de picos}
+
+Comenzamos ahora con el tratamiento de los datos para ver si podemos mejorar el resultado de nuestro modelo. El primer paso será reducir los picos de intensidad lumínica. A diferencia de la normalización, esta es una técnica concreta que usaremos dadas las características propias de nuestros datos. El razonamiento que nos lleva a usarla se basa en que el tránsito de un planeta frente a su estrella debe reducir el flujo, no aumentarlo, dado que los planetas no emiten luz propia. Así pues, ya sea por algún fenómeno físico propio de la estrella o simples errores de medición del satélite, lo que está claro es que cualquier pico de intensidad de luz no está relacionado con la existencia de exoplanetas.
+
+Para lograr este objetivo usaremos la función \textit{reduce\_upper\_outliers} definida en el archivo \textit{utils.py}. El código ordena el valor del flujo y selecciona, en base a un porcentaje sobre el total, algunos de ellos. Posteriormente calcula la media de los puntos a su alrededor y reduce los puntos señalados a dicho valor.
+
+La otra técnica con la que vamos a trabajar, la normalización, es un elemento básico y habitual en la mayoría de los problemas de aprendizaje automático. Usaremos ahora la denominada \textit{zcore}; como hemos comentado, este tipo de normalización no restringe los valores al rango [0,1] pero nos evita problemas cuando hay elementos que se distáncian mucho de la media. Observando la figura \ref{fig:señales_originales.png} se puede apreciar, especialmente en el caso de la estrella 8, que este es el caso en el que nos encontramos.
+
+Comparando la figura previa con la figura \ref{fig:señales_sin_picos_normalizadas.png}, se observa que los picos superiores de ambas estrellas se han eliminado. Asimismo, el rango de valores se ha reducido, moviendonos de la escala $10^3$ a $10^1$.
+
+\imagen{señales_sin_picos_normalizadas.png}{Flujo las estrellas 8 y 1524 tras reducir los picos y normalizar}
+
+En el entrenamiento de este modelo observamos que, igualmente, la red sigue sin aprender. Todas las estrellas son clasificadas como sin exoplanetas y la función de perdida decrece hasta estancarse hasta niveles muy bajos. Esto es, la red se ha estabilizado en certeza absoluta y va a devolver siempre que no hay exoplanetas.
+
+\subsection{Algoritmos de optimización y función de perdida}
+
+Procedemos a continuación a cambiar el algoritmo de optimización de nuestro modelo, pasando a utilizar Adam, tal y como comentamos en el apartado teórico \nameref{algoritmo-de-optimizacion}. Los resultados siguen sin ser positivos. La perdida con el set de entrenamiento se estanca mientras que, con el set validación, aunque presenta picos de fluctuación, finalmente acaba también estancada.
+
+Una de las diferencias más significas que encontramos en este punto son los distintos tiempos de entrenamiento. Mientras que el modelo usando SGD ha necesitado solamente 36 minutos para completar su entrenamiento, al usar Adam este tiempo se ha casí triplicado, pasando a ser de 95 minutos.
+
+En este punto consideramos cambiar la función de perdida y probar con la función \textit{BCEWithLogitsLoss (binary cross entropy with logits)} que, a diferencia de la primera, solo sirve como clasificador binario y solo necesita de la salida de una neurona. El resultado sigue siendo negativo, con una red que no aprende y, esta vez, con unas perdidas bastante mayores que en los casos anteriores.
+
+
+\subsection{Undersampling}
+
+Hemos comprado hasta ahora que las técnicas de normalizado de los datos y la eliminación de los picos de intensidad no suponen mejoría a la hora de entrenar nuestro modelo. Tanto con diferentes optimizadores como con diferentes función de perdida, el enorme desbalanceo de nuestros datos hace imposible obtener resultados positivos. Asi pues, vamos a intentar corregir ese problema y ver si podemos conseguir algún aprendizaje en la red.
+
+Para ello, como discutimos en \nameref{undersampling-y-oversampling} vamos a proceder a reducir el tamaño de nuestro dataset. Siguiendo la técnica básica, creamos un nuevo dataset conteniendo todos los casos positivos (estrellas con exoplanetas confirmados) y seleccionando de forma aleatoria un número igual de casos negativos (estrellas sin exoplanetas). Esto nos deja con unos dataset muy reducidos, especialmente en el caso del set de validación (14 instancias solamente).
+
+Aquí comenzamos ya a obtener algunos resultados positivos. La red comienza a discriminar y a clasificar realmente los datos en ambas categorías. En su mejor momento, tanto la sensibilidad como la especificidad alcanzan 0.857, una puntuación bastante buena. 
+
+Claro que no todo es positivo. El mejor resultado es obtenido en el tercer epoch del entrenamiento, tras lo cual la red diverge y la perdida en el set de validación se dispara. Además, hay una gran cantidad de datos negativos que la red no ha visto y que, en el futuro, podría facilmente catalogar como positivos. Es por ello que posiblmente este modelo, aunque presente buenos resultados en el entrenamiento, no sea capaz de generalizar correctamente en el futuro.
+
+\subsection{Filtro gaussiano}
+
+Otra técnica a nuestra disposición consiste en el \nameref{filtro-gaussiano}. Como hemos visto en las gráficas de intensidad de luz sin modificar, la señal presenta numerosos pequeños picos de subida y bajada debidos, principalmente, a la alta sensibilidad del fotómetro instalado en el satélite Kepler. Todas estas subidas y bajadas puede confundir a nuestra red, haciendo que considere que esta es la información importante que denota la existencia o no de exoplanetas.
+
+Primero probamos a entrenar la red sustrayendo el resultado del filtro gaussiano a la señal original. Podemos ver la forma de la nueva señal en la figura \ref{fig:señales_gauss_sustraido.png}. Para la estrella 8, con exoplaneta, vemos como se marcan más pronunciadamente las caidas de luz y como alrededor de ellas se levantan un par de picos intensidad. Esto puede marcar un buen camino para la red. Por el otro lado, en la estrella 2003, el filtro parece que solo ha aumentado el ruido, ampliando mas el rango de picos y valles, e incrementando la diferencia entre ambas estrellas.
+
+Repecto al entrenamiento, observamos las perdidas, tanto en el set de entrenamiento como en el de validación, siguen un descenso estable hasta el epoch 80 aproximadamente, donde comienzan a diverger ligeramente. Es también sobre este punto cuando el modelo consigue sus mejores resultados, concretamente en el epoch 85, con una sensiblidad de 0.71, una especificidad de 0.99 y siendo el area bajo la curva de 0.86.
+
+\imagen{señales_gauss_sustraido.png}{Resultado de sustraer el filtro gaussiano a la señal original}
+
+De forma similar, probamos a entrenar el mismo modelo, salvo que ahora usaremos el resultado del filtro gaussiano de forma directa, como nuestro dataset, en lugar de restarlo a la señal original como en el caso previo. El modelo alcanza una puntuación perfecta de forma rápida, en el epoch 31. Dado que no hemos marcado esto como condición de parada, el modelo sigue entrenando tratando de conseguir un ajuste más fino, pero las perdidas en el set de validación comienzan a oscilar, así como la puntuación del modelo. En cualquier caso, los resultados de este modelo parecen prometedores.
+
+Repetimos nuestro análisis con ambas opciones para el filtro gaussiano, pero esta vez usamos Adam como algoritmo de optimización. En el primer caso, sustrayendo el filtro de la señal, obtenemos unos resultados interesantes. El área bajo la curva es de 0.93, con una sensibilidad de 0.86 y una especificidad de 0.99. Sin embargo, tanto estos valores como la perdida de validación fluctuan ampliamente. Usando solamente el filtro, el modelo consigue una puntuación perfecta relativamente pronto, en el epoch 22, manteniendo la perdida estable y baja. Hacia el final del entrenamiento vemos como la perdida de validación comienza a aumentar mientras que la perdida de entrenamiento permanece estable. En este punto nuestro modelo está comenzando a memorizar los datos del dataset de entrenamiento.
+
+Por último, nos queda comprobar que resultados obtenemos al cambiar la función de perdida. Volvemos a entrenar nuevamente las dos variantes del modelo, usando en este caso la funcion \textit{BCEWithLogitsLoss}. En este caso los resultados no son positivos para ninguno de los modelos. Todas las estrellas son clasificadas de forma negativa, nuestra red no esta consiguiendo aprender en estas condiciones. 
+
+\subsection{SMOTE}
+
+Procedemos a continuación a probar una nueva técnica, el \textit{oversampling}. Como discutimos en la sección de \nameref{undersampling-y-oversampling} vamos a trabajar con SMOTE. Aunque no siempre tiene que ser el caso, vamos a generar suficientes nuevas instancias como para igualar ambas clases, estrellas con y sin exoplanetas.
+
+Existen numerosas variantes de SMOTE que pueden dar mejor resultado en función de los datos y del modelo de red. Sin embargo, como demuestra Kovács \cite{SMOTE-comparison}, los beneficios de usar alguna de estas variantes son menos significativas que las mejoras logradas por usar SMOTE frente a no usarlo. En base a ello, y dado que el uso de esta técnica increma de forma sustancial el tiemmpo de entrenamiento, vamos a proceder a usar solamente la forma original.
+
+\imagen{nuevas_instancias_smote.png}{Nuevas instancias generadas mediante SMOTE}
+
+En el primer intento, usando \textit{CrossEntropyLoss}, SGD y sustrayendo el filtro gaussiano de la señal obtenemos el mejor modelo en el epoch 19 con una sensibilidad de 1 y una especificidad de 0.99. Es, también, a partir de este punto que la perdida en validación comienza a aumentar mientras que en entrenamiento sigue descendiendo poco a poco. Es la situación habitual en la que el modelo se encuentra memorizando los datos y no aprendiendo. También vemos, como era de esperar, dado el mayor número de instancias, un incremento del tiempo de entrenamiento, pasando de los 45 minutos del modelo sin SMOTE a los 77 actuales. En el caso de usar solo el filtro gaussiano como dataset, la convergencia es aún más rapida, lograndose está en el epoch 7.
+
+Cuando cambiamos el algoritmo de optimización y pasamos a usar Adam encontramos circunstancias similares. En ambos casos se produce una convergencia temprana y un, esperado, incremento en el tiempo de entrenamiento.
+
+El código correspondiente a los experimentos con SMOTE puede encontrarse en el archivo \textit{perceptron\_smote.ipynb}
+
+\section{Análisis de frecuencia}
+
+Cambiamos el foco ahora para adentrarnos en el análisis de las frecuencias mediante la transformada de Fourier. El algoritmo ya se encuentra implementado en la libreria \textit{SciPy} y será el que usaremos. Podemos observar en la figura \nameref{fig:fourier_con_exoplanetas.png} el efecto de aplicar la transformada en los datos de un par de estrellas.  
+
+\imagen{fourier_con_exoplanetas.png}{Frecuencias de dos estrellas con exoplanetas confirmados.}
+
+Es importante notar la simetría de la onda. Gracias a ello vamos a poder descartar la mitad de los datos, quedándonos solo con la primera parte. Esto podemos englobarlo dentro de las técnicas de reducción de la dimensionalidad, orientadas a reducir el número de características del conjunto de datos, eliminando las que se consideren superfluas, de forma que la red pueda centrarse en aquellas que mejor definen o catalogan los datos. Como beneficio secundario, al reducir el número de datos de entrada y reducir el tamaño de nuestra red para que sea concordante, es de esperar un tiempo menor de entrenamiento.
+
+\imagen{fourier_mitad.png}{Señal reducida que usaremos en el entrenamiento.}
+
+Vamos a proceder a entrenar dos modelos usando el análisis de frecuencias. Para el primero usaremos el algoritmo SGD y la función \textit{CrossEntropyLoss} junto con la reducción de picos y la normalización y, en el siguiente, incluiremos el uso de SMOTE para generar nuevas instancias. 
+
+El primero de los modelos obtiene unos resultados decentes, con una sensibilidad de 0.57 y una especificidad de 1 en el epoch 74. Aún así, vemos que la puntuación del modelo presenta grandes oscilaciones. La perdida en validación presena igualmente oscilaciones, con una tendencia claramente ascendente, aunque la perdida en el entrenamiento desciende. Por el contrario, al añadir SMOTE en el segundo caso, observamos una rápida convergencia ya en el epoch 4. La puntuación del modelo apenas oscila y las perdidas se mantienen bajas, por lo que parece un modelo prometedor.
+
+Estos experimentos se encuentran en el archivo \textit{perceptron\_fourier.ipynb}
+
+\section{LSTM}
+
+Por último vamos a cambiar la arquitectura de nuestra red para usar redes recurrentes, concretamente una red LSTM. Definimos cinco capas de LSTM para que tenga bastante profundidad. A su vez, reducimos el tamaño de las capas internas a 150, frente a las 1000 usadas en el perceptrón. Aún así, el modelo es bastante grande (y algo lento en entrenar, 70 minutos), por lo que, además, añadimos un \textit{dropout} de 0.2 para evitar que memorize los datos. En su forma más basica, aplicando sólo reducción de picos y normalización, el modelo no consigue aprender. En el siguiente paso añadimos el filtro gaussiano, que hace el modelo mejore.
+
+Finalmente, incluimos la última de las técnicas con las que estamos trabajando y probamos a usar SMOTE para ver como la red LSTM responde frente a las falsas instancias. El resultado es un tanto decepcionante, con una sensibilidad de 0.47 y una especificidad de solo 0.59 y ambas funciones de perdida con valores relativamente elevados y oscilando.
+
+El código de estos experimentos se encuentra en el archivo \textit{lstm\_base.ipynb}
+
+\section{Resumen y conclusiones}
+
+Para poder estudiar mejor los resultados de los diversos se presentan en una tabla HTML en el archivo \textit{resultados.html}. La tabla permite filtrar los resultados según las características del modelo y mostrando además las gráficas correspondientes al área bajo la curva y la evolución de las perdidas. Un resumen de estos datos puede encontrarse en la tabla \ref{tabla:Resumen-modelos}, de donde podemos extraer algunas conclusiones:
+
+\begin{itemize}
+    \item La reducción de picos y la normalización no son suficientes. Ningún modelo que use solo estas dos técnicas ha conseguido aprender nada.
+    \item Los modelos entrenados usando la funcion \textit{BCEWithLogitsLoss} no parecen funcionar.
+    \item A la hora de aplicar el filtro gaussiano, la opción de trabajar solamente con el resultado y no restarlo a la señal original parece ofrecer mejores resultados.
+    \item SMOTE realmente funciona; todos los modelos entrenados con esta técnica presentan buenos resultados y permiten justificar el coste computacional extra.
+    \item El análisis de frecuencias mejora respecto a los modelos simples pero no sobre los modelos entrenados usando SMOTE. La combinación de Fourier con SMOTE funciona bien.
+    \item Las redes LSTM no parecen terminar de aprender correctamente. Aunque sus resultados no son totalmente negativos y los modelos con SMOTE ciertamente son capaces de aprender, no parecen encontrarse a la altura del resto.
+\end{itemize}
+
+\tablaSmall{Resumen comparativo de modelos.}{l c c c c}{Resumen-modelos}
+{Modelo & Sens. & Espe.  & Score & Epoch \\}{
+perceptron\_sgd\_cross                       & 0      & 1      & 0.4965 & 0     \\
+perceptron\_adam\_cross                      & 0      & 1      & 0.4965 & 0     \\
+perceptron\_adam\_bce                        & 0      & 1      & 0.4965 & 0     \\
+perceptron\_adam\_cross\_mini                & 0.8571 & 0.8571 & 0.7346 & 2     \\
+perceptron\_sgd\_cross\_diferencia           & 0.7143 & 0.998  & 0.8528 & 86    \\
+perceptron\_sgd\_cross\_solo\_filtro         & 1      & 1      & 1      & 32    \\
+perceptron\_adam\_cross\_diferencia          & 0.8571 & 0.993  & 0.9178 & 36    \\
+perceptron\_adam\_cross\_solo\_filtro        & 1      & 1      & 1      & 23    \\
+perceptron\_adam\_bce\_diferencia            & 0      & 1      & 0.4965 & 0     \\
+perceptron\_adam\_bce\_solo\_filtro          & 0      & 1      & 0.4965 & 0     \\
+perceptron\_smote\_sgd\_cross\_diferencia    & 1      & 0.995  & 0.995  & 20    \\
+perceptron\_smote\_sgd\_cross\_solo\_filtro  & 1      & 1      & 1      & 8     \\
+perceptron\_smote\_adam\_cross\_diferencia   & 1      & 0.996  & 0.996  & 3     \\
+perceptron\_smote\_adam\_cross\_solo\_filtro & 1      & 1      & 1      & 3     \\
+perceptron\_sgd\_cross\_fourier              & 0.5714 & 1      & 0.7834 & 75    \\
+perceptron\_sgd\_cross\_smote\_fourier       & 1      & 1      & 0.999  & 5     \\
+lstm\_sgd\_cross                             & 0      & 1      & 0.4965 & 0     \\
+lstm\_sgd\_cross\_diferencia                 & 0.6079 & 0.496  & 0.3047 & 95    \\
+lstm\_sgd\_cross\_smote\_diferencia          & 0.478  & 0.598  & 0.2895 & 82    \\
+}
+
+\section{Implementación web}
+
+Como paso final, vamos a desarrollar una pequeña aplicación web para dar a conocer el proyecto y permitir usar alguno de los modelos entrenados. Para ello nos serviremos de Flask, un framework minimalista de Python que permite un desarrollo sencillo y muy rápido.
+
+Para presentar un poco mejor los resultados, optamos por incluir algunos gráficos, mostrando la proporción entre estrellas con y sin exoplanetas, así generar de forma dinámica las gráficas de flux y de frecuencia para las estrellas con exoplanetas. Además, localizaremos la web, de forma que esté también disponible en inglés.
+
+Desplegaremos nuestra web en Heroku, \textit{PaaS} gratuito, mediante un pipeline de despliegue continuo integrado en GitLab. De esta forma, cada \textit{push} realizado en la rama \textit{master} realizará un nuevo despliegue de la web. 
+
+Hay dos factores importantes a tener en cuenta cuando desplegamos en Heroku. El primero de ellos es que la plataforma establece un límite máximo de 500 MB para las cuentas gratuitas. Esto nos obliga a definir nuestro entorno con cuidado para no sobrepasar dicho límite como, por ejemplo, usar una versión más pequeña (y antigua) de Pytorch, así como instalar solamente la versión CPU. El segundo problema es un posible \textit{timeout} de la aplicación. Heroku lo fija en 30 segundos y no puede ser aumentado, por lo que si la conexión no es muy buena o el usuario trata de cargar un archivo muy grande, el límite puede superarse. Para tratar de evitar esta situación se ha añadido un mensaje informativo en la propia web.
