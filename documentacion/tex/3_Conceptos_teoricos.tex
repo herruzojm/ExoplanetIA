@@ -90,7 +90,7 @@ Normalizar no es un proceso único, sino que existen diversas técnicas para nor
 	zscore = \frac{X - mean(x)}{stdev(x)}
 \end{math}
 
-\section{Filtro gaussiano}
+\section{Filtro gaussiano}\label{filtro-gaussiano}
 Dada la elevada sensibilidad del satélite Kepler a la intensidad de luz y, como se observa en las imagenes previas, las señales presentan numerosos picos y valles que pueden dificultar el aprendizaje de los modelos. Para solucionar este problema, usaremos un filtro gaussiano, un efecto de suavizado que puede aplicarse a una señal o imagen para reducir el ruido.
 
 A la hora de aplicarlo tenemos dos opciones distintas. La primera es aplicar el filtro tal cúal, provocando el suavizado la señal, quitandole ruido, pero también nitidez y detalles; detalles que pueden ser importantes. La otra alternativa consiste reducir la señal original con el resultado de aplicar el filtro gaussiano, consiguiendo de esta forma reducir la importancia de la señal base y resaltando los detalles más especificos.
@@ -103,8 +103,6 @@ La primera de ellas consiste en reducir el tamaño de nuestro dataset, normalmen
 La otra técnica, \textit{oversampling}, consiste en el proceso opuesto, esto es, generar nuevos elementos de clase minoritaria. Igualmente, se suelen generar ejemplos hasta conseguir la igualdad, aunque no siempre es el caso. A la hora de generar los nuevos ejemplos, el enfoque más sencillo y rápido consiste en realizar copias de los datos de la clase minoritaria. La desventaja evidente de este proceso es que la red no incorpora nueva información y, al procesar los mismos datos una y otra vez, es más probable que acabe memorizandolos y, por tanto, sin capacidad de generalizar ante datos nuevos.
 
 Para tratar de solucionar este problema existen diversos métodos, siendo uno de los más utilizados SMOTE \cite{SMOTE} (\textit{synthetic minority oversampling technique}). Aunque existen multiples variantes, la forma básica para generar nuevos elementos consiste en, para cada elemento de la clase minoritaria, se seleccionan sus K (generalmente, 5) vecinos más próximos. De entre ellos, se selecciona uno al azar y se generan una más instancias (dependiendo del número total de instancias a generar) en la recta que une las instancias originales.
-
-Existen numerosas variantes de SMOTE que pueden dar mejor resultado en función de los datos y del modelo de red. Sin embargo, como demuestra Kovács \cite{SMOTE-comparison}, los beneficios de usar alguna de estas variantes son menos significativas que las mejoras logradas por usar SMOTE frente a no usarlo. En base a ello, usaremos la técnica original.
 
 \section{Transformada de Fourier}
 La transformada de Fourier es una transformación matemática que permite descomponer una función, generalmente expresada en función del tiempo, en sus frecuencias constitutivas. En nuestro caso, el estudio de la frecuencia puede ser interesante dado que la existencia de uno o más planetas orbitando la estrella resultaría en la existencia de más de una frecuencias.
