@@ -1,20 +1,119 @@
 \capitulo{3}{Conceptos teóricos}
 
-En esta sección se presentan los conceptos teóricos relacionados con este Trabajo Fin de Grado que  sirven para facilitar la comprensión. TODO
+\section{Minería de datos}
+La minería de datos es el proceso de extraer información de grandes conjuntos de datos usando para ello técnicas de diversos campos, como la estadística, el aprendizaje automático o los sistemas de bases de datos. Aunque no es nueva, su uso durante los últimos años ha crecido de forma drástica. Varios factores explican este incremento. Por un lado, tenemos factores que han permitido generar enorme cantidad de datos, como la fuerte penetración de Internet en casi todo el mundo o la reducción del precio de los chips, permitiendo su incorporación a practicamente cualquier objeto y convirtiendolos, de facto, en ubícuos. Por el otro lado, tenemos la reducción del precio de almacenamiento. En 1956, el precio de un GB de disco duro tradicional costaba más de nueve millones de dólares. A día de hoy, ese precio se ha reducidos a menos dos centavos \cite{Evolucion-precio-gb}. 
 
+Ahora bien, convertir toda esa cantidad de datos en información de la que se pueda extraer conocimiento no es tarea fácil, existiendo distintos métodos y metodologías para obtener resultados. Uno de estos métodos es CRISP-DM \cite{CRISP-DM}, \textit{Cross Industry Standard for Data Mining}, codificado en 1996 por un grupo de interés especial constituido tanto por empresas proveedoras de herramientas (SPSS y Teradata) cómo por empresas usuarias (Daimler, NCR y OHRA).
 
-\section{Proceso experimental para la generación de modelos}
-TODO interesante  comentar el marco global del proceso de creación de modelos para facilitar la lectura. Puedes ser interesantes algo similar al proceso CRISP-DM.
+Este método se divide en seis pasos:
+\begin{itemize}
+	\item Entender el negocio, esto es, entender los objetivos y los requisitos del proyecto.
+	\item Entender los datos, que incluye la recogida de los datos, así como su exploración inicial para detectar problemas de calidad o subconjuntos para formular hipótesis.
+	\item Preparar los datos para solventar cualquier problema detectado en la fase previa y facilitar su procesado por los modelos.
+	\item Modelar, donde se definen las técnicas y arquitecturas que se van a usar y se construyen los modelos. Desde este punto es posible volver a la fase previa de preparación de los datos, ya que diferentes modelos pueden necesitar diferentes técnicas de preprocesado de los datos.
+	\item Evaluar los modelos generados y seleccionar finalmente uno o varios de ellos, en función de las necesidades.
+	\item Desplegar el modelo seleccionado de forma que pueda ser usado para realizar predicciones sobre nuevos datos.
+\end{itemize}
 
+Veamos a continuación como se aplican las diferentes etapas del proceso CRISP-DM en nuestro proyecto.
 
-\section{Repositorios de datos Kaggle-Kepler}
+\imagen{CRISPDM_Process_Diagram.png}{Fases del método CRISP-DM \cite{CRISP-DM}}
 
-TODO Kaggle \footnote{ \url{https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data}}.
+\subsection{Entendiendo el negocio: objetivos y requisitos}
 
-Descripción del conjunto de datos y de los conjuntos de datos disponibles
+Ya hemos comentado en el capítulo previo los \nameref{sec:objetivos-del-proyecto}, por lo que no los repitiremos aquí.
 
+\subsection{Entendiendo los datos}
 
-\section{Perceptrón Multicapa}\label{perceptron-multicapa}
+Los datos para este proyecto han sido descargados de \href{https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data}{Kaggle}, donde podemos encontrar su descripcion: "los datos describen el cambio en el flujo (intensidad de luz) de varios miles de estrellas. Cada estrella tiene una etiqueta binaria de 2 o 1. Un 2 indica que se confirmó que la estrella tiene al menos un exoplaneta en órbita; algunas observaciones son, de hecho, sistemas de varios planetas." \cite{Kaggle-exoplanet}
+
+La fuente original de los datos pertenecen a la misión Kepler de la NASA, concretamente a la campaña 3 de la fase K2. Se pueden encontrar en la web del Mikulski Archive \href{https://archive.stsci.edu/k2/}{Mikulski Archive} \cite{Mikulski-Archive}. Los datos originales han sido transformados por \href{http://www.danlessmann.com/index.htm}{Dan Lessmann}; el proceso se encuentra detallado en su \href{https://github.com/winterdelta/KeplerAI}{repositorio en GitHub}. Finalmente, los datos han sido incorporados a Kaggle, desde donde han sido descargados.
+
+Nuestro dataset se compone de dos archivos, uno con los datos de entrenamiento y otro con los datos para testear. Su composición es la siguiente:
+
+- Fichero de entrenamiento:
+\begin{itemize}
+	\item 5087 filas u observaciones
+	\item 3198 columnas o características
+	\item La primera columna es la etiqueta para clasificación. Las columnas 2-3198 son los valores de flujo a lo largo del tiempo
+	\item Hay 37 estrellas con exoplanetas confirmados y 5050 estrellas sin exoplanetas
+\end{itemize}
+
+- Fichero de test:
+\begin{itemize}
+	\item 570 filas u observaciones
+	\item 3198 columnas o características
+	\item La primera columna es la etiqueta para clasificación. Las columnas 2-3198 son los valores de flujo a lo largo del tiempo
+	\item Hay 5 estrellas con exoplanetas confirmados y 565 estrellas sin exoplanetas
+\end{itemize}
+
+Lo primero que se puede observar es que un dataset enormemente desbalanceado. Las estrellas con exoplanetas confirmados solo representan el 0.73\% en el dataset de entrenamiento y el 0.88\% en el de test, lo que representa un grave handicap para el entrenamiento exitoso de los modelos. Veremos posteriormente técnicas para lidiar con este problema.
+
+Vamos a proceder a mostrar gráficamente algunos ejemplos de estrellas con y sin exoplanetas para intentar captar características comunes o posibles anomalías.
+
+\imagen{estrellas_con_exoplanetas.png}{Estrellas con exoplanetas confirmados}
+
+\imagen{estrellas_sin_exoplanetas.png}{Estrellas sin exoplanetas confirmados}
+
+Observando las imágenes destacan dos cosas. Por un lado, la amplitud en el rango de la intensidad de luz y, por otro, la presencia puntual de picos de luz. Esta es una circunstancia extraña, ya que el brillo de una estrella suele permanecer relativamente estable. Y, desde luego, no es debido al transito de una planeta, ya que esto reduciria el valor, como se aprecia en los picos descendentes de las primeras graficas. Asi pues, lo mas probable es que estos valores sean errores y lo mejor será descartarlos durante el procesado de los datos.
+
+\subsection{Preparación de los datos}
+
+Rara vez los datos se recogen de forma que puedan ser evaluados de forma directa por un modelo, por lo que necesitan de un tratamiento previo que haga más factible extraer información de ellos. Por supuesto, no todos los datos van a ser tratados de idéntica forma y, dependiendo del estado y del objetivo del proyecto, habrá que utilizar unas técnicas u otras, aunque hay algunas cuyo uso está tan extendido que su uso se ha convertido en un paso obligatorio de casí cualquier proyecto.
+
+Una de estás técnicas es la normalización, cuyo objetivo es cambiar los valores de las columnas numéricas de forma que usen una escala común. Esto nos permitirá abordar uno de los problemas detectados anteriormente, la amplitud en el rango de valores de nuestros datos.
+
+Además de la normalización, veremos más adelante otra serie de técnicas que nos ayudaran a entrenar el modelo, tales como \textit{undersampling} y \textit{oversampling}, uso de filtros para suavizar la señal o el estudio de la frecuencia.
+
+\subsection{Modelado}
+
+En esta fase del proceso es cuando se definen los modelos y arquitecturas que se usaran. Nosotros nos centraremos especialmente en el uso del \nameref{sec:perceptron-multicapa} y, en menor medida, las redes \nameref{sec:lstm}, un tipo de redes neuronales recurrente. 
+
+\subsection{Evaluación}
+
+Una vez tenemos los modelos entrenados, es el momento de evaluarlos y seleccionar el mejor. La diferencia de objetivos y de características de los datos, puede llevar a emplear métricas muy diversas para evaluarlos. En el caso que nos atañe, donde pretendemos construir un clasificador binario, nos centraremos especialmente en evaluar la sensibilidad y especificidad de nuestro modelo. Entraremos en más detalle en \nameref{sec:metricas}.
+
+\subsection{Despliegue}
+
+El paso final del proceso incluy la puesta en producción del modelo elegido de forma que pueda usarse para obtener predicciones reales sobre nuevos datos. Dependiendo del proyecto, algunas opciones habituales incluyen despliegues en aplicaciones webs, aplicaciones móviles o su contenerización.
+
+\section{Normalización}
+Como hemos comentado anteriormente, normalizar consiste en transformar los valores numéricos de una o más columnas para que sus valores se ajusten a una escala común y es más importante cuanto más amplio sea el rango de valores que adopta el dataset.  
+
+Normalizar no es un proceso único, sino que existen diversas técnicas para normalizar, cada una con ventajas y desventajas asociadas por lo que, en función de los datos, puede ser conveniente usar una u otra. Las dos más usadas son la normalización mínimo-máximo y la puntuación z. La primera de ellas tiene la ventaja de transformar todos los valores al rango [0, 1] siendo sensible a valores atípicos extremos mientras que la puntuación z, menos sensibles a estos valores extremos, no garantiza un rango fijo.
+
+\begin{math}
+	minmax = \frac{X - min(x)}{max(x) - min(x)}
+\end{math}
+
+\begin{math}	
+	zscore = \frac{X - mean(x)}{stdev(x)}
+\end{math}
+
+\section{Filtro gaussiano}\label{filtro-gaussiano}
+Dada la elevada sensibilidad del satélite Kepler a la intensidad de luz y, como se observa en las imagenes previas, las señales presentan numerosos picos y valles que pueden dificultar el aprendizaje de los modelos. Para solucionar este problema, usaremos un filtro gaussiano, un efecto de suavizado que puede aplicarse a una señal o imagen para reducir el ruido.
+
+A la hora de aplicarlo tenemos dos opciones distintas. La primera es aplicar el filtro tal cúal, provocando el suavizado la señal, quitandole ruido, pero también nitidez y detalles; detalles que pueden ser importantes. La otra alternativa consiste reducir la señal original con el resultado de aplicar el filtro gaussiano, consiguiendo de esta forma reducir la importancia de la señal base y resaltando los detalles más especificos.
+
+\section{Undersampling y Oversampling}\label{undersampling-y-oversampling}
+Cuando, como es nuestro caso, tenemos un dataset fuertemente desbalanceado, es necesario aplicar técnicas que permitan el correcto entrenamiento de la red. Dos de ellas son \textit{undersampling} y \textit{oversampling}.
+
+La primera de ellas consiste en reducir el tamaño de nuestro dataset, normalmente hasta que tengamos el mismo número de ejemplos de cada clase, aunque pueden usarse otras proporciones. La técnica habitual consiste en seleccionar de forma aleatoria elementos de clase mayoritaria y eliminarlos. Una ventaja derivada de este método es que, al tener que procesar un menor número de elemtnos, el entrenamiento es más rapido. Entre las desventajas tenemos, en primer lugar, que al privar a la red de determinados ejemplos le estamos ocultando información que puede ser importante y provocar que la red no generalize bien. De forma similar, cuando el número de ejemplos de una clase es muy pequeño, como es nuestro caso, el dataset puede ser demasiado pequeño, causando que la red memorice los datos y sea incapaz de generalizar.
+
+La otra técnica, \textit{oversampling}, consiste en el proceso opuesto, esto es, generar nuevos elementos de clase minoritaria. Igualmente, se suelen generar ejemplos hasta conseguir la igualdad, aunque no siempre es el caso. A la hora de generar los nuevos ejemplos, el enfoque más sencillo y rápido consiste en realizar copias de los datos de la clase minoritaria. La desventaja evidente de este proceso es que la red no incorpora nueva información y, al procesar los mismos datos una y otra vez, es más probable que acabe memorizandolos y, por tanto, sin capacidad de generalizar ante datos nuevos.
+
+Para tratar de solucionar este problema existen diversos métodos, siendo uno de los más utilizados SMOTE \cite{SMOTE} (\textit{synthetic minority oversampling technique}). Aunque existen multiples variantes, la forma básica para generar nuevos elementos consiste en, para cada elemento de la clase minoritaria, se seleccionan sus K (generalmente, 5) vecinos más próximos. De entre ellos, se selecciona uno al azar y se generan una más instancias (dependiendo del número total de instancias a generar) en la recta que une las instancias originales.
+
+\section{Transformada de Fourier}
+La transformada de Fourier es una transformación matemática que permite descomponer una función, generalmente expresada en función del tiempo, en sus frecuencias constitutivas. En nuestro caso, el estudio de la frecuencia puede ser interesante dado que la existencia de uno o más planetas orbitando la estrella resultaría en la existencia de más de una frecuencias.
+
+\imagen{frecuencias.png}{Ejemplo de una señal (arriba, en amarillo) y su descomposición en las frecuencias que la componen \cite{3blue1brown}}
+
+El nombre de transformada de Fourier, en honor al matemático francés Joseph Fourier, hace referencia tanto a la representación como a la función que la produce. Es, además, una operación reversible, permitiendo pasar de un dominio a otro. 
+
+El análisis matemático de la transformada de Fourier está fuera del alcance de este trabajo, pero es posible encontrarlo, junto con información más detallada en diferentes fuentes como, por ejemplo, la \href{https://es.wikipedia.org/wiki/Transformada_de_Fourier}{wikipedia} \cite{Wikipedia-fourier}.
+
+\section{Perceptrón Multicapa}\label{sec:perceptron-multicapa}
 
 El perceptrón multicapa, o red multicapa con propagación hacia delante,
 es el modelo de aprendizaje profundo por excelencia. Es una
@@ -24,9 +123,7 @@ de estos para dar solución a problemas no lineales \cite{Minsky-1969}.
 El objetivo de estas redes es aproximar alguna función \emph{f}. Por
 ejemplo, para un clasificador como es nuestro caso,
 \texttt{y = f(x)} mapea un input, \emph{x} a una categoría \emph{y}.
-La red define un mapeado \texttt{y = f(x, \textbackslash{}theta)} y
-aprende los valores de los parametros \texttt{\textbackslash{}theta}
-que resultan en la mejor aproximación a la función \cite{Goodfellow-et-al-2016}.
+La red define un mapeado \texttt{y = f(x, $\theta$)} y aprende los valores de los parametros $\theta$ que resultan en la mejor aproximación a la función \cite{Goodfellow-et-al-2016}.
 
 Su arquitectura es simple, consistiendo en una capa de entrada,
 encargada de recibir las señales del exterior y propagarlas a las
@@ -67,8 +164,7 @@ función de activación que se vaya usar; en el problema que tratamos de
 resolver, clasificando los datos en dos categorías, hay o no hay
 exoplaneta, usaremos dos neuronas.
 
-\subsection{Número de capas y
-	conexiones}\label{numero-de-capas-y-conexiones}
+\subsection{Número de capas y conexiones}\label{numero-de-capas-y-conexiones}
 
 De forma similar al número de neuronas, el número de capas ocultas puede
 variar ampliamente, contribuyendo especialmente al problema de
@@ -167,7 +263,7 @@ pasos previos al paso actual.
 Usaremos este optimizador como linea base de trabajo con diferentes
 valores para la tasa de aprendizaje tanto con como sin momento.
 
-Otro de los algoritmos más usados es Adam\cite{2014arXiv1412.6980K}, acrónimo en inglés de
+Otro de los algoritmos más usados es Adam \cite{2014arXiv1412.6980K}, acrónimo en inglés de
 estimación adaptativa del momento, que será el otro algoritmo que
 usaremos.
 
@@ -178,7 +274,27 @@ Además, al actualizar los parámetros con diferentes tasas de
 aprendizaje, es menos sensible a una elección no óptima de la tasa de
 aprendizaje inicial.
 
-\section{Medidas de desempeño del modelo}\label{metricas}
+\section{LSTM}\label{sec:lstm}
+
+Un tipo particular de redes neuronales son las recurrentes, que permiten añadir la dimensión temporal al procesado de datos. Esto lo consiguen incluyendo bucles en su arquitectura, permitiendo de esta forma la persistencia de determinada información y dotandolas de una gran facilidad para tratar información contenida en forma de secuencias o listas, donde un acontecimiento esta estrechamente vinculado a acontecimientos previos. Esto las ha convertido en el estandar para tratar diversos tipos de problemas como, por ejemplo, el reconocimiento de voz, el modelado del lenguaje o la traducción entre idiomas.
+
+Para nuestro problema particular, este tipo de red puede resultar útil, ya que el transito planetario incluye una sencuencia concreta de pasos, donde el flujo de luz se muestra relativamente constante, posteriormente experimenta un decrecimiento hasta llegar un mínimo y finalmente vuelve a su nivel original. Además, si el periodo orbital del planeta es breve, podríamos encontrar repeticiones de esta secuencia. El procesado de este conjunto de datos temporales es la especialidad de las redes recurrentes.
+
+\imagen{transit.png}{Variación de la intensidad de luz por tránsito planetario \cite{Kaggle-exoplanet}}
+
+La forma más simple de conseguir esta recurrencia es conectando la salida de una neurona no solo hacia neuronas de las capas siguientes, como hemos visto en el caso del perceptrón multicapa, sino también hacia la entrada de la propia neurona o de neuronas de las capas previas. Esto es, la salida de las neuronas de la capa $h_t$ se encuentran conectadas a las neuronas de la capa $h_{t-i}$. 
+
+Esta configuración simple funciona muy bien para tratar secuencias donde la información se encuentra temporalmente próxima pero presenta problemas relacionando información distante en el tiempo o información que influye en muchos momentos pasados.
+
+Pero existen muchos tipos de redes recursivas. En nuestro caso nos centraremos en las redes LSTM (\textit{long short term memory}), uno de los estandares de la industria, y designadas con el objetivo de presentar memoria a largo plazo. La arquitectura básica de estas redes esta formada por capas LSTM, también llamadas células, cada una sirviendo de entrada a la célula siguiente. En su interior, cada una de estas células presenta los mismos elementos, siendo el principal $C_t$, el estado de la célula y la parte que proporciona la memoria a largo a plazo al sistema.
+
+Otros elementos influyen sobre esta memoria. Una primera capa sigmoidal permite determinar que memoria a largo plazo mantener o desechar. Otras capas interiores, implementadas mediante funciones sigmoidales y tangenciales, permite determinar que información actual incorporar a la memoria a largo plazo. Finalmente, las capas finales se encargan de devolver la información procesada por la célula y de conectar su estado a la siguiente célula de la red.
+
+Para una descripción más detallada del proceso, se puede consultar \href{https://colah.github.io/posts/2015-08-Understanding-LSTMs/}{Understanding LSTMs}.
+
+\imagen{LSTM.png}{Detalle de una célula LSTM \cite{LSTMs}}
+
+\section{Medidas de desempeño del modelo}\label{sec:metricas}
 
 El objetivo de nuestro modelo es obtener un clasificador binario que nos
 indique la probabilidad de que una entrada de datos pertenezca a una de
@@ -211,7 +327,7 @@ Esto supone un problema para el aprendizaje de la red ya que, ante
 cualquier entrada, esta puede \emph{``aprender''} a responder siempre
 que no es un exoplaneta, acertando en la amplia mayoría de los casos.
 
-Para solventar este problema, siguiendo a Viloria\cite{Viloria-2006}, vamos a
+Para solventar este problema, siguiendo a Viloria \cite{Viloria-2006}, vamos a
 definir nuestra función de evaluación, con la que juzgaremos el
 aprendizaje real de nuestra red y su capacidad de predecir el resultado
 correcto frente a nuevas entradas de datos.
@@ -245,8 +361,6 @@ Sen = \frac{VP}{VP + FN}
 \begin{math}
 Esp = \frac{VN}{VN + FP}
 \end{math}
-
-
 
 \section{Bibliotecas de machine learning}\label{sec:bibliotecas-de-machine-learning}
 

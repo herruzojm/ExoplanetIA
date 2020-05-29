@@ -2,12 +2,129 @@
 
 \section{Introducción}
 
+En este punto pasamos a detallar la planificación del proyecto y los pasos que se han dado para poder completarlo con éxito.
+
 \section{Planificación temporal}
+
+La planificación y el desarrollo de este proyecto se han llevado a cabo siguiendo una metodología ágil, concretamente scrum, teniendo que en cuenta que la plataforma de desarrollo usada, GitLab, presenta una nomenclatura propia que no siempre coincide con la de scrum. Así, por ejemplo, GitLab usa \textit{milestones} o \textit{issues} para referirse a \textit{sprints} o \textit{product backlog items (PBIs)}. En este documento intentaremos usar los terminos de scrum siempre que sea posible.
+
+En relación a la plataforma, otro punto a reseñar es la no disponibilidad de gráficas de \textit{burndown} en la versión gratuita. Se ha intentado usar otras alternativas, como \href{https://screenful.com/}{Screenful}, pero requiere acceso completo a la API de GitLab. Estando el proyecto alojado en la cuenta privada de la empresa HP SCDS, esta no es una opción viable. Así pues, la realización del proyecto se ha llevado a cabo sin disponer de estos gráficos.
+
+El proyecto se ha llevado a cabo siguiendo un sprint de dos semanas, al final de las cuales, en reunión con los tutores, tanto por parte de la Universidad de Burgos como por parte de HP SCDS, se mostraba el trabajo realizado, se proponian cambios o mejoras, y se establecian los objetivos para el siguiente sprint. El seguimiento de los PBIs se ha realizado a través del tablero Kanban que GitLab provee por defecto.
+
+Pasamos a ver con más detalle el trabajo realizado en cada uno de los sprints:
+
+\subsection{01 - Arranque del proyecto \newline
+[10/02/2020 -– 17/02/2020]}
+
+El sprint de arranque del proyecto es fundamental teórico, dedicado a estudiar y decidir como vamos a hacer el proyecto, con que herramientas y que medidas usaremos para determinar la validez de un modelo. Este sprint inicial solamente duró una semana, para de esta forma, trás la primera reunión con los tutores el 17 de febrero, poder comenzar un nuevo sprint.
+
+\begin{itemize}
+    \item Estudio comparativo de librerías de machine learning: a la hora de abordar la realización del proyecto nos encontramos con multitud de librerías disponibles. Como primera tarea seleccionamos varias de ellas como posibles candidatas y procedemos a estudiar sus características distintivas.    
+    \item Análisis estadístico: en esta tarea nos dedicamos a estudiar métricas alternativas a la precisión para valorar nuestro modelo, como la sensibilidad y la especificidad, así las curvas ROC \textit{receiver oOperating characteristic, o característica operativa del receptor}.
+    \item Estudio documentación de un proceso experimental con CRISP\_DM: aquí aprendemos una metodología habitúal a la hora de trabajar en ciencias de datos que usaremos durante el proyecto.
+    \item Elección de librerias: una vez disponemos de los datos necesarios, valoramos como cada librería se adapta a las necesidades del proyecto y seleccionamos una, Pytorch.
+    \item Estudio teórico del perceptrón multicapa: como última tarea del sprint, estudiamos el modelo básico de red neuronal profunda, el perceptrón multicapa.
+\end{itemize}
+
+
+\subsection{02 - Desarrollo del perceptrón \newline
+[02/03/2020 – 16/03/2020]}
+
+En este sprint nos enfocamos en la parte formal del TFG, estudiando LaTex y las plantillas de la memoria así como la estructura de archivos, y en los primeros pasos con Pytorch y el dataset.
+
+\begin{itemize}
+    \item Estudio de LaTex y plantillas de memoria: estudiamos los documentos a entregar y sus diferentes secciones a la vez que preparamos el entorno para trabajar con documentos LaTex.
+    \item Añadir a la memoria LaTex la documentación generada en makdown: pasamos la documentación generada en el primer sprint, escrita en markdown en la wiki del proyecto, a LaTex y la incorporamos a la memoria.
+    \item Estructurar las carpetas del repositorio y actualizar fichero Readme.md: procedemos a estructurar los archivos de nuestro solución siguiendo ejemplos de proyectos de exito y otros TFG.
+    \item Aprendizaje de Pytorch: en este punto nos centramos en aprender la librería que vamos a usar.
+    \item Preprocesado de los datos: finalmente estudiamos los datos con los que vamos a trabajar y realizamos una implementación básica de red.
+\end{itemize}
+
+
+\subsection{03 - Modelo de perceptrón \newline
+[16/03/2020 - 06/04/2020]}
+
+Por circunstancias personales imprevistas, este sprint se alarga una semana más. En este tiempo apenas se puede avanzar en el proyecto; solo se completa una tarea y se comienza a trabajar en el modelo básico del perceptrón aunque no se completa.
+
+\begin{itemize}
+    \item Gestión de la configuración del repositorio GitLab, donde limpiamos el repositorio de ficheros temporales de Python y Pytorch
+\end{itemize}
+
+
+\subsection{04 - Finalizar perceptrón \newline
+[07/04/2020 - 20/04/2020]}
+
+En este sprint nos centramos en el desarrollo de los diversos modelos del perceptrón.
+
+\begin{itemize}
+    \item Modelo simple de perceptron: terminamos la tarea comenzada en el sprint anterior donde generamos nuestro modelo base de percetrón probando con los algoritmos SGD y Adam.
+    \item Entrenar perceptrón con BCEWithLogitsLoss: ampliamos nuestro modelo inicial para usar la función de perdida BCEWithLogitsLoss.
+    \item Mejorar modelo de perceptrón: terminado nuestro modelo base, pasamos ahora a incluir el filtro gaussiano.
+    \item Añadir SMOTE en el modelo de perceptrón: procedemos a entrenar nuevos modelos de percetrón usando SMOTE.
+    \item Hacer análisis de frecuencia con la transformada de Fourier: para terminar con los modelos basados en perceptrón, cambiamos el análisis de la intensidad de luz por el de la frecuencia.
+    \item Caso de estudio de documentación TFG en LaTex relacionado: comprobamos otros TFG para estudiar diferentes enfoques a la hora de encarar la escritura de la memoria.    
+    \item Crear notebook para testear los modelos: para finalizar el sprint, creamos un notebook donde poder ejecutar nuestros modelos contra el dataset de testing.    
+\end{itemize}    
+
+
+\subsection{05 - Probar LSTM y crear web \newline
+[21/04/2020 - 04/05/2020]}
+
+En este sprint nos marcamos como objetivo desarrollar modelos basados en redes LSTM y crear una primera versión de aplicación web para poder ejecutar los modelos.
+
+\begin{itemize}
+    \item Formación en conjuntos de datos desequilibrados: estudiamos algunos métodos adicionales para trabajar con dataset desbalanceados.
+    \item Integración documentación Wiki a memoria LateX: migramos el resto de información que teniamos en la wiki a la memoria. 
+    \item Crear modelo de red LSTM: desarrollmos varios modelos usando redes LSTMs.
+    \item Crear web para testear modelos: creamos una primera versión donde sea posible subir un archivo para probar la ejecución del modelo.    
+    \item Escribir capítulos de Introducción y Objetivos de la memoria: pasamos a completar los capítulos iniciales de la memoria.
+\end{itemize}
+
+
+\subsection{06 - Preparar memoria \newline
+[05/05/2020 - 18/05/2020]}
+
+Estaba previsto que el foco de este sprint fuese trabajar en la memoria pero algunos problemas en las tareas relacionadas con la aplicación web provocan que no haya mucho avance en la documentación.
+
+\begin{itemize}
+    \item Desplegar web en Heroku: desplegamos de forma manual la web en Heroku para comprobar que todo funciona correctamente.
+    \item Crear pipeline de release: después del despliegue manual procedemos a automatizar el proceso generando un pipeline en GitLab.
+    \item Completar web: añadimos algunas páginas de información sobre la misión Kepler, sobre los datos y sobre el proyecto. También la localizamos soportando el idioma inglés.
+    \item Ampliar descripcion de las herramientas usadas: añadimos más detalles sobre las herramientas usadas en el proyecto.
+\end{itemize}
+
+
+\subsection{07 - Anexos 
+\newline[19/05/2020 – 31/05/2020]}
+
+Entrando ya en las etapas finales, este sprint se dedica a continuar el trabajo en la memoria y a ir puliendo detalles del proyecto en general.
+
+\begin{itemize}
+    \item Documentar proceso experimental: completamos el apartado quinta de la memoria detallando las lecciones aprendidas durante el proyecto.
+    \item Incluir dataset y datos del modelo en la web: ampliamos la web incluyendo un dataset de pruebas, información sobre el modelo desplegado y enlazando al repositorio original de los datos en Kaggle.
+    \item Evaluar la calidad del código: usamos una herramienta para controlar la calidad de nuestro código, Codebeat.
+    \item Añadir badges al repositorio: incluimos algunos badges en el repositorio y en el Readme.md para conocer la calidad del código, como fue la ejecución del pipeline de CD o como se encuentra la web en Heroku.    
+\end{itemize}
+
 
 \section{Estudio de viabilidad}
 
+Abordamos a continuación un breve estudio de la viabilidad tanto legal como económica de este proyecto.
+
 \subsection{Viabilidad económica}
+
+Este proyecto nunca se ha enfocado a una viabilidad económica y sería difícil venderlo \textit{tal cual}. Quizá la razón más importante es que apenas hay demanda; el conocimiento de que una estrella es orbitada o no por exoplanetas es, a día de hoy, de poca utilidad comercial, por lo que hay pocas, por no decir ninguna, empresas dispuestas a pagar por ello.
+
+A parte de las empresas privadas, tenemos a diferentes organismos públicos interesados en la exploración espacial, como la NASA, la ESA, la CNSA o similares. Estas agencias se enfrentan a un grave problema común: hay muchos estrellas con posibles exoplanetas y disponen de pocos recursos para explorarlos todos. Dado el carácter probabilístico de este tipo de modelos, puede tener sentido comercial disponer de diferentes aplicaciones y enfocar sus recursos en estudiar aquellas estrellas seleccionadas como más probables por todos, o la mayoría, de las aplicaciones de las que dispongan. A nivel de modelos, en aprendizaje automático, tenemos los metodos de \textit{ensemble} que, básicamente, consisten en combinar varios modelos base para producir otro modelo óptimo. Así pues, no sería ilógico realizar un proceso similar a nivel de aplicaciones.
+
+Por otro lado, otro colectivo que podría estar interesado en nuestra aplicación sería la comunidad científica, más alla de aquellos que trabajan en las agencias espaciales. La confirmación de la presencia o no de exoplanetas en torno a diferentes estrellas puede ayudar a generar nuevo conocimiento sobre este tipo de sistemas, sirviendo de base para confirmar hipótesis o para descartar teorías erróneas. 
+
+Finalmente, tenemos otro colectivo que podría estar interesado en nuestro proyecto, los aficionados a la astronomía. En este caso, se podría complementar la aplicación con alguna funcionalidad más como, por ejemplo, proporcionar las coordenadas de la estrella en la que se han identificado exoplanetas de forma que el aficionado pueda apuntar su telescopio diréctamente a ella.
+
 
 \subsection{Viabilidad legal}
 
+En lo referente a la viabilidad legal del proyecto debemos separarla en dos puntos: las herramientas y los datos. Respecto a las primeras, no se encuentra ningún problema. Todas las herramientas pueden usarse en aplicaciones comerciales, presentando licencias permisivas (BSD o MIT en su mayoría).
 
+En el apartado de los datos si podemos encontrarnos con mayor problema. Los usados para el entrenamiento de estos modelos, pertenecientes a la campaña 3, son de dominio público, esperando sólamente ser citados por investigadores. Sin embargo, si deseamos mejorar nuestros modelos con datos más recientes de otras campañas si podemos encontrarnos con datos restringidos o con copyright de forma temporal. Además, en el caso de querer implementar la versión para aficionados a la astronomía, el catálogo de estrellas si tiene copyright.
