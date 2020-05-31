@@ -2,10 +2,316 @@
 
 \section{Introducción}
 
+A continuación, procedemos a abordar los requisitos del proyecto.
+
 \section{Objetivos generales}
 
+Este proyecto de investigación nace con los siguientes objetivos:
+
+\begin{itemize}
+    \item Investigar las técnicas y soluciones existentes de aprendizaje automático para la detección de exoplanetas mediante el análisis del flujo de luz.    
+    \item Estudiar los datos disponibles, las diferentes formas de procesarlos y como este procesado puede ayudarnos a obtener mejores resultados.
+    \item Diseñar, implementar y comparar diferentes soluciones, seleccionando el modelo que presente mejores resultados.
+    \item Disponer de software que facilite el uso de diferentes técnicas y el desarrollo de modelos alternativos a los aquí presentados.
+\end{itemize}
+
+Además, durante el desarrollo del proyecto se considera añadir algunos nuevos requisitos de importancia secundaria:
+
+\begin{itemize}    
+    \item La creación de una interfaz gráfica que permita ejecutar el modelo para comprobar los datos contenidos en un archivo.
+    \item Desarrollar un pipeline de despliegue continuo que permita desplegar de forma automatica cualquier cambio en nuestro modelo o en la interfaz grafica.
+\end{itemize}
+
 \section{Catalogo de requisitos}
+
+Se muestran a continuación las características que debe cumplir nuestro proyecto, clasificándolas en dos grupos, requisitos funcionales y no funcionales. Mientras que los primeros definen un comportamiento exacto del software, es decir, \textit{que} hace, los segundos hacen referencia a sus propiedades, es decir, \textit{como} las hace.
+
+Definimos dos actores:
+
+\begin{itemize}
+    \item \textbf{Investigador}: persona que realiza la investigación y utiliza el software para generar y entrenar modelos.
+    \item \textbf{Usuario}: persona que usa el software para determinar si un conjunto de estrellas tienen o no exoplanetas orbitando en torno a ellas.
+\end{itemize}
+
+\subsection{Requisitos funcionales}
+\begin{itemize}
+
+    \item \textbf{RF-1} El investigador debe poder dividir un conjunto de datos en sets de entrenamiento y validación.
+        \begin{itemize}
+            \item \textbf{RF-1.1} Se debe indicar que porcentaje respecto al total de instancias se incluiran en el set de validación.
+            \item \textbf{RF-1.2} La inclusión de una instancia concreta en un set u otro debe ser aleatoria pero se podrá indicar una semilla para que, dado un set de entrada concreto y un porcentaje determinado, la división produzca los mismos set de entrenamiento y validación.            
+        \end{itemize}
+    
+    \item \textbf{RF-2} El investigador debe poder aplicar técnicas y algoritmos que prepararen los datos.
+        \begin{itemize}
+            \item \textbf{RF-2.1} Debe poder normalizar los datos.
+            \item \textbf{RF-2.2} Debe poder aplicar un filtro gaussiano.
+            \item \textbf{RF-2.3} Debe poder eliminar los picos anormales de intensidad de luz.
+            \item \textbf{RF-2.4} Debe poder transformar el conjunto de datos desde el dominio de la intensidad al dominio de la frecuencia.            
+        \end{itemize}
+
+    \item \textbf{RF-3} El investigador debe poder mostrar gráficas de la frecuencia o intensidad de la luz respecto al tiempo.
+    
+    \item \textbf{RF-4} El investigador debe poder instanciar modelos de redes neuronales.
+        \begin{itemize}
+            \item \textbf{RF-4.1} Debe poder instanciar modelos de perceptrón multicapa configurables.
+            \item \textbf{RF-4.2} Debe poder instanciar modelos de red LSTM configurable.
+        \end{itemize}
+    
+    \item \textbf{RF-5} El investigador debe poder entrenar un modelo.
+        \begin{itemize}
+            \item \textbf{RF-5.1} El investigador debe poder elegir diferentes algoritmos de optimización o funciones de coste.
+            \item \textbf{RF-5.2} Debe mostrarse la evolución del entrenamiento.
+            \item \textbf{RF-5.3} Debe guardarse el mejor modelo generado durante el entrenamiento según el nombre y la ruta indicada por el investigador.
+            \item \textbf{RF-5.4} El investigador debe poder mostrar gráficamente los resultados del entrenamiento.
+        \end{itemize}
+
+    \item \textbf{RF-6} El investigador debe poder probar un modelo guardado.
+        \begin{itemize}
+            \item \textbf{RF-6.1} El investigador debe poder indicar el nombre y la ruta del modelo a cargar.
+        \end{itemize}
+
+    \item \textbf{RF-7} El usuario debe poder analizar un archivo con datos en la aplicación.
+        \begin{itemize}
+            \item \textbf{RF-7.1} El usuario debe tener información suficiente sobre el formato del archivo a procesar.
+            \item \textbf{RF-7.2} El usuario debe obtener que estrellas presentan exoplanetas.
+            \item \textbf{RF-7.3} La aplicación debe mostrar las gráficas correspondientes a las estrellas con exoplanetas.
+        \end{itemize}
+
+\end{itemize}
+
+\subsection{Requisitos no funcionales}
+
+\begin{itemize}
+    \item \textbf{RNF-1} El entrenamiento o el testeo de modelos debe poder llevarse a cabo tanto en CPUs como en GPUs, según el hardware del que el investigador disponga.
+    \item \textbf{RNF-2} Debe proveerse una aplicación para que un usuario sin entorno ni conocimientos de programación puede probar alguno de los modelos entrenados.
+\end{itemize}
 
 \section{Especificación de requisitos}
 
 
+\subsection{Diagrama de casos de uso del investigador}
+
+\imagen{casos_uso_investigador.png}{Diagrama de casos de uso del investigador}
+
+\subsection{Diagrama de casos de uso del usuario}
+
+\imagen{casos_uso_usuario.png}{Diagrama de casos de uso del usuario}
+
+\subsection{Especificaciones de los casos de uso}
+
+\begin{table}[]
+    \begin{center}    
+        \begin{tabular}{| >{\columncolor[gray]{0.7}} p{3cm} | p{9.5cm} | }
+        \hline
+        Caso de uso      & Entrenar un modelo \\ 
+        \hline
+        Requisitos       &  RF-5\newline
+                            RF-5.1\newline
+                            RF-5.2\newline
+                            RF-5.3\newline
+                            RF-5.4 \\ 
+        \hline
+        Descripción      & El investigador puede entrenar un nuevo modelo dado un conjunto de datos usando un algoritmo de optimización y una función de coste. \\ 
+        \hline
+        Precondiciones   &  El investigador debe disponer de un conjunto de datos. \\ 
+        \hline
+        Acciones         &  1. El investigador carga los datos. \newline 
+                            2. Opcionalmente, el investigador puede dividir sus datos en dos conjuntos distintos, entrenamiento y validación. \newline 
+                            3. Opcionalmente, el investigador puede preparar los datos usando alguna de las técnicas y herramientas propuestas. \newline 
+                            4. Opcionalmente, el investigador visualizar los datos. \newline 
+                            5. El investigador elige un tipo de modelo y genera una instancia. \newline 
+                            6. El investigador fija los hiperparámetros según deseé. \newline 
+                            7. El investigador decide que algoritmo de optimización y función de coste usar. \newline 
+                            8. El investigador comienza el entrenamiento. \newline 
+                            9. Opcionalmente, cuando el entrenamiento termine, el investigador puede mostrar gráficamente los resultados del mismo.  
+                            \\ 
+        \hline
+        Postcondiciones  &  Se ha generado un modelo y las imagenes con los resultados del entrenamiento.\\ 
+        \hline
+        Excepciones      &  Formato de datos incorrecto. Algoritmo de optimización invalido. Función de coste invalida.Configuración de la instancia del modelo incorrecta.\\ 
+        \hline
+        Importancia      &  Alta\\ 
+        \hline
+        \end{tabular}
+    \caption{Caso de uso ''Entrenar un modelo''.}
+    \label{tabla:casoUso1}        
+    \end{center}
+\end{table}
+
+\begin{table}[]
+    \begin{center}    
+        \begin{tabular}{| >{\columncolor[gray]{0.7}} p{3cm} | p{9.5cm} | }
+        \hline
+        Caso de uso      & Crear sets de entrenamiento y validación \\ 
+        \hline
+        Requisitos       &  RF-1\newline
+                            RF-1.1\newline
+                            RF-1.2  \\ 
+        \hline
+        Descripción      & A partir de un conjunto de datos, el investigador puede dividirlo en dos de forma aleatoria y segun la proporción deseada. \\ 
+        \hline
+        Precondiciones   & El investigador debe disponer de un conjunto de datos. \\ 
+        \hline
+        Acciones         &  1. El investigador selecciona el conjunto de datos. \newline 
+                            2. El investigador elige que porcentaje del total ocupará el set de validación \newline
+                            3. Opcionalmente, el investigador elige una semilla para la selección aleatoria.   \\ 
+        \hline
+        Postcondiciones  & El investigador obtiene los datos divididos en dos conjuntos. \\ 
+        \hline
+        Excepciones      & El conjunto de datos está vacio. La proporción es uno o mayor. \\ 
+        \hline
+        Importancia      &  Media. \\ 
+        \hline
+        \end{tabular}
+    \caption{Caso de uso ''Crear sets de entrenamiento y validación''.}
+    \label{tabla:casoUso1}        
+    \end{center}
+\end{table}
+
+\begin{table}[]
+    \begin{center}    
+        \begin{tabular}{| >{\columncolor[gray]{0.7}} p{3cm} | p{9.5cm} | }
+        \hline
+        Caso de uso      & Preparar los datos \\ 
+        \hline
+        Requisitos       &  RF-2\newline
+                            RF-2.1\newline
+                            RF-2.2\newline
+                            RF-2.3\newline
+                            RF-2.4  \\  
+        \hline
+        Descripción      & El investigador debe poder aplicar a los datos las funciones usadas durante el entrenamiento: normalización, eliminación de picos de intensidad, filtro gaussiano y transformada de Fourier. \\ 
+        \hline
+        Precondiciones   & El investigador debe disponer de un conjunto de datos. \\ 
+        \hline
+        Acciones         &  1. El investigador selecciona el conjunto de datos. \newline 
+                            2. El investigador aplica la función correspondiente.   \\  
+        \hline
+        Postcondiciones  & El conjunto de datos transformado. \\ 
+        \hline
+        Excepciones      & El conjunto de datos está vacio. \\ 
+        \hline
+        Importancia      & Media. \\ 
+        \hline
+        \end{tabular}
+    \caption{Caso de uso ''Preparar los datos''.}
+    \label{tabla:casoUso1}        
+    \end{center}
+\end{table}
+
+\begin{table}[]
+    \begin{center}    
+        \begin{tabular}{| >{\columncolor[gray]{0.7}} p{3cm} | p{9.5cm} | }
+        \hline
+        Caso de uso      & Mostrar gráficos de los datos \\
+        \hline
+        Requisitos       &  RF-3 \\  
+        \hline
+        Descripción      & El investigador puede mostrar la gráfica de cualquiera de las estrellas incluidas en el conjunto de datos. \\ 
+        \hline
+        Precondiciones   & El investigador debe disponer de un conjunto de datos. \\ 
+        \hline
+        Acciones         &  1. El investigador selecciona el conjunto de datos. \newline 
+                            2. El investigador indica los indices de las estrellas a mostrar. \newline
+                            3. El investigador aplica la función.  \\  
+        \hline
+        Postcondiciones  & Gráfica(s) mostrando los datos correspondientes. \\ 
+        \hline
+        Excepciones      & El indice de las estrellas seleccionadas no se encuentra en el conjunto de datos. \\ 
+        \hline
+        Importancia      & Baja. \\ 
+        \hline
+        \end{tabular}
+    \caption{Caso de uso ''Mostrar gráficos de los datos''.}
+    \label{tabla:casoUso1}        
+    \end{center}
+\end{table}
+
+\begin{table}[]
+    \begin{center}    
+        \begin{tabular}{| >{\columncolor[gray]{0.7}} p{3cm} | p{9.5cm} | }
+        \hline
+        Caso de uso      & Instanciar modelo de red \\ 
+        \hline
+        Requisitos       &  RF-4\newline
+                            RF-4.1\newline
+                            RF-4.2 \\   
+        \hline
+        Descripción      & El investigador debe poder instanciar modelos de perceptrón o de LSTM. \\ 
+        \hline
+        Precondiciones   & Ninguna. \\ 
+        \hline
+        Acciones         &  1. El investigador selecciona el tipo de modelo a instanciar. \newline 
+                            2. Opcionalmente, el investigador los parámetros para el modelo. \\ 
+        \hline
+        Postcondiciones  & Instancia del modelo. \\ 
+        \hline
+        Excepciones      & Ninguna. \\ 
+        \hline
+        Importancia      & Alta. \\ 
+        \hline
+        \end{tabular}
+    \caption{Caso de uso ''Instanciar modelo de red''.}
+    \label{tabla:casoUso1}        
+    \end{center}
+\end{table}
+
+\begin{table}[]
+    \begin{center}    
+        \begin{tabular}{| >{\columncolor[gray]{0.7}} p{3cm} | p{9.5cm} | }
+        \hline
+        Caso de uso      & Testear un modelo \\ 
+        \hline
+        Requisitos       &  RF-6\newline
+                            RF-6.1\\   
+        \hline
+        Descripción      & El investigador debe poder hacer predicciones sobre un conjunto de datos con un modelo previamente entrenado. \\ 
+        \hline
+        Precondiciones   & El investigador debe contar un modelo entrenado guardado en disco. \\ 
+        \hline
+        Acciones         &  1. El investigador selecciona el conjunto de datos. \newline 
+                            2. El investigador instancia un modelo de red acorde al modelo que desee testear. \newline
+                            3. El investigador testea el modelo.  \\ 
+        \hline
+        Postcondiciones  & Matriz de confusión del modelo. \\ 
+        \hline
+        Excepciones      & El modelo de red instanciado no es el adecuado para el modelo guardado. \\ 
+        \hline
+        Importancia      & Alta. \\ 
+        \hline
+        \end{tabular}
+    \caption{Caso de uso ''Testear un modelo''.}
+    \label{tabla:casoUso1}        
+    \end{center}
+\end{table}
+
+\begin{table}[]
+    \begin{center}    
+        \begin{tabular}{| >{\columncolor[gray]{0.7}} p{3cm} | p{9.5cm} | }
+        \hline
+        Caso de uso      & Analizar un archivo \\ 
+        \hline
+        Requisitos       &  RF-7\newline
+                            RF-7.1\newline
+                            RF-7.2\newline
+                            RF-7.3 \\   
+        \hline
+        Descripción      & El usuario debe poder cargar un archivo en la aplicación, obteniendo predicciones sobre que estrellas presentan exoplanetas así como las gráficas de dichas estrellas. \\ 
+        \hline
+        Precondiciones   & El usuario debe disponer de un archivo con datos. \\ 
+        \hline
+        Acciones         &  1. El usuario selecciona el archivo de datos. \newline 
+                            2. El usuario carga el archivo en la aplicación.  \\ 
+        \hline
+        Postcondiciones  & Resultado del análisis con las gráficas correspondientes. \\ 
+        \hline
+        Excepciones      & El archivo no es válido. \\ 
+        \hline
+        Importancia      & Media. \\ 
+        \hline
+        \end{tabular}
+    \caption{Caso de uso ''Analizar un archivo''.}
+    \label{tabla:casoUso1}        
+    \end{center}
+\end{table}
