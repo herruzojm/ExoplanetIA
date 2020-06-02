@@ -2,10 +2,95 @@
 
 \section{Introducción}
 
+En este apartado abordamos el diseño del software generado durante el proyecto, tanto la pate dedicada al proyecto investigador como la aplicación web.
+
 \section{Diseño de datos}
+
+A la hora de estudiar el diseño de nuestro proyecto, los datos juegan un papel fundamental al ser la materia prima que nos permitirá elaborar nuestros modelos. Estos se pueden encontrar en la plataforma \textit{Kaggle} para su consulta y descarga. Examinándolos constatamos que viene definidos en dos archivos de texto plano, \textit{exoTrain.csv} y \textit{exoTest.csv}, con valores separados por comas. Detallamos a continuación su formato:
+
+- \textit{exoTrain.csv}:
+\begin{itemize}
+	\item 5087 filas u observaciones
+	\item 3198 columnas o características
+	\item La primera columna es la etiqueta para clasificación. Las columnas 2-3198 son los valores de flujo a lo largo del tiempo
+	\item Hay 37 estrellas con exoplanetas confirmados y 5050 estrellas sin exoplanetas
+\end{itemize}
+
+- \textit{exoTest.csv}:
+\begin{itemize}
+	\item 570 filas u observaciones
+	\item 3198 columnas o características
+	\item La primera columna es la etiqueta para clasificación. Las columnas 2-3198 son los valores de flujo a lo largo del tiempo
+	\item Hay 5 estrellas con exoplanetas confirmados y 565 estrellas sin exoplanetas
+\end{itemize}
+
+Este formato de archivo determina parte de las estructura de nuestros modelos ya que, salvo que optemos por eliminar características, la capa de entrada debe contar con el mismo numero de entradas que columnas de datos, esto es, 3197. A su vez, la aplicación web desplegada debe aceptar archivos que sigan estan formato para poder analizarlos correctamente. 
+
+Los valores correspondientes a la intensidad de luz presentan una amplia variedad, moviendose generalmente entre los intervalos de $-10^5$ a $10^5$. 
+
+\imagen{descripcion_datos.png}{Algunos datos estadísticos sobre el dataset de entrenamiento}
+
+Por otro lado, la parde de investigación de nuestro proyecto no utiliza gestores de bases de datos. La salida de la información procesada se corresponde con modelos entrenados y con las imagenes de los resultados de dichos entrenamientos. Todos ellos son archivos que se almacenan en disco en función del nombre que el investigador asigne al modelo.
+
+De forma similar, la aplicación web no interacciona con ningún gestor de bases de datos y ni siquiera almacena datos. Los resultados del análisis y las gráficos mostrados son generados de forma dinámica según sean necesarios y presentados al cliente trás lo cual son descartados.
 
 \section{Diseño procedimental}
 
+A la hora de realizar un nuevo experimento, el investigador dispone de bastante libertad a la hora de elegir diversas técnicas y algoritmos. Sin embargo, el flujo general de trabajo se puede describir de forma general para englobar la mayoría de las casuísticas. Como tal, los diagramas aquí presentandos reflejan una guía orientativa con la que se han desarrollado los experimentos de este proyecto y con los que otro investigador podría desarrollar experimentos nuevos.
+
+La creación de un experimento es un proceso bastante linear: cargar los datos, aplicar las técnicas adecuadas para preparar los datos, configurar el modelo y realizar el entrenamiento. El proceso puede verse en la imagen \nameref{fig:diagrama_de_flujo_experimento.png} \ref{fig:diagrama_de_flujo_experimento.png}.
+
+\imagen{diagrama_de_flujo_experimento.png}{Diagrama de flujo de la realización de un experimento}
+
+Por su mayor complejidad y su importancia en el proyecto, nos interesa estudiar de forma más detallada el proceso de entrenamiento del modelo, proceso que puede apreciarse en la imagen \nameref{fig:diagrama_de_flujo_entrenamiento.png} \ref{fig:diagrama_de_flujo_entrenamiento.png}.
+
+El proceso arranca creando las instancias de las clases necesarias, una del tipo \textit{resultado} y otra de un tipo específico de Pytorch, \textit{dataloader}, que suministra los \textit{batches} necesarios según orqueste nuestro \textit{fluxdataset}. En caso de suministrar un set de validación a la función, se prepara para ser procesado.
+
+A continuación se itera hasta que se alcancen todos los epochs establecidos. En cada epoch, el \textit{dataloader} irá suministrando \textit{batches} conteniendo los datos a procesar. En este proyecto se ha fijado el tamaño del \textit{batch} a uno, por lo que vamos iterando los datos una estrella cada vez. En este bucle de segundo nivel es donde se realiza el entrenamiento propiamente dicho. Primero, el modelo hace una predicción sobre los datos de la estrella correspondiente. A continuación, se comprueba la perdida de dicha predicción para proceder a actualizar los pesos del modelo, intentando mejorar la proxima predicción.
+
+Cuando se han completado todos los \textit{batches}, nuestro objeto resultados almacena la información de esta ejecución y pasamos a comprobar nuevamente si tenemos set de validación. Si no es el caso, comprobariamos si cumplidos los epochs necesarios o debemos seguir entrenado. En el caso de tener set de validación, tenemos que comprobar el desempeño del modelo. Para ello, nuestro modelo realiza una predicción sobre todo el conjunto de validación, obtiene la perdida correspondiente y calcula las puntuaciones del modelo, como la sensibilidad y la especificidad. Si esta puntuación es mejor que la que teniamos, guardamos el nuevo modelo. Posteriormente, en cualquiera de los dos casos, volvemos a comprobar si hemos llegado al final de los epochs o debemos seguir entrenando.
+
+Cuando llegamos al final de los epochs, el proceso muestra los datos del entrenamiento y finaliza.
+
+\imagen{diagrama_de_flujo_entrenamiento.png}{Diagrama de flujo del proceso de entrenamiento}
+
 \section{Diseño arquitectónico}
 
+La arquitéctura de nuestro proyecto es relativamente simple. Dado el foco en la investigación y en probar nuevos métodos y técnicas conforme el proceso avanza, se prefiere mantener el código más flexible posible para evitar tener que deshacerlo a posteriori si el proyecto continua por una linea diferente.
 
+A nivel de entidades, nuestro proyecto define y utiliza las siguientes:
+
+\begin{itemize}
+    \item \textbf{modelo\_perceptron}: define la arquitectura base de un modelo de perceptrón multicapa, permitiendo configurar el número de neuronas de sus capas internas y de salida.
+    \item \textbf{modelo\_lstm}: define la arquitectura base de un modelo de red LSTM, permitiendo configurar el tamaño de sus capas, el numero de capas internas y determinar un porcentaje de \textit{dropout}.
+    \item \textbf{fluxdataset}: implementación de la clase abstracta \textit{dataset} de Pytorch que proporciona funcionalidad para gestionar la carga de datos durante un entrenamiento.
+    \item \textbf{resultados}: gestiona los resultados que se generan durante un entrenamiento, permitiendo imprimirlos en formato gráfico.
+    \item \textbf{utils}: módulo genérico con funciones para procesar los datos y entrenar un modelo.
+\end{itemize}
+
+\imagen{diagrama_de_clases.png}{Diagrama de clases de la aplicación}
+
+Además, se incluyen los siguientes notebook (denominados con el nombre genérico notebook en la imagen) donde se han llevado a cabo los experimentos:
+
+\begin{itemize}
+    \item \textbf{perceptron\_base}: experimentos realizados con perceptrones multicapa con datos en brutos, con reducción de picos de flujo, normalizados y con filtros de Gauss.
+    \item \textbf{perceptron\_smote}: experimentos con perceptrones multicapa usando SMOTE.
+    \item \textbf{perceptron\_fourier}: experimentos con perceptrones multicapa realizando análisis de frecuencias.
+    \item \textbf{lstm\_base}: experimentos con redes LSTM usando preprocesado de datos y SMOTE.
+    \item \textbf{comparador}: este notebook no contiene experimentos, sino que permite cargar un modelo entrenado para testearlo. También se encuentra incrustado un documento html donde se recogen las puntuaciones de los modelos durante el entrenamiento.
+\end{itemize}
+
+Por último comentaremos brevemente la estructura de directorios y los ficheros que componen la aplicación web:
+
+\begin{itemize}
+    \item \textbf{models}: directorio que contiene los modelos que se pueden probar en la web.
+    \item \textbf{static}: directorio con el contenido estático de la web: imagenes, hojas de estilos y el dataset de pruebas.
+    \item \textbf{templates}: documentos html que componen la web, siendo \textit{base.html} la plantilla por defecto para todos ellos.
+    \item \textbf{translations}: directorio con los archivos para la localizacion.
+	\item \textbf{.flaskenv}: archivo de configuración de flask
+	\item \textbf{app.py}: archivo principal de la aplicación, donde se definen las routas accesibles por los clientes así como las acciones a realizar en cada una ellas. Dado el reducido tamaño de la web, no se han separado en archivos y directorios diferentes para seguir un patrón MVC.
+	\item \textbf{config.py}: archivo de configuración de la web.
+	\item \textbf{forms.py}: definición del formulario para subir el archivo.
+	\item \textbf{modelo\_perceptron}: definición del perceptrón multicapa para poder cargar modelos basados en él.
+    \item \textbf{modelo\_lstm}: definición de red LSTM para poder cargar modelos basados en ella.
+\end{itemize}
