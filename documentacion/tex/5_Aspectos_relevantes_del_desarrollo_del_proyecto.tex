@@ -26,9 +26,9 @@ Comenzamos ahora con el tratamiento de los datos para ver si podemos mejorar el 
 
 Para lograr este objetivo usaremos la función \textit{reduce\_upper\_outliers} definida en el archivo \textit{utils.py}. El código ordena el valor del flujo y selecciona, en base a un porcentaje sobre el total, algunos de ellos. Posteriormente calcula la media de los puntos a su alrededor y reduce los puntos señalados a dicho valor.
 
-La otra técnica con la que vamos a trabajar, la normalización, es un elemento básico y habitual en la mayoría de los problemas de aprendizaje automático. Usaremos ahora la denominada \textit{zcore}; como hemos comentado, este tipo de normalización no restringe los valores al rango [0,1] pero nos evita problemas cuando hay elementos que se distáncian mucho de la media. Observando la figura \ref{fig:señales_originales.png} se puede apreciar, especialmente en el caso de la estrella 8, que este es el caso en el que nos encontramos.
+La otra técnica con la que vamos a trabajar, la normalización, es un elemento básico y habitual en la mayoría de los problemas de aprendizaje automático. Usaremos ahora la denominada \textit{zcore}; como hemos comentado, este tipo de normalización no restringe los valores al rango [0,1] pero nos evita problemas cuando hay elementos que se distáncian mucho de la media. Observando la figura \ref{fig:señales_originales.png} \nameref{fig:señales_originales.png} se puede apreciar, especialmente en el caso de la estrella 8, que este es el caso en el que nos encontramos.
 
-Comparando la figura previa con la figura \ref{fig:señales_sin_picos_normalizadas.png}, se observa que los picos superiores de ambas estrellas se han eliminado. Asimismo, el rango de valores se ha reducido, moviendonos de la escala $10^3$ a $10^1$.
+Comparando la figura previa con la figura \ref{fig:señales_sin_picos_normalizadas.png} \nameref{fig:señales_sin_picos_normalizadas.png}, se observa que los picos superiores de ambas estrellas se han eliminado. Asimismo, el rango de valores se ha reducido, moviendonos de la escala $10^3$ a $10^1$.
 
 \imagen{señales_sin_picos_normalizadas.png}{Flujo las estrellas 8 y 1524 tras reducir los picos y normalizar}
 
@@ -57,7 +57,7 @@ Claro que no todo es positivo. El mejor resultado es obtenido en el tercer epoch
 
 Otra técnica a nuestra disposición consiste en el \nameref{filtro-gaussiano}. Como hemos visto en las gráficas de intensidad de luz sin modificar, la señal presenta numerosos pequeños picos de subida y bajada debidos, principalmente, a la alta sensibilidad del fotómetro instalado en el satélite Kepler. Todas estas subidas y bajadas puede confundir a nuestra red, haciendo que considere que esta es la información importante que denota la existencia o no de exoplanetas.
 
-Primero probamos a entrenar la red sustrayendo el resultado del filtro gaussiano a la señal original. Podemos ver la forma de la nueva señal en la figura \ref{fig:señales_gauss_sustraido.png}. Para la estrella 8, con exoplaneta, vemos como se marcan más pronunciadamente las caidas de luz y como alrededor de ellas se levantan un par de picos intensidad. Esto puede marcar un buen camino para la red. Por el otro lado, en la estrella 2003, el filtro parece que solo ha aumentado el ruido, ampliando mas el rango de picos y valles, e incrementando la diferencia entre ambas estrellas.
+Primero probamos a entrenar la red sustrayendo el resultado del filtro gaussiano a la señal original. Podemos ver la forma de la nueva señal en la figura \ref{fig:señales_gauss_sustraido.png} \nameref{fig:señales_gauss_sustraido.png}. Para la estrella 8, con exoplaneta, vemos como se marcan más pronunciadamente las caidas de luz y como alrededor de ellas se levantan un par de picos intensidad. Esto puede marcar un buen camino para la red. Por el otro lado, en la estrella 2003, el filtro parece que solo ha aumentado el ruido, ampliando mas el rango de picos y valles, e incrementando la diferencia entre ambas estrellas.
 
 Repecto al entrenamiento, observamos las perdidas, tanto en el set de entrenamiento como en el de validación, siguen un descenso estable hasta el epoch 80 aproximadamente, donde comienzan a diverger ligeramente. Es también sobre este punto cuando el modelo consigue sus mejores resultados, concretamente en el epoch 85, con una sensiblidad de 0.71, una especificidad de 0.99 y siendo el area bajo la curva de 0.86.
 
@@ -109,7 +109,7 @@ El código de estos experimentos se encuentra en el archivo \textit{lstm\_base.i
 
 \section{Resumen y conclusiones}
 
-Para poder estudiar mejor los resultados de los diversos se presentan en una tabla HTML en el archivo \textit{resultados.html}. La tabla permite filtrar los resultados según las características del modelo y mostrando además las gráficas correspondientes al área bajo la curva y la evolución de las perdidas. Un resumen de estos datos puede encontrarse en la tabla \ref{tabla:Resumen-modelos}, de donde podemos extraer algunas conclusiones:
+Para poder estudiar mejor los resultados de los diversos se presentan en una tabla HTML en el archivo \textit{resultados.html}. La tabla permite filtrar los resultados según las características del modelo y mostrando además las gráficas correspondientes al área bajo la curva y la evolución de las perdidas. Un resumen de estos datos puede encontrarse en la tabla \nameref{tabla:Resumen-modelos} \ref{tabla:Resumen-modelos}, de donde podemos extraer algunas conclusiones:
 
 \begin{itemize}
     \item La reducción de picos y la normalización no son suficientes. Ningún modelo que use solo estas dos técnicas ha conseguido aprender nada.
