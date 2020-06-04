@@ -1,0 +1,56 @@
+body {
+    background-color: black;	
+    color: white;
+    overflow: hidden;
+}
+
+li.nav-padding {
+    padding: 0 50px 0 0;
+}
+
+.icon {
+    height: 24px;
+    width: 24px;
+    float: left;
+}
+
+.background_image {
+    position: fixed;
+    z-index: -100;
+    width: 600vw;
+    height: 600vh;
+	margin-top: -200vh;
+	margin-left: -200vw;    
+    background-size: 240px;
+	-webkit-backface-visibility: visible;
+    backface-visibility: visible;
+    -webkit-animation: fondo-rotate 400s linear infinite;
+    animation: fondo-rotate 400s linear infinite;
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgMjQwIj48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMTA2IDkwaDJ2MmgtMnpNNzQgNjNoMXYxaC0xek0yMyA2NmgxdjFoLTF6TTUwIDExMGgxdjFoLTF6TTYzIDEyOGgxdjFoLTF6TTQ1IDE0OWgxdjFoLTF6TTkyIDE1MWgxdjFoLTF6TTU4IDhoMXYxaC0xek0xNDcgMzNoMnYyaC0yek05MSA0M2gxdjFoLTF6TTE2OSAyOWgxdjFoLTF6TTE4MiAxOWgxdjFoLTF6TTE2MSA1OWgxdjFoLTF6TTEzOCA5NWgxdjFoLTF6TTE5OSA3MWgzdjNoLTN6TTIxMyAxNTNoMnYyaC0yek0xMjggMTYzaDF2MWgtMXpNMjA1IDE3NGgxdjFoLTF6TTE1MiAyMDBoMXYxaC0xek01MiAyMTFoMnYyaC0yek0wIDE5MWgxdjFIMHpNMTEwIDE4NGgxdjFoLTF6Ii8+PC9zdmc+)
+}
+
+.main_content {
+    position: absolute;
+    top: 10%;
+    z-index: 100;
+    text-align: justify;
+    text-justify: inter-word;
+    width: 75vw;
+}
+
+.example_row {
+    word-break: break-all;
+    overflow-y: scroll !important;
+}
+
+@-webkit-keyframes fondo-rotate {
+	to {
+		transform: rotate(-360deg)
+	}
+}
+
+@keyframes fondo-rotate {
+	to {
+		transform: rotate(-360deg)
+	}
+}

@@ -1,94 +1,92 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+
 {% block app_content %}
-
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/results.css') }}">
 <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
-
 <div class="row">
-	<div class="col-sm-6">
-		<div class="panel panel-success">
-			<div class="panel-heading">
-				<h3 class="panel-title">{{ _('Resultados') }}</h3>
-			</div>
-			<div class="panel-body">
-				<p>{{ _('Se ha analizado el flujo de luz de %(total_stars)d estrellas.', total_stars = results.total_stars) }}</p>
-				{% if results.exoplanets == 0 %}
-					<p>{{ _('No se ha encontrado ningúna estrella con exoplaneta en los datos.') }}</p>
-				{% else %}
-					<p>{{ _('Se han encontrado %(number_exoplanes)d estrellas con exoplanetas.', 
-						number_exoplanes = results.exoplanets) }}</p>
-					<p>{{ _('Las estrellas con exoplanetas son:') }}</p>
-					{{ results.indexes }}
-				{% endif %}				
-			</div>
-		</div>
-	</div>
-	<div class="col-sm-6">
-		<div class="panel panel-success">
-			<div class="panel-heading">
-				<h3 class="panel-title">{{ _('Proporción') }}</h3>
-			</div>
-			<div class="panel-body">
-				<canvas id="chart"></canvas>
+		<div class="col-sm-6">
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<h3 class="panel-title">{{ _('Resultados') }}</h3>
+				</div>
+				<div class="panel-body">
+					<p>{{ _('Se ha analizado el flujo de luz de %(total_stars)d estrellas.', total_stars = results.total_stars) }}</p>
+					{% if results.exoplanets == 0 %}
+						<p>{{ _('No se ha encontrado ningúna estrella con exoplaneta en los datos.') }}</p>
+					{% else %}
+						<p>{{ _('Se han encontrado %(number_exoplanes)d estrellas con exoplanetas.', 
+							number_exoplanes = results.exoplanets) }}</p>
+						<p>{{ _('Las estrellas con exoplanetas son:') }}</p>
+						{{ results.indexes }}
+					{% endif %}				
+				</div>
 			</div>
 		</div>
-	</div>	
-</div>	
-	
-{% for star in images %}
-	<div class="col-sm-6">
-		<div class="panel panel-success">
-			<div class="panel-heading">
-				<h3 class="panel-title">{{ _('Flujo de luz de la estrella ') }} {{ star }}</h3>
+		<div class="col-sm-6">
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<h3 class="panel-title">{{ _('Proporción') }}</h3>
+				</div>
+				<div class="panel-body">
+					<canvas id="chart"></canvas>
+				</div>
 			</div>
-			<div class="panel-body">
-				<img src="{{ images[star][0] }}" class="img-responsive" />
-				<img src="{{ images[star][1] }}" class="img-responsive" />
+		</div>	
+		
+	{% for star in images %}
+		<div class="col-sm-6">
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<h3 class="panel-title">{{ _('Flujo de luz de la estrella ') }} {{ star }}</h3>
+				</div>
+				<div class="panel-body">
+					<img src="{{ images[star][0] }}" class="img-responsive" />
+					<img src="{{ images[star][1] }}" class="img-responsive" />
+				</div>
 			</div>
-		</div>
-	</div>	
-{% endfor %}	
-<script>
-	var options = {		
-		legend: {position:'bottom', padding:5, labels: {pointStyle:'circle', usePointStyle:true}},
-		animation: {animateScale: true}
-	}
-	var data = {
-		datasets: [{
-			borderWidth: 4,
-			weight: 40,
-			backgroundColor: [
-				{% for item in colors %}
-				"{{ item }}",
-				{% endfor %}],
-			hoverBackgroundColor: [
-				{% for item in hovercolors %}
-				"{{ item }}",
-				{% endfor %}],
-			data: [
-				{% for item in values %}
-				"{{ item }}",
+		</div>	
+	{% endfor %}	
+	<script>
+		var options = {		
+			legend: {position:'bottom', padding:5, labels: {pointStyle:'circle', usePointStyle:true}},
+			animation: {animateScale: true}
+		}
+		var data = {
+			datasets: [{
+				borderWidth: 4,
+				weight: 40,
+				backgroundColor: [
+					{% for item in colors %}
+					"{{ item }}",
+					{% endfor %}],
+				hoverBackgroundColor: [
+					{% for item in hovercolors %}
+					"{{ item }}",
+					{% endfor %}],
+				data: [
+					{% for item in values %}
+					"{{ item }}",
+					{% endfor %}]
+				}],
+				
+				
+
+			labels: [
+				{% for item in labels %}
+				"{{item}}",
 				{% endfor %}]
-			}],
-			
-			
+		};
 
-		labels: [
-			{% for item in labels %}
-            "{{item}}",
-            {% endfor %}]
-	};
-
-	var chart = document.getElementById("chart")
-	if (chart) {
-		new Chart(chart, {
-		  type: 'pie',
-		  data: data,
-		  options: options
-		});
-	}
-</script>
-
+		var chart = document.getElementById("chart")
+		if (chart) {
+			new Chart(chart, {
+			type: 'pie',
+			data: data,
+			options: options
+			});
+		}
+	</script>
+</div>	
 {% endblock %}
-

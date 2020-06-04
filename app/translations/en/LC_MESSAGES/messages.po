@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-22 19:35+0200\n"
+"POT-Creation-Date: 2020-06-04 23:37+0200\n"
 "PO-Revision-Date: 2020-05-11 00:25+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,29 +18,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: app.py:74
+#: app.py:82
 msgid "Archivo no seleccionado"
 msgstr "No selected file"
 
-#: app.py:82
+#: app.py:90
 msgid "Estrellas"
 msgstr "Stars"
 
-#: app.py:82
+#: app.py:90
 msgid "Exoplanetas Detectados"
 msgstr "Exoplanets Detected"
 
-#: app.py:97
+#: app.py:105
 msgid "Solo se permiten archivos con extensión csv"
 msgstr "Only files with csv extension are allowed"
 
-#: forms.py:7
+#: forms.py:14
+msgid "Selecciona un modelo"
+msgstr "Select a model"
+
+#: forms.py:15
 msgid "Selecciona un fichero csv con los datos"
 msgstr "Select a csv file with the data"
 
-#: forms.py:8
+#: forms.py:16
 msgid "Cargar"
 msgstr "Upload"
+
+#: templates/about.html:11 templates/base.html:13
+msgid "Acerca de"
+msgstr "About"
 
 #: templates/about.html:18
 msgid ""
@@ -80,13 +88,13 @@ msgstr ""
 msgid "Datos"
 msgstr "Data"
 
-#: templates/base.html:12
+#: templates/base.html:12 templates/help.html:11
 msgid "Ayuda"
 msgstr "Help"
 
-#: templates/base.html:13
-msgid "Acerca de"
-msgstr "About"
+#: templates/base.html:67
+msgid "Con la colaboración de"
+msgstr "In collaboration with"
 
 #: templates/data.html:17
 msgid ""
@@ -94,7 +102,11 @@ msgid ""
 "href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-"
 "series-data\" target=\"_blank\">dataset de Kaggle</a> o <a "
 "href=\"../static/downloads/minitest.csv\">nuestro dataset</a>."
-msgstr "In order to quickly test the application, it is possible to use the <a href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data\" target=\"_blank\">Kaggle dataset</a> or <a href=\"../static/downloads/minitest.csv\">our dataset</a>."
+msgstr ""
+"In order to quickly test the application, it is possible to use the <a "
+"href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-"
+"series-data\" target=\"_blank\">Kaggle dataset</a> or <a "
+"href=\"../static/downloads/minitest.csv\">our dataset</a>."
 
 #: templates/data.html:18
 msgid "En caso de usar otro archivo, este debe de cumplir:"
@@ -138,7 +150,9 @@ msgstr ""
 msgid ""
 "Dadas las limitaciones técnicas de Heroku y la velocidad de tu conexión, "
 "ten en cuenta que la carga de archivos grandes puede ser interrumpida."
-msgstr "Given Heroku's technical limitations and the speed of your connection, be aware that uploading large files may be interrupted."
+msgstr ""
+"Given Heroku's technical limitations and the speed of your connection, be"
+" aware that uploading large files may be interrupted."
 
 #: templates/data.html:29
 msgid ""
@@ -209,39 +223,43 @@ msgstr "Machine Learning for exoplanet detection"
 
 #: templates/index.html:23
 msgid ""
-"Modelo de redes neuronales entrenado con el dataset <a "
+"Presentamos dos modelos de redes neuronales entrenados con el dataset <a "
 "href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-"
 "series-data\" target=\"_blank\">Exoplanet Hunting in Deep Space</a> de "
 "Kaggle."
 msgstr ""
-"Neural network model trained with the <a "
+"We present two models of neural networks trained with the dataset <a "
 "href=\"https://www.kaggle.com/keplersmachines/kepler-labelled-time-"
-"series-data\" target=\"_blank\">Exoplanet Hunting in Deep Space</a> "
-"Kaggle dataset."
+"series-data\" target=\"_blank\">Exoplanet Hunting in Deep Space</a> from "
+"Kaggle."
 
 #: templates/index.html:24
 msgid ""
-"El modelo está formado por una red LSTM; los datos han sido normalizados "
-"y se ha usado un filtro gaussiano para suavizar la señal. Finalmente, el "
-"dataset ha sido equilibrando usando SMOTE."
+"El primer modelo está formado por una red LSTM; los datos han sido "
+"normalizados y se ha usado un filtro gaussiano para suavizar la señal. "
+"Finalmente, el dataset ha sido equilibrando usando SMOTE. El modelo ha "
+"alcanzado una sensibilidad de 0.6 y una especificidad de 0.99"
 msgstr ""
-"The model is an LSTM network; data has been normalized and a Gaussian "
-"filter has been used to smooth the signal. Finally, the dataset has been "
-"balanced using SMOTE."
+"The first model is an LSTM network; the data has been normalized and a "
+"Gaussian filter has been used to smooth the signal. Finally, the dataset "
+"has been balanced using SMOTE. The model has reached a sensitivity of 0.6"
+" and a specificity of 0.99"
 
 #: templates/index.html:25
 msgid ""
-"En el entrenamiento, el modelo ha alcanzado una sensibilidad de 0.6 y una"
-" especificidad de 0.99"
+"El segundo modelo es un perceptrón multicapa entrenado de forma similar. "
+"En este caso, la sensibilidad y la especificidad han sido de 0.4 y 0.94 "
 msgstr ""
-"In training, the model has achieved a recall of 0.6 and a specificity of "
-"0.99"
+"The second model is a similarly trained multilayer perceptron. In this "
+"case, the sensitivity and specificity have been 0.4 and 0.94"
 
 #: templates/index.html:26
 msgid ""
-"Puedes probar el modelo con los dataset de Kaggle o <a "
+"Puedes probar los modelos con los dataset de Kaggle o <a "
 "href=\"../static/downloads/minitest.csv\">nuestro dataset</a>."
-msgstr "You can try the model with the Kaggle dataset or <a href=\"../static/downloads/minitest.csv\">our dataset</a>."
+msgstr ""
+"You can try the models with the Kaggle dataset or <a "
+"href=\"../static/downloads/minitest.csv\">our dataset</a>."
 
 #: templates/index.html:27
 msgid ""
@@ -254,6 +272,10 @@ msgstr ""
 #: templates/index.html:35
 msgid "Pruébalo!"
 msgstr "Try it!"
+
+#: templates/kepler.html:10
+msgid "El telescopio Kepler"
+msgstr "The Kepler telescope"
 
 #: templates/kepler.html:17
 msgid ""
@@ -352,6 +374,53 @@ msgstr "The stars with exoplanets are:"
 msgid "Proporción"
 msgstr "Proportion"
 
-#: templates/results.html:43
+#: templates/results.html:42
 msgid "Flujo de luz de la estrella "
 msgstr "Star ligth flux "
+
+#~ msgid ""
+#~ "Modelo de redes neuronales entrenado con"
+#~ " el dataset <a "
+#~ "href=\"https://www.kaggle.com/keplersmachines/kepler-"
+#~ "labelled-time-series-data\" "
+#~ "target=\"_blank\">Exoplanet Hunting in Deep "
+#~ "Space</a> de Kaggle."
+#~ msgstr ""
+#~ "Neural network model trained with the"
+#~ " <a href=\"https://www.kaggle.com/keplersmachines/kepler-"
+#~ "labelled-time-series-data\" "
+#~ "target=\"_blank\">Exoplanet Hunting in Deep "
+#~ "Space</a> Kaggle dataset."
+
+#~ msgid ""
+#~ "El modelo está formado por una red"
+#~ " LSTM; los datos han sido "
+#~ "normalizados y se ha usado un "
+#~ "filtro gaussiano para suavizar la señal."
+#~ " Finalmente, el dataset ha sido "
+#~ "equilibrando usando SMOTE."
+#~ msgstr ""
+#~ "The model is an LSTM network; data"
+#~ " has been normalized and a Gaussian"
+#~ " filter has been used to smooth "
+#~ "the signal. Finally, the dataset has "
+#~ "been balanced using SMOTE."
+
+#~ msgid ""
+#~ "En el entrenamiento, el modelo ha "
+#~ "alcanzado una sensibilidad de 0.6 y "
+#~ "una especificidad de 0.99"
+#~ msgstr ""
+#~ "In training, the model has achieved "
+#~ "a recall of 0.6 and a specificity"
+#~ " of 0.99"
+
+#~ msgid ""
+#~ "Puedes probar el modelo con los "
+#~ "dataset de Kaggle o <a "
+#~ "href=\"../static/downloads/minitest.csv\">nuestro dataset</a>."
+#~ msgstr ""
+#~ "You can try the model with the "
+#~ "Kaggle dataset or <a "
+#~ "href=\"../static/downloads/minitest.csv\">our dataset</a>."
+

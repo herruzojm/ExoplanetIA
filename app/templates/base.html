@@ -14,32 +14,37 @@
 ] -%}
 
 {% block navbar %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/navbar.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
 <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container">
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                {% for href, id, caption in navigation_bar %}
-                <li class="nav-padding{% if id == active_page %} active{% endif %}"><a class="navbar-brand" href="{{ href|e }}">{{ caption|e }}</a></li>
+                {% for href, id, caption in navigation_bar %}                
+                    <li class="nav-padding{% if id == active_page %} active{% endif %}">
+                        <a class="navbar-brand" href="{{ href|e }}">
+                            <img src="../static/images/{{id}}.svg" class="icon">{{ caption|e }}</a></li>
                 {% endfor %}
                 
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% for language in AVAILABLE_LANGUAGES.items() %}
                     {% if CURRENT_LANGUAGE != language[0] %}
-                        <li class="nav-padding"><a href="{{ url_for('set_language', language=language[0]) }}" >{{ language[1] }}</a></li>
+                        <li class="nav-padding"><a href="{{ url_for('set_language', language=language[0]) }}">
+                            <img src="../static/images/{{ language[0] }}.svg" class="icon">{{ language[1] }}</a></li>
                     {%  endif %}
                 {% endfor %}
             </ul>
         </div>
     </div>
 </nav>
+
 {% endblock %}
 
 
 
 {% block content %}
-<div class="container">
+<div class="background_image"></div>
+<div class="main_content container">    
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for category, message in get_flashed_messages(with_categories=True) %}
@@ -54,10 +59,21 @@
     <p></p>
     <div class="row">
         <div class="col-sm-2">
-        </div>
-        <div class="col-sm-10">
+        </div>        
+        <div class="col-sm-8">
             {% block app_content %}{% endblock %}
         </div>
-    </div>
+        <div class="col-sm-2">     
+            <div>{{ _('Con la colaboración de') }}:</div>       
+            <ul>
+                <lu>
+                    <a href="https://www.ubu.es//" target="_blank"><img src="../static/images/ubu.svg"></a>
+                </lu>
+                <lu>
+                    <a href="http://hpscds.com/" target="_blank"><img src="../static/images/logo_hp_scds.svg"></a>
+                </lu>
+            </ul>            
+        </div>
+    </div>    
 </div>
 {% endblock %}
