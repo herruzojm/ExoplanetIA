@@ -14,11 +14,10 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from scipy import fft
 
-from .modelo_perceptron import *
-from .modelo_lstm import *
-from .config import *
-from .forms import *
-os.environ['KMP_DUPLICATE_LIB_OK']='True'
+from modelo_perceptron import *
+from modelo_lstm import *
+from config import *
+from forms import *
 
 app = Flask(__name__)
 babel = Babel(app)
