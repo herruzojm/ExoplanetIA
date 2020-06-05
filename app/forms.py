@@ -3,8 +3,8 @@ from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField, SelectField
 from wtforms.validators import DataRequired
 from flask_babel import lazy_gettext as _l
-from .config import *
-from .forms import *
+from config import *
+from forms import *
 
 app = Flask(__name__)
 app.config.from_object(Config)
