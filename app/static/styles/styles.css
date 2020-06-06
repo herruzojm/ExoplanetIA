@@ -1,7 +1,6 @@
 body {
     background-color: black;	
     color: white;
-    overflow: hidden;
 }
 
 li.nav-padding {
@@ -25,7 +24,7 @@ li.nav-padding {
 	-webkit-backface-visibility: visible;
     backface-visibility: visible;
     -webkit-animation: fondo-rotate 400s linear infinite;
-    animation: fondo-rotate 400s linear infinite;
+    animation: fondo-rotate 400s linear infinite;    
 	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgMjQwIj48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMTA2IDkwaDJ2MmgtMnpNNzQgNjNoMXYxaC0xek0yMyA2NmgxdjFoLTF6TTUwIDExMGgxdjFoLTF6TTYzIDEyOGgxdjFoLTF6TTQ1IDE0OWgxdjFoLTF6TTkyIDE1MWgxdjFoLTF6TTU4IDhoMXYxaC0xek0xNDcgMzNoMnYyaC0yek05MSA0M2gxdjFoLTF6TTE2OSAyOWgxdjFoLTF6TTE4MiAxOWgxdjFoLTF6TTE2MSA1OWgxdjFoLTF6TTEzOCA5NWgxdjFoLTF6TTE5OSA3MWgzdjNoLTN6TTIxMyAxNTNoMnYyaC0yek0xMjggMTYzaDF2MWgtMXpNMjA1IDE3NGgxdjFoLTF6TTE1MiAyMDBoMXYxaC0xek01MiAyMTFoMnYyaC0yek0wIDE5MWgxdjFIMHpNMTEwIDE4NGgxdjFoLTF6Ii8+PC9zdmc+)
 }
 
@@ -40,7 +39,10 @@ li.nav-padding {
 
 .example_row {
     word-break: break-all;
-    overflow-y: scroll !important;
+}
+
+.black_text{
+    color: black;
 }
 
 @-webkit-keyframes fondo-rotate {
@@ -51,6 +53,7 @@ li.nav-padding {
 
 @keyframes fondo-rotate {
 	to {
-		transform: rotate(-360deg)
+        transform: rotate(-360deg);
+        transform-origin: center;
 	}
 }

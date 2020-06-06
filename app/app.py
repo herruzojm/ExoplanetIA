@@ -18,7 +18,7 @@ from modelo_perceptron import *
 from modelo_lstm import *
 from config import *
 from forms import *
-
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
 app = Flask(__name__)
 babel = Babel(app)
 bootstrap = Bootstrap(app)
