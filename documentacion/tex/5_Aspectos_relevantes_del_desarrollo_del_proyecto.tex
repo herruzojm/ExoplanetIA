@@ -103,7 +103,7 @@ Estos experimentos se encuentran en el archivo \textit{perceptron\_fourier.ipynb
 
 Por último vamos a cambiar la arquitectura de nuestra red para usar redes recurrentes, concretamente una red LSTM. Definimos cinco capas de LSTM para que tenga bastante profundidad. A su vez, reducimos el tamaño de las capas internas a 150, frente a las 1000 usadas en el perceptrón. Aún así, el modelo es bastante grande (y algo lento en entrenar, 70 minutos), por lo que, además, añadimos un \textit{dropout} de 0.2 para evitar que memorize los datos. En su forma más basica, aplicando sólo reducción de picos y normalización, el modelo no consigue aprender. En el siguiente paso añadimos el filtro gaussiano, que hace el modelo mejore.
 
-Finalmente, incluimos la última de las técnicas con las que estamos trabajando y probamos a usar SMOTE para ver como la red LSTM responde frente a las falsas instancias. El resultado es un tanto decepcionante, con una sensibilidad de 0.47 y una especificidad de solo 0.59 y ambas funciones de perdida con valores relativamente elevados y oscilando.
+Finalmente, incluimos la última de las técnicas con las que estamos trabajando y probamos a usar SMOTE para ver como la red LSTM responde frente a las falsas instancias. El resultado es un tanto decepcionante, con una sensibilidad de 0.47 y una especificidad de solo 0.59 y ambas funciones de perdida con valores relativamente elevados y oscilando. 
 
 El código de estos experimentos se encuentra en el archivo \textit{lstm\_base.ipynb}
 
@@ -115,12 +115,12 @@ Para poder estudiar mejor los resultados de los diversos se presentan en una tab
     \item La reducción de picos y la normalización no son suficientes. Ningún modelo que use solo estas dos técnicas ha conseguido aprender nada.
     \item Los modelos entrenados usando la funcion \textit{BCEWithLogitsLoss} no parecen funcionar.
     \item A la hora de aplicar el filtro gaussiano, la opción de trabajar solamente con el resultado y no restarlo a la señal original parece ofrecer mejores resultados.
-    \item SMOTE realmente funciona; todos los modelos entrenados con esta técnica presentan buenos resultados y permiten justificar el coste computacional extra.
+    \item SMOTE parece funcionar bien; todos los modelos entrenados con esta técnica presentan buenos resultados y permiten justificar el coste computacional extra.
     \item El análisis de frecuencias mejora respecto a los modelos simples pero no sobre los modelos entrenados usando SMOTE. La combinación de Fourier con SMOTE funciona bien.
     \item Las redes LSTM no parecen terminar de aprender correctamente. Aunque sus resultados no son totalmente negativos y los modelos con SMOTE ciertamente son capaces de aprender, no parecen encontrarse a la altura del resto.
 \end{itemize}
 
-\tablaSmall{Resumen comparativo de modelos.}{l c c c c}{Resumen-modelos}
+\tablaSmall{Resumen comparativo de modelos durante el entrenamiento}{l c c c c}{Resumen-modelos}
 {Modelo & Sens. & Espe.  & Score & Epoch \\}{
 perceptron\_sgd\_cross                       & 0      & 1      & 0.4965 & 0     \\
 perceptron\_adam\_cross                      & 0      & 1      & 0.4965 & 0     \\
@@ -142,6 +142,16 @@ lstm\_sgd\_cross                             & 0      & 1      & 0.4965 & 0     
 lstm\_sgd\_cross\_diferencia                 & 0.6079 & 0.496  & 0.3047 & 95    \\
 lstm\_sgd\_cross\_smote\_diferencia          & 0.478  & 0.598  & 0.2895 & 82    \\
 }
+
+Como paso final, testeamos los modelos con el dataset que habiamos guardado. Estos resultados pueden encontrarse en el archivo \textit{comparador.ipynb}. De ellos podemos extraer varias conclusiones:
+
+\begin{itemize}
+    \item Los modelos basados en el perceptrón han obtenido una tasa de falsos positivos elevada a diferencia de las redes LSTM, que se han comportado mejor en este sentido.
+    \item Los modelos entrenados con SMOTE tienen, en general, una mayor sensiblidad pero adolecen de una menor especificidad.
+    \item La sensibilidad es baja en general. El mejor resultado, 0.6, lo obtenemos con el modelo LSTM y SMOTE. Hay espacio para la mejora.
+    \item El análisis de frecuencia no ha resultado eficaz, presentando muy baja sensibilidad.
+    \item A la hora de aplicar el filtro gaussiano, los modelos que han usado directamente la señal suavizada han obtenido mayor sensibilidad y menor especificidad, con una puntuación global mejor.
+\end{itemize}
 
 \section{Implementación web}
 

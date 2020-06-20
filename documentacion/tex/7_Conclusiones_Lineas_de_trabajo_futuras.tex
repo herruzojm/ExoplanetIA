@@ -1,4 +1,24 @@
 \capitulo{7}{Conclusiones y Líneas de trabajo futuras}
 
-Todo proyecto debe incluir las conclusiones que se derivan de su desarrollo. Éstas pueden ser de diferente índole, dependiendo de la tipología del proyecto, pero normalmente van a estar presentes un conjunto de conclusiones relacionadas con los resultados del proyecto y un conjunto de conclusiones técnicas. 
-Además, resulta muy útil realizar un informe crítico indicando cómo se puede mejorar el proyecto, o cómo se puede continuar trabajando en la línea del proyecto realizado. 
+Exponemos a continuación las conclusiones derivadas de este proyecto así posibles líneas futuras hacia las que esta investigación puede desarrollare.
+
+\section{Conclusiones}
+
+A nivel de proyecto, podemos afirmar que se han alcanzado los objetivos propuestos. Siguiendo la metodología CRISP-DM, se han desarrollado diferentes experimentos, combinando diversas arquitecturas de redes y técnicas de tratamiento de los datos. La comparativa entre los diferentes experimentos ha permitido observar que cosas han funcionado y cuáles no han supuesto mejoría. Además, dado el caracter público de los datos y el repositorio de soluciones existentes, ha sido posible comparar nuestros resultados con los de otras personas. En este sentido, nuestro mejor modelo, basado en redes LSTM, presenta una sensibilidad de 0.6 y una especificidad de 1, situándolo en un nivel competitivo respecto a muchos otros. Como se comentará más adelante, algunas técnicas adicionales aplicadas a este modelo podrían dar lugar a una muy buena solución.
+
+Además del objetivo principal, la investigación y el desarrollo de los modelos, se ha completado exitósamente una pequeña aplicación web que permite analizar un fichero con datos y obtener los resultados. El mecanismo de despliegue de esta web ha sido totalmente automatizado mediante técnicas de despliegue continuo, por lo que la versión online disponible para su uso es siempre la última. Similarmente, se han incluido mecanismo para la contenerización automática de la aplicación, tanto en su última versión, con el tageado \textit{latex}, como para cualquier release que se genere. 
+
+En la parte relativa al tratamiento de los datos, se ha podido observar la importancia de \textit{trabajar} los datos, de buscar las técnicas adecuadas y como su uso puede suponer la diferencia entre un modelo que funciona o uno incapaz de aprender nada.
+
+\section{Líneas de trabajo futuras}
+
+Tras testear los modelos generados y observar sus resultados podemos ver que aún espacio para desarrollar enfoques alternativos, profundizar los aquí presentado y, en general, obtener modelos con mejores resultados. Hay varios puntos que se consideran muy prometedores a la hora continuar este trabajo:
+
+\begin{itemize}
+    \item Otras arquitecturas de redes, especialmente las redes convolucionales de una dimensión y las máquinas de vectores soporte, han conseguido buenos resultados. Por un lado, entre todos los modelos observados, las redes convolucionales han sido las que han obtenido mejores resultados. Por el otro, los modelos de máquinas de vectores soporte han conseguido resultados que nuestros modelos con una configuración y un tratamiento de los datos muy similar, por lo que es factible suponer que, por sus características, son más adecuadas en este problema concreto. 
+    \item El uso de dropout. Los modelos de perceptrón que no usaban esta técnica han terminado generalizando mal, con un elevado número de falsos positivos. Debido a la alta prevalencia de casos negativos, es probable que la red haya memorizado esos patrones. Por el otro lado, en las redes LSTM donde si se ha hecho uso del dropout, apenas se registran casos positivos.
+    \item Relacionado con el punto anterior, en los modelos consultados en kaggle, se ha observado que la reducción del número de instancias de clase negativa ha dado buenos resultados, reduciendo el número de falsos positivos.
+    \item El uso de SMOTE ha mejorado los resultados de todas las redes en las que se ha usado, por lo que, sin duda, la generación de nuevas instancias de clase positiva ayuda en el entrenamiento. Sin embargo, esta mejora global del resultado tiene una parte negativa, la reducción de la especificidad. Otras formas de nuevas instancias positivas, como la rotación en el tiempo, se han demostrado útiles.
+    \item Algunas técnicas de \textit{ensemble} parecen funcionar muy bien, existiendo varios modelos que combinan arquitecturas convolucionales con redes LSTM mediante \textit{stacking}. No se han encontrado ejemplos de modelos que usen \textit{bagging}, esto es, entrenar varios modelos distintos y aceptar como resultado de la red lo que digan la mayoria de modelos.
+    \item Finalmente, otro elemento con el que es posible seguir afinando los modelos sería con el umbral de aceptación. El resultado real de nuestros modelos es un valor probabilístico entre 0, certeza absoluta de que no hay exoplaneta y 1, certeza absoluta de que lo hay. En todos nuestros experimentos se ha considerado que existe exoplaneta si la probabilidad era mayor a 0.50. Como se ha observado en los modelos de perceptrón, esto a dado lugar muchos falsos positivos. Subiendo este umbral se reducirían estos errores y el resultado de estos modelos sería mejor.
+\end{itemize}
