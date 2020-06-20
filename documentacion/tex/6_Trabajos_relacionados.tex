@@ -14,7 +14,7 @@ En cuanto a la arquitectura de este modelo es bastante simple, consistiendo en v
 
 \subsection{Exoplanet Classifier (CNN + RNN) \cite{Kaggle-kernel-Exoplanet-Classifier}}
 
-Este es un kernel particularmente interesante ya presenta una arquitectura compleja, una nueva técnica en el preprocesado de datos y obtiene muy buenos resultados. Se trata de un modelo de \textit{ensemble}, una composición de varios modelos. En primer lugar, cuenta con una red LSTM de cuatro capas con dropout, similar a la usada por nuestros modelos. El resultado de dicha red sirve para alimentar una red convolucional unidimensional. Esta está formada por cuatro bloques, cada uno conteniendo una capa de convolucion, seguida de una capa de pooling y otra de normalización. Finalmente, el modelo cuenta con dos capas totalmente conectadas que proporcionan la salida de la red.
+Este es un kernel particularmente interesante ya presenta una arquitectura compleja, una nueva técnica en el preprocesado de datos y obtiene muy buenos resultados. Se trata de un modelo de \textit{ensemble}, una composición de varios modelos, concretamente \textit{stacking}, donde la salida de un modelo sirve de entrada a otro. En este caso, el primero de los modelos consiste en una red LSTM de cuatro capas con dropout, similar a la usada por nuestros modelos. El resultado de dicha red sirve para alimentar una red convolucional unidimensional. Esta está formada por cuatro bloques, cada uno conteniendo una capa de convolucion, seguida de una capa de pooling y otra de normalización. Finalmente, el modelo cuenta con dos capas totalmente conectadas que proporcionan la salida de la red.
 
 A la hora de preprocesar los datos, afronta el desbalanceo del dataset generando \textit{mini batches} de 32 elementos, con igual número de elementos en cada clase. Para evitar la sobre exposición de la red a los mismos casos positivos una y otra vez, genera nuevas instancias a través de la rotación de los datos en el tiempo. Esto es, para cada una de las instancias del mini batch genera un número aleatório entre 0 y la longitud de los datos, desplazandolos luego hacia la derecha ese número de posiciones. 
 
@@ -22,5 +22,5 @@ Probado con el dataset de test, el área bajo la curva obtenida es de 1, la sens
 
 \subsection{Exoplanet-Hunting-Recall-1.0-Precision-0.55 \cite{Kaggle-kernel-Exoplanet-Hunting}} 
 
-Este kernel usa un preprocesado de datos muy similar al usado durante este proyecto, normalización, filtro gaussiano y análisis de frecuencia mediante Fourier, difiriendo en el modelo de red, usando en este caso máquinas de vectores de soporte y obteniendo buenos resulados.
+Este kernel usa un preprocesado de datos muy similar al usado durante este proyecto, normalización, filtro gaussiano y análisis de frecuencia mediante Fourier, difiriendo en el modelo de red, usando en este caso máquinas de vectores soporte y obteniendo buenos resulados.
 
