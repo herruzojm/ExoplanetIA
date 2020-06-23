@@ -2,10 +2,117 @@
 
 \section{Introducción}
 
+Comentaremos aquí los detalles más técnicos sobre el proyecto de forma que sea posible para cualquiera recrear los experimentos y continuar el trabajo aquí presentado.
+
 \section{Estructura de directorios}
 
-\section{Manual del programador}
+El código fuente del proyecto está organizado en la siguiente estructura de directorios:
+
+\begin{itemize}
+    \item \textbf{/}: directorio raiz del proyecto donde encontramos los ficheros de configuración para git, docker, la aplicación web, así como los archivos necesarios para recrear el entorno de trabajo y la descripción del proyecto.
+    \item \textbf{/app/}: aplicación web con los ficheros de inicialización y \textit{backend}.
+    \item \textbf{/app/models/}: modelos de aprendizade automático que usa la aplicación.
+    \item \textbf{/app/static/}: ficheros de contenido estático de la web, entre los que se incluye el contenido descargable, las imagenes y las hojas de estilo.    
+    \item \textbf{/app/templates/}: plantillas para generar el código html final.
+    \item \textbf{/app/translations/}: archivos de localización para diferentes idiomas.
+    \item \textbf{/app/uploads/}: directorio para almacenar los archivos cargados por los usuarios de la web.
+    \item \textbf{/documentacion/}: documentación del proyecto.
+    \item \textbf{/documentacion/tex/}: directorio con los archivos LaTex de la documentación.
+    \item \textbf{/documentacion/img/}: imagenes usadas en la documentación.
+    \item \textbf{/src/}: código fuente de los experimentos.
+    \item \textbf{/src/datos/}: archivos con los datos de entrenamiento y test para los modelos.
+    \item \textbf{/src/prototipos/}: código de los modelos y funciones necesarias para el procesado de los datos y el entrenamiento.
+    \item \textbf{/src/prototipos/img/}: imagenes del desempeño de los modelos generadas durante el entrenamiento.
+    \item \textbf{/src/prototipos/saved\_models/}: modelos generados.
+\end{itemize}
 
 \section{Compilación, instalación y ejecución del proyecto}
 
-\section{Pruebas del sistema}
+Esta sección explica como replicar el entorno de trabajo para poder ejecutar cualquiera de los experimentos llevados a cabo así como la forma de ejecutar la aplicación web, ya sea de forma directa mediante el código fuente o traves de un contenedor Docker.
+
+\subsection{Git}
+
+Para obtener el código fuente del repositorio es necesario contar un cliente Git. Basta con instalar la versión adecuada al sistema operativo de la computadora desde la pagina web \cite{Git}.
+
+Para clonar el repositorio habría que navegar hasta el directorio elegido y ejecutar el siguiente comando en la consola:
+
+\texttt{git clone\\ https://gitlab.com/HP-SCDS/Observatorio/2019-2020/ubu-exoplanetia.git}
+
+\subsection{Anaconda}
+
+La forma más rápida y sencilla de replicar el entorno para poder trabajar es utilizar Anaconda. La versión individual es gratuita y puede ser descargada desde su página web \cite{Anaconda}. Para este proyecto se ha usado Python 3.7, por lo que es necesario instalar la versión de Anaconda correspondiente. No es necesario instalar Python de forma separada, ya que el instalador de Anaconda lo incluye.
+
+Tras la instalación, el siguiente paso sería crear el entorno con las librerías necesarias y sus dependencias. Esta información se encuentra recogida en el archivo \textit{conda\_environment.yml} que se puede localizar en el directorio raiz del proyecto. Para la creación del entorno basta ejecutar el comando:
+
+\texttt{conda env create -f conda\_environment.yml}
+
+Por defecto, el entorno será creado con el nombre \textbf{ExoplanetIA}. Si se desea usar un nombre distinto, este puede ser cambiando editando manualmente el archivo.
+
+Finalmente, debemos activar el entorno creado:
+
+\texttt{conda activate ExoplanetIA}
+
+En este punto ya podemos Jupyter para consultar o ejecutar los notebooks creados o crear uno nuevo.
+
+\subsection{Web app}
+
+En el código del proyecto se incluye una aplicación web que permite ejecutar los modelos. La web puede ser desplegada en un servidor online (actualmente se encuentra disponible en \href{https://exoplanetia.herokuapp.com/}{Heroku}) o ejecutarse en modo local. En este caso, es necesario navegar hasta el directorio \textit{app} y ejecutar el siguiente comando:
+
+\texttt{python runsite.py}
+
+Esto iniciará el servidor y la web estará disponible para aceptar peticiones en la dirección \textit{127.0.0.1:5000} 
+
+\subsection{Docker}
+
+Es también posible descargar la aplicación web en formato de contenedor Docker, lo que nos permite ejecutarla en cualquier computador sin tener que instalar todas las librerías necesarias para el proyecto o incluso sin tener que descargar el código fuente.
+
+El primer paso es decargar el contenedor al equipo. Como se comentó anteriormente, hay contenedores disponibles para cada release (a partir de la versión 1.2) y una con los últimos cambios del repositorio, denominada \textit{latest}. Para descargarla, es necesario usar el comando \textit{docker pull}. En caso de querer descargar, por ejemplo, la versión 1.2, usariamos el siguiente comando:
+
+\texttt{docker pull \\ registry.gitlab.com/hp-scds/observatorio/2019-2020/ubu-exoplanetia:1.2}
+
+Una vez descargado el contenedor, debemos arrancarlo, cosa que haremos con el comando:
+
+\texttt{docker run -dp 5000:5000 \\ registry.gitlab.com/hp-scds/observatorio/2019-2020/ubu-exoplanetia:1.2}
+
+Una vez ejecutado, la aplicación web estará nuevamente lista en la url \textit{127.0.0.1:5000}.
+
+\section{Manual del programador}
+
+Describimos a continuación como otro programador puede usar el proyecto para realizar nuevos experimentos sobre el codigo ya existente. Para ello, es requisito tener disponible el código fuente y el entorno replicado, procesos descritos en la sección anterior. En cualquier caso, este anexo no pretende ser un manual de uso de Python, Jupyter o cualquier otra de las librerías usadas en este proyecto y se da por sentado que el programador tiene conocimientos de programación y experiencia con dichas herramientas.
+
+El proceso general consta de cuatro pasos:
+
+\begin{itemize}
+    \item Cargar los datos
+    \item Procesar los datos
+    \item Definir el modelo
+    \item Entrenar el modelo
+\end{itemize}
+
+Como se ha comentado, el conjunto de datos originales del proyecto se encuentran en la ruta \texttt{/src/datos/} y, por organización del código, es recomendable que cualquier otro conjunto de datos que se aporte se almacene en dicho directorio. A la hora de cargar los datos, este proyecto no presenta nuevas utilidades; la librería Pandas permite la lectura y carga en memoria de archivos csv invocando solamente una función, por lo que es el metodo recomendado. Es importante notar que el conjunto de datos de origen, los valores de la columna \textit{LABEL}, que determinan si hay o no exoplanetas en dicha estrella, estan codificados con los valores 2 y 1 para los casos de que exista o no exoplaneta. Aunque es posible trabajar con estos valores, es mucho más práctico cambiarlos y usar en su lugar 1 y 0. En el siguiente fragmento de código se puede observar como, tras declarar algunas constantes relativas a la ruta y los nombres de los archivos de datos, se leen y se modifican los valores tal y como se ha descrito.
+
+\imagen{codigo_lectura_datos.png}{Lectura del conjunto de datos}
+
+Aunque los datos pueden ser usados directamente para entrenar un modelo, como hemos visto, esto no da buenos resultados, siendo necesarios procesarlos. El programador tiene libertad aquí para aplicar los métodos que considere más eficaces o que mejor sirvan a sus objetivos, aunque algunos, como la normalización, son practicamente obligatorios para conseguir resultados aceptables. 
+
+En nuestro modulo de utilidades hemos implementado varias de ellas que el programador puede utilizar a su conveniencia. Estas son: normalización mínimo-máximo (\texttt{min\_max\_scaling}), normalización de puntuación z (\texttt{z\_score\_normalizing}), filtro gaussiano, tanto en su forma de suavizado como de reductor de la señal original (\texttt{gaussian\_filter}), reducción de picos de intensidad (\texttt{reduce\_upper\_outliers}) y transformación de Fourier (\texttt{fourier\_transformation}). A continuación podemos ver un ejemplo del procesado de datos en este caso aplicamos en primer lugar una reducción de los picos de intensidad, posteriormente un filtro gaussiano y terminamos normalizando.
+
+\imagen{codigo_procesado_datos.png}{Procesado de los datos}
+
+A la hora de definir el modelo el programador puede usar alguno de los dos proporcionados en este proyecto: el perceptrón multicapa o la red LSTM. Ambos estan definidos en sendas clases (\texttt{modelo\_perceptron} y \texttt{modelo\_lstm}), por lo que solo deben ser instanciadas según necesidad. Ambas permiten cierta configuración; en el caso del perceptrón, el número de neuronas de las capas y, en el caso de la red LSTM, el número de neuronas, el número de capas y el porcentaje de neuronas que se anularan en cada ejecución (\textit{dropout}). 
+
+El programador también debe seleccionar un algoritmo optimizador y una función de perdida de entre las soportadas por Pytorch. Hay que tener en cuenta que el uso de alguna de estas funciones condiciona el número de neuronas de nuestro modelo, especialmente los de la capa de salida. Por ejemplo, mientras que la función \textit{CrossEntropyLoss} admite que la salida de nuestra red sean dos o mas neuronas, la función \textit{BCEWithLogitsLoss} nos obliga a usar solamente una neurona como salida.
+
+En la siguiente imagen podemos observa la instanciación de un modelo de perceptrón en el que se utiliza un array de enteros para especificar el número de neuronas de sus capas. Asimismo, se observa que nuestras clases soportan el uso de la función de Pytorch (\textit{to}), que permite que un modelo sea cargado en la CPU o en la GPU, en caso de disponer de ella, permitiendo hacer uso de sus características para acelerar el entrenamiento. Por último, vemos que en este ejemplo se esta usando la función \textit{CrossEntropyLoss} y el algoritmo \textit{SGD}.
+
+\imagen{codigo_definir_modelo.png}{Definición de un modelo de perceptrón fijando el número de neuronas de sus capas}
+
+El último paso para finalizar un experimento consiste en entrenar el modelo, para lo que debemos definir ciertos parámetros. El número de epochs, la tasa de aprendizaje y el nombre del modelo son obligatorios, mientras que alpha, beta y device son opcionales. Device nos permite especificar si nuestro modelo se cargará y entrenará en la CPU (el valor por defecto) o en la GPU, mientras que alpha y beta indican los coeficientes para ajustar nuestra función de valoración del modelo. Una mayor alpha dara más peso a la sensibilidad mientras que incrementar beta dará más importancia a la especificidad. Por defecto, ambas toman el valor de 0.50.
+
+\imagen{codigo_entrenar_modelo.png}{Parametrización y entrenamiento del modelo}
+
+En nuestro codigo se incluyen tres diferentes funciones para entrenar modelos, \texttt{train\_cross}, \texttt{train\_bce} y \texttt{train\_lstm}. Las dos primeras son usadas a la hora de entrenar modelos basados en el percetrón, una cuando se utilizan funciones de coste como \textit{CrossEntropyLoss}, que admiten redes con varias neuronas de salida y la otra para redes que solo presentan una neurona de salida y usan funciones como \textit{BCEWithLogitsLoss}. Finalmente, la tercera se utiliza para entrenar modelos basados en LSTM. El código de estas funciones es muy similar y será refactorizado en futuras versiones, dejando solamente una función general para entrenar cualquier modelo.
+
+Las tres funciones de entrenamiento devuelven un objeto de la clase \texttt{resultados}. Este objeto almacena las puntaciones obtenidas por el modelo durante el entrenamiento, permitiendo mostrar las gráficas correspondientes y guardar en disco las imagenes generadas.
+
+\imagen{codigo_resultados.png}{Gráficas generadas tras el entrenamiento del modelo}
