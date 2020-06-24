@@ -3,12 +3,12 @@
 Se exponen a continuación las herramientas usadas durante el desarrollo del proyecto.
 
 \section{Python}\label{sec:bibliotecas-de}
-Python es un lenguaje de programación interpretado de alto nivel. Posee licencia de código abierto y, en los últimos años, se ha convertido en el estandar de facto para los proyectos de machine learning.
+Python es un lenguaje de programación interpretado de alto nivel. Posee licencia de código abierto y, en los últimos años, se ha convertido en el estándar de facto para los proyectos de \textit{machine learning}.
 
 \section{Jupyter Notebook}
 IDE interactivo de código abierto basado en web. Permite crear y compartir documentos, denominados notebooks, que contienen tanto código como texto markdown. Dichos notebooks serán nuestra herramienta principal de trabajo. 
 
-\section{Bibliotecas de Pyhton}
+\section{Bibliotecas de Python}
 
 \subsection{Torch}
 Biblioteca de código abierto para aprendizaje automático. Se puede encontrar más información sobre sus características y su comparación con otras bibliotecas similares en la \autoref{sec:bibliotecas-de-machine-learning} \nameref{sec:bibliotecas-de-machine-learning}.
@@ -17,13 +17,13 @@ Biblioteca de código abierto para aprendizaje automático. Se puede encontrar m
 Biblioteca que agrega mayor soporte para vectores y matrices, constituyendo una biblioteca de funciones matemáticas de alto nivel para operar con esos vectores o matrices.
 
 \subsection{Pandas}
-Extensión de NumPy para manipulación y análisis de datos. Ofrece estructuras de datos y operaciones para manipular tablas numéricas y series de tiempo, permitiéndonos leer fácilmente los datos de los ficheros csv, así como manipularlos, aplicandoles diversas funciones o dividiendolos para formar los dataset de entrenamiento y validación.
+Extensión de NumPy para manipulación y análisis de datos. Ofrece estructuras de datos y operaciones para manipular tablas numéricas y series de tiempo, permitiéndonos leer fácilmente los datos de los ficheros csv, así como manipularlos, aplicándoles diversas funciones o dividiéndolos para formar los dataset de entrenamiento y validación.
 
 \subsection{SciPy}
 Basado en NumPy, expande esta biblioteca con herramientas y algoritmos para matemáticas, ciencias e ingeniería. Entre ellas se incluyen funciones para aplicar un filtro Gaussiano o realizar la transformada de Fourier. La primera de ellas la usaremos en el procesado de datos para suavizar la señal mientras que la segunda será la base para entrenar los modelos en función de la frecuencia.
 
 \subsection{imbalanced-learn}
-Ofrece técnicas y algoritmos de \textit{under-sampling} y \textit{over-sampling} comúnmente utilizados en conjuntos de datos que muestran un fuerte desequilibrio entre clases. Nosotros solo usaremos una de sus funciones, SMOTE (Synthetic Minority Over-sampling Technique), para generar nuevos casos de estrellas con exoplanetas y así equilibrar el dataset.
+Ofrece técnicas y algoritmos de \textit{undersampling} y \textit{oversampling} comúnmente utilizados en conjuntos de datos que muestran un fuerte desequilibrio entre clases. Nosotros solo usaremos una de sus funciones, SMOTE (Synthetic Minority Oversampling Technique), para generar nuevos casos de estrellas con exoplanetas y así equilibrar el dataset.
 
 \subsection{Matplotlib}
 Matplotlib es una biblioteca para crear visualizaciones estáticas, animadas e interactivas en Python. Con ella mostraremos la evolución de nuestros modelos durante el entrenamiento mostrando como cambia la perdida, la puntuación o el área bajo la curva. Igualmente la usaremos para mostrar algunos ejemplos de nuestros dataset, ya sea en su forma original como flujo de luz o en su forma procesada, incluyendo su representación en forma de frecuencia mediante la transformada de Fourier.
@@ -41,7 +41,7 @@ Funcionalidades para trabajar con documentos HTML con el que podemos mostrar nue
 Framework minimalista para crear aplicaciones web de forma rápida y sencilla.
 
 \subsection{Werkzeug}
-Biblioteca que proporciona diferentes utilidades relativas al desarrollo web. Nosotros vamos a usarla para validar el nombre del fichero que nuestra aplicación debe cargar y así evitar posibles ataques basados en el uso de carácteres especiales en el nombre de dicho fichero.
+Biblioteca que proporciona diferentes utilidades relativas al desarrollo web. Nosotros vamos a usarla para validar el nombre del fichero que nuestra aplicación debe cargar y así evitar posibles ataques basados en el uso de caracteres especiales en el nombre de dicho fichero.
 
 \subsection{Wtforms}
 Añade representación y validación de formularios flexible para el desarrollo web con Python. Dado que nuestra aplicación web es muy simple, solo necesitamos un formulario para poder cargar un fichero conteniendo los datos a analizar.
@@ -50,7 +50,7 @@ Añade representación y validación de formularios flexible para el desarrollo 
 Integra la biblioteca Wtforms con Flask.
 
 \subsection{Base64}
-Proporciona funcionalidades para codificar y decodificar datos binarios, permitiéndonos leer las gráficas generadas por Matplotlib y escribirlas en disco. De esta forma, después de que nuestra aplicación web analize el dataset proporcionado, puede generar las gráficas correspondientes y servirlas al usuario como parte de la página de resultados.
+Proporciona funcionalidades para codificar y decodificar datos binarios, permitiéndonos leer las gráficas generadas por Matplotlib y escribirlas en disco. De esta forma, después de que nuestra aplicación web analice el dataset proporcionado, puede generar las gráficas correspondientes y servirlas al usuario como parte de la página de resultados.
 
 \section{Git}
 Sistema de control de versiones distribuido de código abierto.
@@ -62,10 +62,10 @@ Servicio web de control de versiones y desarrollo de software colaborativo basad
 Sistema de composición de textos, orientado a la creación de documentos escritos que presenten una alta calidad tipográfica. Es usado de forma especialmente intensa en la generación de artículos y libros científicos que incluyen, entre otros elementos, expresiones matemáticas. En nuestro caso, el sistema que usaremos para escribir la tesis.
 
 \subsection{MiKTeK}
-Distribución de LaTex para sistemas Windows.
+Distribución de LaTeX para sistemas Windows.
 
 \subsection{TexMaker}
-Editor de código abierto de LaTex. Integra variedad de herramientas para desarrollar documentos.
+Editor de código abierto de LaTeX. Integra variedad de herramientas para desarrollar documentos.
 
 \subsection{Heroku}
 Heroku es una plataforma de computación en la nube, ofreciendo servicios de plataforma como servicio (PaaS). Desarrollada inicialmente para soportar solamente aplicaciones escritas en Ruby, hoy en día soporta muchos otros, como Scala, Node, Java o Python. Heroku ofrece un tier gratuito que usaremos para desplegar nuestra aplicación y así tener un ejemplo real en producción.

@@ -1,7 +1,7 @@
 \capitulo{3}{Conceptos teóricos}
 
 \section{Minería de datos}
-La minería de datos es el proceso de extraer información de grandes conjuntos de datos usando para ello técnicas de diversos campos, como la estadística, el aprendizaje automático o los sistemas de bases de datos. Aunque no es nueva, su uso durante los últimos años ha crecido de forma drástica. Varios factores explican este incremento. Por un lado, tenemos factores que han permitido generar enorme cantidad de datos, como la fuerte penetración de Internet en casi todo el mundo o la reducción del precio de los chips, permitiendo su incorporación a practicamente cualquier objeto y convirtiendolos, de facto, en ubícuos. Por el otro lado, tenemos la reducción del precio de almacenamiento. En 1956, el precio de un GB de disco duro tradicional costaba más de nueve millones de dólares. A día de hoy, ese precio se ha reducidos a menos dos centavos \cite{Evolucion-precio-gb}. 
+La minería de datos es el proceso de extraer información de grandes conjuntos de datos usando para ello técnicas de diversos campos, como la estadística, el aprendizaje automático o los sistemas de bases de datos. Aunque no es nueva, su uso durante los últimos años ha crecido de forma drástica. Varios factores explican este incremento. Por un lado, tenemos factores que han permitido generar enorme cantidad de datos, como la fuerte penetración de Internet en casi todo el mundo o la reducción del precio de los chips, permitiendo su incorporación a prácticamente cualquier objeto y convirtiéndolos, de facto, en ubicuos. Por el otro lado, tenemos la reducción del precio de almacenamiento. En 1956, el precio de un GB de disco duro tradicional costaba más de nueve millones de dólares. A día de hoy, ese precio se ha reducidos a menos dos centavos \cite{Evolucion-precio-gb}. 
 
 Ahora bien, convertir toda esa cantidad de datos en información de la que se pueda extraer conocimiento no es tarea fácil, existiendo distintos métodos y metodologías para obtener resultados. Uno de estos métodos es CRISP-DM \cite{CRISP-DM}, \textit{Cross Industry Standard for Data Mining}, codificado en 1996 por un grupo de interés especial constituido tanto por empresas proveedoras de herramientas (SPSS y Teradata) cómo por empresas usuarias (Daimler, NCR y OHRA).
 
@@ -21,13 +21,13 @@ Veamos a continuación como se aplican las diferentes etapas del proceso CRISP-D
 
 \subsection{Entendiendo el negocio: objetivos y requisitos}
 
-Ya hemos comentado en el capítulo previo los \nameref{sec:objetivos-del-proyecto}, por lo que no los repitiremos aquí.
+Ya hemos comentado en el capítulo previo los \nameref{sec:objetivos-del-proyecto}, por lo que no los repetiremos aquí.
 
 \subsection{Entendiendo los datos}
 
-Los datos para este proyecto han sido descargados de \href{https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data}{Kaggle}, donde podemos encontrar su descripcion: "los datos describen el cambio en el flujo (intensidad de luz) de varios miles de estrellas. Cada estrella tiene una etiqueta binaria de 2 o 1. Un 2 indica que se confirmó que la estrella tiene al menos un exoplaneta en órbita; algunas observaciones son, de hecho, sistemas de varios planetas." \cite{Kaggle-exoplanet}
+Los datos para este proyecto han sido descargados de \href{https://www.kaggle.com/keplersmachines/kepler-labelled-time-series-data}{Kaggle}, donde podemos encontrar su descripción: "los datos describen el cambio en el flujo (intensidad de luz) de varios miles de estrellas. Cada estrella tiene una etiqueta binaria de 2 o 1. Un 2 indica que se confirmó que la estrella tiene al menos un exoplaneta en órbita; algunas observaciones son, de hecho, sistemas de varios planetas." \cite{Kaggle-exoplanet}
 
-La fuente original de los datos pertenecen a la misión Kepler de la NASA, concretamente a la campaña 3 de la fase K2. Se pueden encontrar en la web del Mikulski Archive \href{https://archive.stsci.edu/k2/}{Mikulski Archive} \cite{Mikulski-Archive}. Los datos originales han sido transformados por \href{http://www.danlessmann.com/index.htm}{Dan Lessmann}; el proceso se encuentra detallado en su \href{https://github.com/winterdelta/KeplerAI}{repositorio en GitHub}. Finalmente, los datos han sido incorporados a Kaggle, desde donde han sido descargados.
+La fuente original de los datos pertenece a la misión Kepler de la NASA, concretamente a la campaña 3 de la fase K2. Se pueden encontrar en la web del Mikulski Archive \href{https://archive.stsci.edu/k2/}{Mikulski Archive} \cite{Mikulski-Archive}. Los datos originales han sido transformados por \href{http://www.danlessmann.com/index.htm}{Dan Lessmann}; el proceso se encuentra detallado en su \href{https://github.com/winterdelta/KeplerAI}{repositorio en GitHub}. Finalmente, los datos han sido incorporados a Kaggle, desde donde han sido descargados.
 
 Nuestro dataset se compone de dos archivos, uno con los datos de entrenamiento y otro con los datos para testear. Su composición es la siguiente:
 
@@ -47,7 +47,7 @@ Nuestro dataset se compone de dos archivos, uno con los datos de entrenamiento y
 	\item Hay 5 estrellas con exoplanetas confirmados y 565 estrellas sin exoplanetas
 \end{itemize}
 
-Lo primero que se puede observar es que un dataset enormemente desbalanceado. Las estrellas con exoplanetas confirmados solo representan el 0.73\% en el dataset de entrenamiento y el 0.88\% en el de test, lo que representa un grave handicap para el entrenamiento exitoso de los modelos. Veremos posteriormente técnicas para lidiar con este problema.
+Lo primero que se puede observar es que un dataset enormemente desbalanceado. Las estrellas con exoplanetas confirmados solo representan el 0.73\% en el dataset de entrenamiento y el 0.88\% en el de test, lo que representa un grave hándicap para el entrenamiento exitoso de los modelos. Veremos posteriormente técnicas para lidiar con este problema.
 
 Vamos a proceder a mostrar gráficamente algunos ejemplos de estrellas con y sin exoplanetas para intentar captar características comunes o posibles anomalías.
 
@@ -55,13 +55,13 @@ Vamos a proceder a mostrar gráficamente algunos ejemplos de estrellas con y sin
 
 \imagen{estrellas_sin_exoplanetas.png}{Estrellas sin exoplanetas confirmados}
 
-Observando las imágenes destacan dos cosas. Por un lado, la amplitud en el rango de la intensidad de luz y, por otro, la presencia puntual de picos de luz. Esta es una circunstancia extraña, ya que el brillo de una estrella suele permanecer relativamente estable. Y, desde luego, no es debido al transito de una planeta, ya que esto reduciria el valor, como se aprecia en los picos descendentes de las primeras graficas. Asi pues, lo mas probable es que estos valores sean errores y lo mejor será descartarlos durante el procesado de los datos.
+Observando las imágenes destacan dos cosas. Por un lado, la amplitud en el rango de la intensidad de luz y, por otro, la presencia puntual de picos de luz. Esta es una circunstancia extraña, ya que el brillo de una estrella suele permanecer relativamente estable. Y, desde luego, no es debido al tránsito de un planeta, ya que esto reduciría el valor, como se aprecia en los picos descendentes de las primeras gráficas. Así pues, lo más probable es que estos valores sean errores y lo mejor será descartarlos durante el procesado de los datos.
 
 \subsection{Preparación de los datos}
 
-Rara vez los datos se recogen de forma que puedan ser evaluados de forma directa por un modelo, por lo que necesitan de un tratamiento previo que haga más factible extraer información de ellos. Por supuesto, no todos los datos van a ser tratados de idéntica forma y, dependiendo del estado y del objetivo del proyecto, habrá que utilizar unas técnicas u otras, aunque hay algunas cuyo uso está tan extendido que su uso se ha convertido en un paso obligatorio de casí cualquier proyecto.
+Rara vez los datos se recogen de forma que puedan ser evaluados de forma directa por un modelo, por lo que necesitan de un tratamiento previo que haga más factible extraer información de ellos. Por supuesto, no todos los datos van a ser tratados de idéntica forma y, dependiendo del estado y del objetivo del proyecto, habrá que utilizar unas técnicas u otras, aunque hay algunas cuyo uso está tan extendido que su uso se ha convertido en un paso obligatorio de casi cualquier proyecto.
 
-Una de estás técnicas es la normalización, cuyo objetivo es cambiar los valores de las columnas numéricas de forma que usen una escala común. Esto nos permitirá abordar uno de los problemas detectados anteriormente, la amplitud en el rango de valores de nuestros datos.
+Una de estas técnicas es la normalización, cuyo objetivo es cambiar los valores de las columnas numéricas de forma que usen una escala común. Esto nos permitirá abordar uno de los problemas detectados anteriormente, la amplitud en el rango de valores de nuestros datos.
 
 Además de la normalización, veremos más adelante otra serie de técnicas que nos ayudaran a entrenar el modelo, tales como \textit{undersampling} y \textit{oversampling}, uso de filtros para suavizar la señal o el estudio de la frecuencia.
 
@@ -75,7 +75,7 @@ Una vez tenemos los modelos entrenados, es el momento de evaluarlos y selecciona
 
 \subsection{Despliegue}
 
-El paso final del proceso incluy la puesta en producción del modelo elegido de forma que pueda usarse para obtener predicciones reales sobre nuevos datos. Dependiendo del proyecto, algunas opciones habituales incluyen despliegues en aplicaciones webs, aplicaciones móviles o su contenerización.
+El paso final del proceso incluye la puesta en producción del modelo elegido de forma que pueda usarse para obtener predicciones reales sobre nuevos datos. Dependiendo del proyecto, algunas opciones habituales incluyen despliegues en aplicaciones webs, aplicaciones móviles o su despliegue virtualizado, como en contenedores Docker.
 
 \section{Normalización}
 Como hemos comentado anteriormente, normalizar consiste en transformar los valores numéricos de una o más columnas para que sus valores se ajusten a una escala común y es más importante cuanto más amplio sea el rango de valores que adopta el dataset.  
@@ -91,21 +91,21 @@ Normalizar no es un proceso único, sino que existen diversas técnicas para nor
 \end{math}
 
 \section{Filtro gaussiano}\label{filtro-gaussiano}
-Dada la elevada sensibilidad del satélite Kepler a la intensidad de luz y, como se observa en las imagenes previas, las señales presentan numerosos picos y valles que pueden dificultar el aprendizaje de los modelos. Para solucionar este problema, usaremos un filtro gaussiano, un efecto de suavizado que puede aplicarse a una señal o imagen para reducir el ruido.
+Dada la elevada sensibilidad del satélite Kepler a la intensidad de luz y, como se observa en las imágenes previas, las señales presentan numerosos picos y valles que pueden dificultar el aprendizaje de los modelos. Para solucionar este problema, usaremos un filtro gaussiano, un efecto de suavizado que puede aplicarse a una señal o imagen para reducir el ruido.
 
-A la hora de aplicarlo tenemos dos opciones distintas. La primera es aplicar el filtro tal cúal, provocando el suavizado la señal, quitandole ruido, pero también nitidez y detalles; detalles que pueden ser importantes. La otra alternativa consiste reducir la señal original con el resultado de aplicar el filtro gaussiano, consiguiendo de esta forma reducir la importancia de la señal base y resaltando los detalles más especificos.
+A la hora de aplicarlo tenemos dos opciones distintas. La primera es aplicar el filtro tal cual, provocando el suavizado la señal, quitándo ruido, pero también nitidez y detalles; detalles que pueden ser importantes. La otra alternativa consiste reducir la señal original con el resultado de aplicar el filtro gaussiano, consiguiendo de esta forma reducir la importancia de la señal base y resaltando los detalles más específicos.
 
 \section{Undersampling y Oversampling}\label{undersampling-y-oversampling}
 Cuando, como es nuestro caso, tenemos un dataset fuertemente desbalanceado, es necesario aplicar técnicas que permitan el correcto entrenamiento de la red. Dos de ellas son \textit{undersampling} y \textit{oversampling}.
 
-La primera de ellas consiste en reducir el tamaño de nuestro dataset, normalmente hasta que tengamos el mismo número de ejemplos de cada clase, aunque pueden usarse otras proporciones. La técnica habitual consiste en seleccionar de forma aleatoria elementos de clase mayoritaria y eliminarlos. Una ventaja derivada de este método es que, al tener que procesar un menor número de elemtnos, el entrenamiento es más rapido. Entre las desventajas tenemos, en primer lugar, que al privar a la red de determinados ejemplos le estamos ocultando información que puede ser importante y provocar que la red no generalize bien. De forma similar, cuando el número de ejemplos de una clase es muy pequeño, como es nuestro caso, el dataset puede ser demasiado pequeño, causando que la red memorice los datos y sea incapaz de generalizar.
+La primera de ellas consiste en reducir el tamaño de nuestro \textit{dataset}, normalmente hasta que tengamos el mismo número de ejemplos de cada clase, aunque pueden usarse otras proporciones. La técnica habitual consiste en seleccionar de forma aleatoria elementos de clase mayoritaria y eliminarlos. Una ventaja derivada de este método es que, al tener que procesar un menor número de elementos, el entrenamiento es más rápido. Entre las desventajas tenemos, en primer lugar, que al privar a la red de determinados ejemplos le estamos ocultando información que puede ser importante y provocar que la red no generalice bien. De forma similar, cuando el número de ejemplos de una clase es muy pequeño, como es nuestro caso, el \textit{dataset} puede ser demasiado pequeño, causando que la red memorice los datos y sea incapaz de generalizar.
 
-La otra técnica, \textit{oversampling}, consiste en el proceso opuesto, esto es, generar nuevos elementos de clase minoritaria. Igualmente, se suelen generar ejemplos hasta conseguir la igualdad, aunque no siempre es el caso. A la hora de generar los nuevos ejemplos, el enfoque más sencillo y rápido consiste en realizar copias de los datos de la clase minoritaria. La desventaja evidente de este proceso es que la red no incorpora nueva información y, al procesar los mismos datos una y otra vez, es más probable que acabe memorizandolos y, por tanto, sin capacidad de generalizar ante datos nuevos.
+La otra técnica, \textit{oversampling}, consiste en el proceso opuesto, esto es, generar nuevos elementos de clase minoritaria. Igualmente, se suelen generar ejemplos hasta conseguir la igualdad, aunque no siempre es el caso. A la hora de generar los nuevos ejemplos, el enfoque más sencillo y rápido consiste en realizar copias de los datos de la clase minoritaria. La desventaja evidente de este proceso es que la red no incorpora nueva información y, al procesar los mismos datos una y otra vez, es más probable que acabe memorizándolos y, por tanto, sin capacidad de generalizar ante datos nuevos.
 
-Para tratar de solucionar este problema existen diversos métodos, siendo uno de los más utilizados SMOTE \cite{SMOTE} (\textit{synthetic minority oversampling technique}). Aunque existen multiples variantes, la forma básica para generar nuevos elementos consiste en, para cada elemento de la clase minoritaria, se seleccionan sus K (generalmente, 5) vecinos más próximos. De entre ellos, se selecciona uno al azar y se generan una más instancias (dependiendo del número total de instancias a generar) en la recta que une las instancias originales.
+Para tratar de solucionar este problema existen diversos métodos, siendo uno de los más utilizados SMOTE \cite{SMOTE} (\textit{synthetic minority oversampling technique}). Aunque existen múltiples variantes, la forma básica para generar nuevos elementos consiste en, para cada elemento de la clase minoritaria, se seleccionan sus K (generalmente, 5) vecinos más próximos. De entre ellos, se selecciona uno al azar y se generan una o más instancias (dependiendo del número total a generar) en la recta que une las instancias originales.
 
 \section{Transformada de Fourier}
-La transformada de Fourier es una transformación matemática que permite descomponer una función, generalmente expresada en función del tiempo, en sus frecuencias constitutivas. En nuestro caso, el estudio de la frecuencia puede ser interesante dado que la existencia de uno o más planetas orbitando la estrella resultaría en la existencia de más de una frecuencias.
+La transformada de Fourier es una transformación matemática que permite descomponer una función, generalmente expresada en función del tiempo, en sus frecuencias constitutivas. En nuestro caso, el estudio de la frecuencia puede ser interesante dado que la existencia de uno o más planetas orbitando la estrella resultaría en la existencia de más de una frecuencia.
 
 \imagen{frecuencias.png}{Ejemplo de una señal (arriba, en amarillo) y su descomposición en las frecuencias que la componen \cite{3blue1brown}}
 
@@ -123,7 +123,7 @@ de estos para dar solución a problemas no lineales \cite{Minsky-1969}.
 El objetivo de estas redes es aproximar alguna función \emph{f}. Por
 ejemplo, para un clasificador como es nuestro caso,
 \texttt{y = f(x)} mapea un input, \emph{x} a una categoría \emph{y}.
-La red define un mapeado \texttt{y = f(x, $\theta$)} y aprende los valores de los parametros $\theta$ que resultan en la mejor aproximación a la función \cite{Goodfellow-et-al-2016}.
+La red define un mapeado \texttt{y = f(x, $\theta$)} y aprende los valores de los parámetros $\theta$ que resultan en la mejor aproximación a la función \cite{Goodfellow-et-al-2016}.
 
 Su arquitectura es simple, consistiendo en una capa de entrada,
 encargada de recibir las señales del exterior y propagarlas a las
@@ -145,9 +145,9 @@ solución.
 En algunos casos, especialmente en la capa de entrada y de salida, el
 número de neuronas viene definido por el problema a resolver. En las
 capas ocultas, este número puede variar ampliamente. Hay que considerar
-que un número elevado de neuronas puede provocar que estas memorizen los
+que un número elevado de neuronas puede provocar que estas memoricen los
 datos de entrada, proceso conocido como \emph{overfitting}. En este
-caso, nuestra red proporcionaría buenos resulados durante con los datos
+caso, nuestra red proporcionaría buenos resultados durante con los datos
 entrenamiento, pero sería incapaz de generalizar y los resultados serian
 pobres cuando se enfrentase a datos nuevos.
 
@@ -170,7 +170,7 @@ De forma similar al número de neuronas, el número de capas ocultas puede
 variar ampliamente, contribuyendo especialmente al problema de
 \emph{overfitting} comentado anteriormente. Además, de acuerdo al
 teorema de aproximación universal, cuando se usan funciones de
-activación no lineales, una sola capa oculta es suficiente para
+activación no lineal, una sola capa oculta es suficiente para
 representar cualquier función continua en un rango dado, aunque esta
 capa puede ser demasiado grande y fallar en aprender y generalizar
 correctamente \cite{Goodfellow-et-al-2016}, por lo que es conveniente probar varias
@@ -179,26 +179,25 @@ debemos ceñirnos a usar una sola capa oculta.
 
 Es también importante como se encuentran conectadas las capas. El modelo
 es más frecuente es el de capa totalmente conectada, donde cada neurona
-esta conectada a cada una de las neuronas de la siguiente capa. Hay, sin
-embargo, otras opciones donde, la más frecuente de ellas, consiste en
-que la salida de algunas o todas las neuronas de una capa se conectan
+está conectada a cada una de las neuronas de la siguiente capa. Hay, sin
+embargo, otras opciones donde la salida de algunas o todas las neuronas de una capa se conectan
 con la entrada de neuronas de una capa no inmediatamente posterior,
 haciendo que su valor tenga más peso en el resultado final de la red.
 
-Otro opción respecto a las conexiones entre las capas es usar la técnica
+Otra opción respecto a las conexiones entre las capas es usar la técnica
 conocida como \emph{dropout}. Esta consiste en asignar, durante el
 proceso de entrenamiento, el peso de determinadas neuronas,
 seleccionadas de forma aleatoria, a cero, excluyendo de facto su
 aportación al resultado final de la red. El objetivo de la técnica es
 reducir el \emph{overfitting}, ya que hace que la red sea menos
-dependiente del peso especifico de determinadas neuronas \cite{JMLR:v15:srivastava14a}.
+dependiente del peso específico de determinadas neuronas \cite{JMLR:v15:srivastava14a}.
 
 \subsection{Funciones de activación}\label{funciones-de-activacion}
 
 Vamos a examinar brevemente las funciones de activación más frecuentes
 que podríamos usar en nuestro modelo.
 
-La función sigmoide fué de las primeras en usarse de forma masiva. La
+La función sigmoide fue de las primeras en usarse de forma masiva. La
 función está acotada entre {[}0, 1{]} y suele usarse en la última capa
 para representar probabilidades en clasificadores binarios. También es
 habitual usarla en las capas ocultas de los perceptrones multicapa. Sin
@@ -208,46 +207,46 @@ satura y mata el gradiente, provocando una lenta convergencia.
 La tangente hiperbólica es muy similar a la sigmoide, estando igualmente
 acotada, aunque en un rango mayor, {[}-1, 1{]}, lo que la hace adecuada
 para problemas en los que hay que decidir entre dos opciones. A
-diferencia de la sigmoide, esta centrada en el 0.
+diferencia de la sigmoide, está centrada en el 0.
 
 Es importante resaltar que la función sigmoide y la tangente hiperbólica
 se encuentran relacionadas, tal que \(tanh(x) = 2 * sigmoid(2x) -1\) por
-loq que existe poca diferencia a la hora de usar una u otra.
+lo que existe poca diferencia a la hora de usar una u otra.
 
-Tenemos también la función relu, función lineal rectificada por sus
+Tenemos también la función \textit{ReLU}, función lineal rectificada por sus
 siglas en inglés. Esta función no está acotada y deja los valores
-positivos sin alterar pero transforma los negativos en cero. Tiene un
+positivos sin alterar, pero transforma los negativos en cero. Tiene un
 buen desempeño en redes convolucionales a la hora de tratar con
-imagenes, pero también es la opción por defecto en los perceptrones
+imágenes, pero también es la opción por defecto en los perceptrones
 multicapa. Esto se debe principalmente a dos factores: es poco probable
 que mate el gradiente y genera redes escasas, esto es, redes con
-neuronas muertas que no se activan, lo que hace la red más eficiente.
+neuronas muertas que no se activan, lo que hace que la red sea más eficiente.
 Además, su facilidad de cálculo respecto a otras funciones, acorta el
-tiempo de entrenamiento de la re. Presenta, sin embargo, un importante
+tiempo de entrenamiento de la red. Presenta, sin embargo, un importante
 problema, y es que puede matar a demasiadas neuronas. Para solucionarlo,
-existe una variante, denominada leaky relu, que, en lugar de anular los
+existe una variante, denominada \textit{leaky ReLU}, que, en lugar de anular los
 valores negativos, los multiplica por un coeficiente para devolver un
 valor negativo.
 
-Finalmente, hablamos de la funcion softmax, que transforma un vector de
+Finalmente, hablamos de la función \textit{softmax}, que transforma un vector de
 entrada en un vector de probabilidades cuyo sumatorio es uno. Es usada
 frecuentemente en la capa de salida de la red cuando se trata de
 resolver un problema de clasificación.
 
 De cara al diseño de nuestro modelo, la elección evidente para la capa
-de salida es usar una función softmax, aunque también se realizarán
-pruebas usando la función sigmoide para ver si presenta un mejor
+de salida es usar una función \textit{softmax}, aunque también se realizarán
+pruebas usando la función \textit{sigmoide} para ver si presenta un mejor
 resultado.
 
-Respecto a las capas ocultas, usaremos principalmente la función relu y,
-de forma similar a con la capa de salida, haremos pruebas con la
-sigmoide.
+Respecto a las capas ocultas, usaremos principalmente la función \textit{ReLU} y,
+de forma similar a la capa de salida, haremos pruebas con la
+\textit{sigmoide}.
 
 \subsection{Algoritmo de optimización}\label{algoritmo-de-optimizacion}
 
 El algoritmo de optimización es el encargado de actualizar los pesos de
-nuestra red para minimizar la perdida. Pytorch ya tiene implementados
-varios de estos algoritmos, por lo que solo queda decidir cual usar.
+nuestra red para minimizar la perdida. \textit{Pytorch} ya tiene implementados
+varios de estos algoritmos, por lo que solo queda decidir cuál usar.
 
 El más conocido y uno de los primeros en desarrollarse es el descenso
 del gradiente. Pytorch implementa el descenso del gradiente estocástico
@@ -260,8 +259,8 @@ este último problema, el algoritmo puede configurarse para usar momento,
 que ayuda a suavizar las oscilaciones añadiendo una fracción de los
 pasos previos al paso actual.
 
-Usaremos este optimizador como linea base de trabajo con diferentes
-valores para la tasa de aprendizaje tanto con como sin momento.
+Usaremos este optimizador como línea base de trabajo con diferentes
+valores para la tasa de aprendizaje tanto con cómo sin momento.
 
 Otro de los algoritmos más usados es Adam \cite{2014arXiv1412.6980K}, acrónimo en inglés de
 estimación adaptativa del momento, que será el otro algoritmo que
@@ -276,19 +275,19 @@ aprendizaje inicial.
 
 \section{LSTM}\label{sec:lstm}
 
-Un tipo particular de redes neuronales son las recurrentes, que permiten añadir la dimensión temporal al procesado de datos. Esto lo consiguen incluyendo bucles en su arquitectura, permitiendo de esta forma la persistencia de determinada información y dotandolas de una gran facilidad para tratar información contenida en forma de secuencias o listas, donde un acontecimiento esta estrechamente vinculado a acontecimientos previos. Esto las ha convertido en el estandar para tratar diversos tipos de problemas como, por ejemplo, el reconocimiento de voz, el modelado del lenguaje o la traducción entre idiomas.
+Un tipo particular de redes neuronales son las recurrentes, que permiten añadir la dimensión temporal al procesado de datos. Esto lo consiguen incluyendo bucles en su arquitectura, permitiendo de esta forma la persistencia de determinada información y dotándolas de una gran facilidad para tratar información contenida en forma de secuencias o listas, donde un acontecimiento está estrechamente vinculado a acontecimientos previos. Esto las ha convertido en el estándar para tratar diversos tipos de problemas como, por ejemplo, el reconocimiento de voz, el modelado del lenguaje o la traducción entre idiomas.
 
-Para nuestro problema particular, este tipo de red puede resultar útil, ya que el transito planetario incluye una sencuencia concreta de pasos, donde el flujo de luz se muestra relativamente constante, posteriormente experimenta un decrecimiento hasta llegar un mínimo y finalmente vuelve a su nivel original. Además, si el periodo orbital del planeta es breve, podríamos encontrar repeticiones de esta secuencia. El procesado de este conjunto de datos temporales es la especialidad de las redes recurrentes.
+Para nuestro problema particular, este tipo de red puede resultar útil, ya que el tránsito planetario incluye una secuencia concreta de pasos, donde el flujo de luz se muestra relativamente constante, posteriormente experimenta un decrecimiento hasta llegar un mínimo y finalmente vuelve a su nivel original. Además, si el periodo orbital del planeta es breve, podríamos encontrar repeticiones de esta secuencia. El procesado de este conjunto de datos temporales es la especialidad de las redes recurrentes.
 
 \imagen{transit.png}{Variación de la intensidad de luz por tránsito planetario \cite{Kaggle-exoplanet}}
 
 La forma más simple de conseguir esta recurrencia es conectando la salida de una neurona no solo hacia neuronas de las capas siguientes, como hemos visto en el caso del perceptrón multicapa, sino también hacia la entrada de la propia neurona o de neuronas de las capas previas. Esto es, la salida de las neuronas de la capa $h_t$ se encuentran conectadas a las neuronas de la capa $h_{t-i}$. 
 
-Esta configuración simple funciona muy bien para tratar secuencias donde la información se encuentra temporalmente próxima pero presenta problemas relacionando información distante en el tiempo o información que influye en muchos momentos pasados.
+Esta configuración simple funciona muy bien para tratar secuencias donde la información se encuentra temporalmente próxima, pero presenta problemas relacionando información distante en el tiempo o información que influye en muchos momentos pasados.
 
-Pero existen muchos tipos de redes recursivas. En nuestro caso nos centraremos en las redes LSTM (\textit{long short term memory}), uno de los estandares de la industria, y designadas con el objetivo de presentar memoria a largo plazo. La arquitectura básica de estas redes esta formada por capas LSTM, también llamadas células, cada una sirviendo de entrada a la célula siguiente. En su interior, cada una de estas células presenta los mismos elementos, siendo el principal $C_t$, el estado de la célula y la parte que proporciona la memoria a largo a plazo al sistema.
+Pero existen muchos tipos de redes recursivas. En nuestro caso nos centraremos en las redes LSTM (\textit{long short term memory}), uno de los estándares de la industria, y designadas con el objetivo de presentar memoria a largo plazo. La arquitectura básica de estas redes está formada por capas LSTM, también llamadas células, cada una sirviendo de entrada a la célula siguiente. En su interior, cada una de estas células presenta los mismos elementos, siendo el principal $C_t$, el estado de la célula y la parte que proporciona la memoria a largo a plazo al sistema.
 
-Otros elementos influyen sobre esta memoria. Una primera capa sigmoidal permite determinar que memoria a largo plazo mantener o desechar. Otras capas interiores, implementadas mediante funciones sigmoidales y tangenciales, permite determinar que información actual incorporar a la memoria a largo plazo. Finalmente, las capas finales se encargan de devolver la información procesada por la célula y de conectar su estado a la siguiente célula de la red.
+Otros elementos influyen sobre esta memoria. Una primera capa sigmoidal permite determinar que memoria a largo plazo mantener o desechar. Otras capas interiores, implementadas mediante funciones sigmoidales y tangenciales, permite determinar qué información actual incorporar a la memoria a largo plazo. Finalmente, las capas finales se encargan de devolver la información procesada por la célula y de conectar su estado a la siguiente célula de la red.
 
 Para una descripción más detallada del proceso, se puede consultar \href{https://colah.github.io/posts/2015-08-Understanding-LSTMs/}{Understanding LSTMs}.
 
@@ -314,7 +313,7 @@ s(x_{i})=\frac{e^{x_{i}}}{\sum_{j=1}^{n}e^{x_j}}
 
 En cualquier caso, estudiaremos otras opciones, como puede ser el caso
 de la función sigmoide, que nos devuelve un valor en el rango {[}0,
-1{]}, el cual puede ser interpretrado como probabilidad, en nuestro
+1{]}, el cual puede ser interpretado como probabilidad, en nuestro
 caso, de que sea una estrella con exoplaneta.
 
 \subsection{Desbalanceo del dataset}\label{desbalanceo-del-dataset}
@@ -336,15 +335,15 @@ correcto frente a nuevas entradas de datos.
 f = Acierto * (\alpha * Sen + \beta * Esp)
 \end{math}
 
-donde \texttt{Acierto} representa el ratio de respuestas correctas,
-\texttt{Sen} es la sensibilidad (casos catalagocados como positivos
+donde \texttt{Acierto} representa la ratio de respuestas correctas,
+\texttt{Sen} es la sensibilidad (casos catalogados como positivos
 que son realmente positivos), \texttt{Esp} es la especificidad
 (casos negativos correctamente calificados como no exoplanetas) y
 \(\alpha\) y \(\beta\) son dos pesos usados para alterar la importancia de la sensibilidad y la
 especificidad. Comenzaremos con un valor neutro de 0.5 para cada uno,
 pero estudiaremos si su ajuste permite obtener un mejor modelo.
 
-Definimos a continuación los ratios de \texttt{Acierto},
+Definimos a continuación las ratios de \texttt{Acierto},
 \texttt{Sen} y \texttt{Esp}, donde \texttt{VP} es el número
 de verdaderos positivos, \texttt{VN} los verdaderos negativos,
 \texttt{FP} los falsos positivos y \texttt{FN} los falsos
@@ -406,7 +405,7 @@ interfaz común que facilita el desarrollo rápido de proyectos.
 Tensorflow proporciona APIs tanto de alto como de bajo nivel, lo que le
 dota una gran flexibilidad.
 
-Finalmente, PyTorch proporciona sólamente una API de nivel, enfocada en
+Finalmente, PyTorch proporciona solamente una API de nivel, enfocada en
 el trabajo directo con matrices.
 
 \subsection{Arquitectura}\label{arquitectura}
@@ -420,7 +419,7 @@ Tensorflow es un tanto confusa y ha recibido numerosos cambios
 importantes en cada versión, lo que dificulta mantener un código estable
 y estar actualizado.
 
-\subsection{Debuggin}\label{debuggin}
+\subsection{Debugging}\label{debugging}
 
 Depurar código en Tensorflow es relativamente complejo y no muy
 intuitivo. En Keras no es un proceso habitual, dado el alto nivel de sus
@@ -438,13 +437,13 @@ tienen este problema de rendimiento.
 
 \subsection{Documentación y comunidad}\label{documentacion-y-comunidad}
 
-Tanto en PyTorch como en Tensorflow se nota el efecto de tener detras a
-dos grandes empresas tecnológicas. En ambos casos, existen númerosos
-recursos gratuitos con los que aprender así como una importante
+Tanto en PyTorch como en Tensorflow se nota el efecto de tener detrás a
+dos grandes empresas tecnológicas. En ambos casos, existen numerosos
+recursos gratuitos con los que aprender, así como una importante
 comunidad de usuarios que las respaldan y ofrecen su ayuda. Tensorflow
-tiene más tiempo de desarrollo y su base de usuarios es mayor pero desde
+tiene más tiempo de desarrollo y su base de usuarios es mayor, pero desde
 el 2018 la popularidad de PyTorch está en constante aumento,
-especialmente en el ambito académico.
+especialmente en el ámbito académico.
 
 Keras contrasta respecto a las otros dos con una más reducida comunidad
 y menor documentación.
@@ -452,15 +451,15 @@ y menor documentación.
 \subsection{Puesta en producción}\label{puesta-en-produccion}
 
 A la hora de poner en producción un modelo previamente entrenado, Keras
-no dispone de ninguna utilidad en si misma, haciendo uso de las
-caracteristicas de Tensorflow. Este permite servir los modelos en un
+no dispone de ninguna utilidad en sí misma, haciendo uso de las
+características de Tensorflow. Este permite servir los modelos en un
 servidor web mediante una API REST o en dispositivos móviles.
 
-PyTorch se apoya en otras bibliotecas para poder exponer sus modelos via
+PyTorch se apoya en otras bibliotecas para poder exponer sus modelos vía
 web, permitiendo también otras opciones interesantes, como la interfaz
 con C++, lo que permite convertir los modelos en ejecutables fácilmente.
 
-\subsection{Resumen de la comparación }\label{decision-final}
+\subsection{Resumen de la comparación}\label{decision-final}
 
 Tras analizar las características de las tres bibliotecas, vemos como se
 adaptan a nuestras necesidades.
@@ -472,7 +471,7 @@ gestionado de forma interna por la biblioteca. Unido a la dificultad de
 depurar el código y a su peor rendimiento, hace que optemos por no
 utilizarla.
 
-La decisión entre Tensorflow y PyTorch es más dificil de realizar, ya
+La decisión entre Tensorflow y PyTorch es más difícil de realizar, ya
 que ambos aportan características similares: la posibilidad de trabajar
 con las redes a bajo nivel para poder estudiarlas en detalle, buen
 rendimiento y variados recursos para aprender, ya sea en forma de
