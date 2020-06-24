@@ -19,7 +19,7 @@ Además, durante el desarrollo del proyecto se considera añadir algunos nuevos 
 
 \begin{itemize}    
     \item La creación de una interfaz gráfica que permita ejecutar el modelo para comprobar los datos contenidos en un archivo.
-    \item Desarrollar un pipeline de despliegue continuo que permita desplegar de forma automatica cualquier cambio en nuestro modelo o en la interfaz grafica.
+    \item Desarrollar un pipeline de despliegue continuo que permita desplegar de forma automática cualquier cambio en nuestro modelo o en la interfaz gráfica.
 \end{itemize}
 
 \section{Catalogo de requisitos}
@@ -38,8 +38,8 @@ Definimos dos actores:
 
     \item \textbf{RF-1} El investigador debe poder dividir un conjunto de datos en sets de entrenamiento y validación.
         \begin{itemize}
-            \item \textbf{RF-1.1} Se debe indicar que porcentaje respecto al total de instancias se incluiran en el set de validación.
-            \item \textbf{RF-1.2} La inclusión de una instancia concreta en un set u otro debe ser aleatoria pero se podrá indicar una semilla para que, dado un set de entrada concreto y un porcentaje determinado, la división produzca los mismos set de entrenamiento y validación.            
+            \item \textbf{RF-1.1} Se debe indicar que porcentaje respecto al total de instancias se incluirán en el set de validación.
+            \item \textbf{RF-1.2} La inclusión de una instancia concreta en un set u otro debe ser aleatoria, pero se podrá indicar una semilla para que, dado un set de entrada concreto y un porcentaje determinado, la división produzca los mismos sets de entrenamiento y validación.            
         \end{itemize}
     
     \item \textbf{RF-2} El investigador debe poder aplicar técnicas y algoritmos que prepararen los datos.
@@ -127,9 +127,9 @@ Definimos dos actores:
                             9. Opcionalmente, cuando el entrenamiento termine, el investigador puede mostrar gráficamente los resultados del mismo.  
                             \\ 
         \hline
-        Postcondiciones  &  Se ha generado un modelo y las imagenes con los resultados del entrenamiento.\\ 
+        Postcondiciones  &  Se ha generado un modelo y las imágenes con los resultados del entrenamiento.\\ 
         \hline
-        Excepciones      &  Formato de datos incorrecto. Algoritmo de optimización invalido. Función de coste invalida.Configuración de la instancia del modelo incorrecta.\\ 
+        Excepciones      &  Formato de datos incorrecto. Algoritmo de optimización invalido. Función de coste invalida. Configuración de la instancia del modelo incorrecto.\\ 
         \hline
         Importancia      &  Alta\\ 
         \hline
@@ -149,7 +149,7 @@ Definimos dos actores:
                             RF-1.1\newline
                             RF-1.2  \\ 
         \hline
-        Descripción      & A partir de un conjunto de datos, el investigador puede dividirlo en dos de forma aleatoria y segun la proporción deseada. \\ 
+        Descripción      & A partir de un conjunto de datos, el investigador puede dividirlo en dos de forma aleatoria y según la proporción deseada. \\ 
         \hline
         Precondiciones   & El investigador debe disponer de un conjunto de datos. \\ 
         \hline
@@ -159,7 +159,7 @@ Definimos dos actores:
         \hline
         Postcondiciones  & El investigador obtiene los datos divididos en dos conjuntos. \\ 
         \hline
-        Excepciones      & El conjunto de datos está vacio. La proporción es uno o mayor. \\ 
+        Excepciones      & El conjunto de datos está vacío. La proporción es uno o mayor. \\ 
         \hline
         Importancia      &  Media. \\ 
         \hline
@@ -190,7 +190,7 @@ Definimos dos actores:
         \hline
         Postcondiciones  & El conjunto de datos transformado. \\ 
         \hline
-        Excepciones      & El conjunto de datos está vacio. \\ 
+        Excepciones      & El conjunto de datos está vacío. \\ 
         \hline
         Importancia      & Media. \\ 
         \hline
@@ -213,12 +213,12 @@ Definimos dos actores:
         Precondiciones   & El investigador debe disponer de un conjunto de datos. \\ 
         \hline
         Acciones         &  1. El investigador selecciona el conjunto de datos. \newline 
-                            2. El investigador indica los indices de las estrellas a mostrar. \newline
+                            2. El investigador indica los índices de las estrellas a mostrar. \newline
                             3. El investigador aplica la función.  \\  
         \hline
         Postcondiciones  & Gráfica(s) mostrando los datos correspondientes. \\ 
         \hline
-        Excepciones      & El indice de las estrellas seleccionadas no se encuentra en el conjunto de datos. \\ 
+        Excepciones      & El índice de las estrellas seleccionadas no se encuentra en el conjunto de datos. \\ 
         \hline
         Importancia      & Baja. \\ 
         \hline
@@ -297,7 +297,7 @@ Definimos dos actores:
                             RF-7.2\newline
                             RF-7.3 \\   
         \hline
-        Descripción      & El usuario debe poder cargar un archivo en la aplicación, obteniendo predicciones sobre que estrellas presentan exoplanetas así como las gráficas de dichas estrellas. \\ 
+        Descripción      & El usuario debe poder cargar un archivo en la aplicación, obteniendo predicciones sobre que estrellas presentan exoplanetas, así como las gráficas de dichas estrellas. \\ 
         \hline
         Precondiciones   & El usuario debe disponer de un archivo con datos. \\ 
         \hline

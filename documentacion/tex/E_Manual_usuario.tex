@@ -11,13 +11,13 @@ Actualmente es posible utilizar la aplicación web de formas distintas, instalan
 A la hora de utilizar directamente la versión web es necesario:
 
 \begin{itemize}
-    \item Sistema operativo linux o similar, de 32 o 64 bits.
+    \item Sistema operativo Linux o similar, de 32 o 64 bits.
     \item 2 GB RAM.
     \item Python 3.
     \item 500 MB libres en el disco duro.
 \end{itemize}
 
-En lo que se refiere a la instalación via Docker, necesitamos tener instalada dicha aplicación en el sistema. En su página web no hay especificados requisitos mínimos para su instalación en sistemas unix, pero si para sistemas Windows, donde es necesario la aplicación Docker Desktop. En este caso, es necesario \cite{Docker-instalacion}:
+En lo que se refiere a la instalación vía Docker, necesitamos tener instalada dicha aplicación en el sistema. En su página web no hay especificados requisitos mínimos para su instalación en sistemas Unix, pero si para sistemas Windows, donde es necesario la aplicación Docker Desktop. En este caso, es necesario \cite{Docker-instalacion}:
 
 \begin{itemize}
     \item Windows 10 64 bit, versión Pro, Enterprise o Education.
@@ -34,7 +34,7 @@ Además de los requisitos de Docker, es necesario contar con 500 MB extra libres
 Los procesos de instalación son, en ambos casos, sencillos. En el caso de querer instalar la aplicación, los pasos a seguir son:
 
 \begin{itemize}
-    \item Copiar el contendido de la carpeta \textit{/app/} al directorio seleccionado del servidor.
+    \item Copiar el contenido de la carpeta \textit{/app/} al directorio seleccionado del servidor.
     \item Copiar los archivos \textit{Procfile} y \textit{requirements.txt} al mismo directorio.
     \item Abrir una terminal y navegar a dicho directorio donde debemos ejecutar el siguiente comando para instalar los paquetes necesarios:\\
     \texttt{pip install -r requirements.txt}
@@ -42,7 +42,7 @@ Los procesos de instalación son, en ambos casos, sencillos. En el caso de quere
     \texttt{python runsite.py}
 \end{itemize}
 
-En el caso de realizar via Docker, como se comentó en el apartado previo, debemos primero descargar el contenedor al equipo:
+En el caso de realizar vía Docker, como se comentó en el apartado previo, debemos primero descargar el contenedor al equipo:
 
 \texttt{docker pull \\ registry.gitlab.com/hp-scds/observatorio/2019-2020/ubu-exoplanetia:1.2}
 
@@ -50,19 +50,18 @@ Y, una vez descargado el contenedor, arrancarlo:
 
 \texttt{docker run -dp 5000:5000 \\ registry.gitlab.com/hp-scds/observatorio/2019-2020/ubu-exoplanetia:1.2}
 
-En ambos casos, la aplicación web estará ejecutandose en la url interna \textit{127.0.0.1:5000}.
+En ambos casos, la aplicación web estará ejecutándose en la url interna \textit{127.0.0.1:5000}.
 
 \section{Manual del usuario}
 
-El contenido del sitio es mayormente estático, paginas webs que solo presentan texto y con las que no es posible interactuar. El acceso a estas páginas se realiza a traves de los enlaces provistos en la cabecera, donde también se encuentra un botón para cambiar el idioma del sitio. Actualmente, el sitio esta disponible en español y inglés.
+El contenido del sitio es mayormente estático, paginas webs que solo presentan texto y con las que no es posible interactuar. El acceso a estas páginas se realiza a través de los enlaces provistos en la cabecera, donde también se encuentra un botón para cambiar el idioma del sitio. Actualmente, el sitio está disponible en español e inglés.
 
-\imagen{web_cabecera.png}{Cabecera de la web con los diferentes enlaces}
+\imagen{web_cabecera.png} {Cabecera de la web con los diferentes enlaces}
 
-Actualmente el sitio cuenta con dos modelos distintos para probar, uno basado en redes LSTM y otro en el perceptrón multicapa. Es posible seleccionar el modelo a traves de un desplegable en la página inicial. A la hora de proporcionar los datos, es posible descargar desde el propio sitio un pequeño archivo con ejemplos. Este archivo se encuentra localizado en la ruta \textit{/static/downloads/minitest.csv}, aunque se proporcionan accesos a su descarga desde la página inicial y la página de datos. Además, es posible también usar los dataset originales disponibles en la web del proyecto\cite{Kaggle-exoplanet} en Kaggle.
+Actualmente el sitio cuenta con dos modelos distintos para probar, uno basado en redes LSTM y otro en el perceptrón multicapa. Es posible seleccionar el modelo a través de un desplegable en la página inicial. A la hora de proporcionar los datos, es posible descargar desde el propio sitio un pequeño archivo con ejemplos. Este archivo se encuentra localizado en la ruta \textit{/static/downloads/minitest.csv}, aunque se proporcionan accesos a su descarga desde la página inicial y la página de datos. Además, es posible también usar los dataset originales disponibles en la web del proyecto\cite{Kaggle-exoplanet} en Kaggle.
 
 \imagen{web_cargar_datos.png}{Seleccionando un archivo para cargar}
 
-Una vez seleccionado el archivo y tras pulsar el boton \textit{Cargar}, el fichero es subido al servidor y procesado. El usuario será redirigido a la página de resultados. Aquí es posible ver la cantidad de estrellas en las que se han encontrado exoplanetas así como los índices de dichas estrellas en el archivo de datos. Además, se muestra una gráfica con la cantidad de estrellas con exoplanetas encontradas respecto al total. Y, finalmente, para cada estrella con exoplaneta encontrada, se muestran dos gráficas, una mostrando la intensidad del flujo de luz y la otra la intensidad.
+Una vez seleccionado el archivo y tras pulsar el botón \textit{Cargar}, el fichero es subido al servidor y procesado. El usuario será redirigido a la página de resultados. Aquí es posible ver la cantidad de estrellas en las que se han encontrado exoplanetas, así como los índices de dichas estrellas en el archivo de datos. Además, se muestra una gráfica con la cantidad de estrellas con exoplanetas encontradas respecto al total. Y, finalmente, para cada estrella con exoplaneta encontrada, se muestran dos gráficas, una mostrando la intensidad del flujo de luz y la otra la intensidad.
 
 \imagen{web_resultados.png}{Resultado de analizar el fichero}
-
